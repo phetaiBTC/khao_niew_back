@@ -77,4 +77,12 @@ export class UsersService {
       message: 'User deleted successfully'
     }
   }
+
+  async findOneByEmail(email: string) {
+    const user = await this.usersRepository.findOneBy({ email })
+    if (!user) {
+      throw new BadRequestException('User not found')
+    }
+    return user
+  }
 }
