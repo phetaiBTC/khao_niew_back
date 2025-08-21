@@ -15,6 +15,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './guards/auth.guard';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { RolesGuard } from './guards/role.guard';
 
 @Module({
   imports: [
@@ -40,11 +41,14 @@ import { join } from 'path';
   ],
   controllers: [],
   providers: [
-    
     {
       provide: APP_GUARD,
       useClass: JwtAuthGuard,
-    }
+    },
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard
+    },
   ],
 
 })
