@@ -1,6 +1,4 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { UsersModule } from './modules/users/users.module';
 import { EntertainmentsModule } from './modules/entertainments/entertainments.module';
 import { ConfigModule } from '@nestjs/config';
@@ -15,12 +13,18 @@ import { DetailsScanModule } from './modules/details_scan/details_scan.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './guards/auth.guard';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: '.env',
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'uploads'),
+      serveRoot: '/uploads',
     }),
     TypeOrmConfig,
     UsersModule,
@@ -34,9 +38,9 @@ import { JwtAuthGuard } from './guards/auth.guard';
     DetailsScanModule,
     AuthModule
   ],
-  controllers: [AppController],
+  controllers: [],
   providers: [
-    AppService,
+    
     {
       provide: APP_GUARD,
       useClass: JwtAuthGuard,
