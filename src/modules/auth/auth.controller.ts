@@ -1,7 +1,8 @@
-import { Body, Controller, Get, Post, Request } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { AuthDto } from './dto/auth.dto';
+import { AuthDto, PayloadDto } from './dto/auth.dto';
 import { Public } from 'src/common/decorator/auth.decorator';
+import { AuthProfile } from 'src/common/decorator/user.decorator';
 
 @Controller('auth')
 export class AuthController {
@@ -13,8 +14,7 @@ export class AuthController {
   }
 
   @Get('profile')
-  getProfile(@Request() req) {
-    // return this.authService.profile(req.user);
-    return req.user
+  getProfile(@AuthProfile() user: PayloadDto) {
+    return this.authService.profile(user.id);
   }
 }

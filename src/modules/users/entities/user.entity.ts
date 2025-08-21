@@ -1,3 +1,4 @@
+import { Exclude } from "class-transformer";
 import { ShardEntity } from "src/common/entity/BaseEntity";
 import { Company } from "src/modules/companies/entities/company.entity";
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
@@ -13,6 +14,7 @@ export class User extends ShardEntity {
     @Column()
     username: string;
 
+    @Exclude() 
     @Column()
     password: string;
 

@@ -6,6 +6,7 @@ import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { bcryptUtil } from 'src/common/utils/bcrypt.util';
 import { PaginateDto } from 'src/common/dto/paginate.dto';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class UsersService {
@@ -55,11 +56,11 @@ export class UsersService {
   }
 
   async findOne(id: number) {
-    const user = await this.usersRepository.findOneBy({ id })
+    const user = await this.usersRepository.findOneBy({ id });
     if (!user) {
-      throw new BadRequestException('User not found')
+      throw new BadRequestException('User not found');
     }
-    return user
+    return user;
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {
