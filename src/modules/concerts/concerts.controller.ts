@@ -1,34 +1,34 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Delete, Param, Body } from '@nestjs/common';
 import { ConcertsService } from './concerts.service';
 import { CreateConcertDto } from './dto/create-concert.dto';
 import { UpdateConcertDto } from './dto/update-concert.dto';
 
 @Controller('concerts')
 export class ConcertsController {
-  constructor(private readonly concertsService: ConcertsService) {}
+  constructor(private readonly concertService: ConcertsService) {}
 
   @Post()
-  create(@Body() createConcertDto: CreateConcertDto) {
-    return this.concertsService.create(createConcertDto);
+  create(@Body() dto: CreateConcertDto) {
+    return this.concertService.create(dto);
   }
 
   @Get()
   findAll() {
-    return this.concertsService.findAll();
+    return this.concertService.findAll();
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.concertsService.findOne(+id);
+    return this.concertService.findOne(+id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateConcertDto: UpdateConcertDto) {
-    return this.concertsService.update(+id, updateConcertDto);
+  update(@Param('id') id: string, @Body() dto: UpdateConcertDto) {
+    return this.concertService.update(+id, dto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.concertsService.remove(+id);
+    return this.concertService.remove(+id);
   }
 }

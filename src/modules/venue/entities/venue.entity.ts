@@ -7,7 +7,7 @@ import {
   PrimaryGeneratedColumn,
   OneToMany,
   ManyToMany,
-  ManyToOne,
+  JoinTable,
 } from 'typeorm';
 
 @Entity()
@@ -28,6 +28,7 @@ export class Venue extends ShardEntity {
   longitude: number;
 
   @ManyToMany(() => Image, (image) => image.venues)
+  @JoinTable({ name: 'venue_images' })
   images: Image[];
 
   @OneToMany(() => Concert, (concert) => concert.venue)

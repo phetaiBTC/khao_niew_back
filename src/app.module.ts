@@ -10,12 +10,21 @@ import { ImagesModule } from './modules/images/images.module';
 import { CheckInModule } from './modules/check_in/check_in.module';
 import { BookingModule } from './modules/booking/booking.module';
 import { DetailsScanModule } from './modules/details_scan/details_scan.module';
+import { AuthModule } from './modules/auth/auth.module';
+import { APP_GUARD } from '@nestjs/core';
+import { JwtAuthGuard } from './guards/auth.guard';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [
-     ConfigModule.forRoot({
+    ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: '.env',
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'uploads'),
+      serveRoot: '/uploads',
     }),
     TypeOrmConfig,
     UsersModule,
@@ -26,9 +35,17 @@ import { DetailsScanModule } from './modules/details_scan/details_scan.module';
     ImagesModule,
     CheckInModule,
     BookingModule,
-    DetailsScanModule
+    DetailsScanModule,
+    AuthModule
   ],
   controllers: [],
-  providers: [],
+  providers: [
+    
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    }
+  ],
+
 })
 export class AppModule { }
