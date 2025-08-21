@@ -12,10 +12,13 @@ import { ImagesModule } from './modules/images/images.module';
 import { CheckInModule } from './modules/check_in/check_in.module';
 import { BookingModule } from './modules/booking/booking.module';
 import { DetailsScanModule } from './modules/details_scan/details_scan.module';
+import { AuthModule } from './modules/auth/auth.module';
+import { APP_GUARD } from '@nestjs/core';
+import { JwtAuthGuard } from './guards/auth.guard';
 
 @Module({
   imports: [
-     ConfigModule.forRoot({
+    ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: '.env',
     }),
@@ -28,9 +31,17 @@ import { DetailsScanModule } from './modules/details_scan/details_scan.module';
     ImagesModule,
     CheckInModule,
     BookingModule,
-    DetailsScanModule
+    DetailsScanModule,
+    AuthModule
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    }
+  ],
+
 })
 export class AppModule { }
