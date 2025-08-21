@@ -1,5 +1,6 @@
 import { ShardEntity } from "src/common/entity/BaseEntity";
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+import { Company } from "src/modules/companies/entities/company.entity";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
 export enum EnumRole {
     COMPANY = 'company',
     ADMIN = 'admin'
@@ -23,4 +24,7 @@ export class User extends ShardEntity {
 
     @Column({ default: EnumRole.COMPANY })
     role: EnumRole
+
+    @ManyToOne(()=> Company, company => company.user)
+    companies: Company
 }
