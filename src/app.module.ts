@@ -16,6 +16,7 @@ import { JwtAuthGuard } from './guards/auth.guard';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { RolesGuard } from './guards/role.guard';
+import { SeederModule } from './database/seeds/seeder.module';
 
 @Module({
   imports: [
@@ -37,7 +38,8 @@ import { RolesGuard } from './guards/role.guard';
     CheckInModule,
     BookingModule,
     DetailsScanModule,
-    AuthModule
+    AuthModule,
+    SeederModule
   ],
   controllers: [],
   providers: [
