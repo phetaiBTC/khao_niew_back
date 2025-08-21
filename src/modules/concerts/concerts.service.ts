@@ -34,7 +34,7 @@ export class ConcertsService {
     }
     const start = timeToNumber(dto.startTime);
     const end = timeToNumber(dto.endTime);
-    
+
     if (start >= end) {
       throw new BadRequestException(
         'Start time should be earlier than end time',
@@ -42,10 +42,10 @@ export class ConcertsService {
     }
 
     const today = new Date();
-    today.setHours(0, 0, 0, 0); 
+    today.setHours(0, 0, 0, 0);
 
     const concertDate = new Date(dto.date);
-    concertDate.setHours(0, 0, 0, 0); 
+    concertDate.setHours(0, 0, 0, 0);
 
     if (concertDate < today) {
       throw new BadRequestException('Date must be today or in the future');
@@ -86,6 +86,24 @@ export class ConcertsService {
 
   async update(id: number, dto: UpdateConcertDto) {
     const concert = await this.findOne(id);
+    if (!concert) throw new NotFoundException('Concert not found');
+
+    const start = timeToNumber(dto.startTime ?? '');
+    const end = timeToNumber(dto.endTime ?? '');
+    if (start >= end) {
+      throw new BadRequestException(
+        'Start time should be earlier than end time',
+      );
+    }
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const concertDate = new Date(dto.date ?? '');
+    concertDate.setHours(0, 0, 0, 0);
+
+    if (concertDate < today) {
+      throw new BadRequestException('Date must be today or in the future');
+    }
 
     if (dto.startTime) concert.startTime = dto.startTime;
     if (dto.endTime) concert.endTime = dto.endTime;
