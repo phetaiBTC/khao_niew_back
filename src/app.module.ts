@@ -1,10 +1,22 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { UsersModule } from './modules/users/users.module';
+import { EntertainmentsModule } from './modules/entertainments/entertainments.module';
+import { ConfigModule } from '@nestjs/config';
+import { TypeOrmConfig } from './database/tpye-orm.module';
 
 @Module({
-  imports: [],
+  imports: [
+     ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: '.env',
+    }),
+    TypeOrmConfig,
+    UsersModule,
+    EntertainmentsModule
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }
