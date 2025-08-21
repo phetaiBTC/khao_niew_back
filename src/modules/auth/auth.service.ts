@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { AuthDto } from './dto/auth.dto';
+import { AuthDto, PayloadDto } from './dto/auth.dto';
 import { UsersService } from '../users/users.service';
 import { bcryptUtil } from 'src/common/utils/bcrypt.util';
 import { JwtService } from '@nestjs/jwt';
@@ -13,8 +13,9 @@ export class AuthService {
         const user = await this.usersService.findOneByEmail(body.email)
         const isValid = await bcryptUtil.compare(body.password, user.password)
         if (!isValid) throw new Error('Invalid credentials')
+        const payload: PayloadDto = { id: user.id, username: user.username }
         return {
-            access_token: this.jwtService.sign({ id: user.id, username: user.username }),
+            access_token: this.jwtService.sign(payload),
             role: user.role
         }
     }

@@ -1,6 +1,5 @@
 import { CreateDateColumn, UpdateDateColumn } from "typeorm";
 import { Exclude, Expose } from "class-transformer";
-import dayjs from "dayjs";
 import { dayjsUtil } from "../utils/dayjs.util";
 
 export class ShardEntity {

@@ -9,3 +9,8 @@ export class AuthDto {
     @IsString()
     password: string;
 }
+
+export class PayloadDto {
+    readonly id: number;
+    readonly username: string;
+}
