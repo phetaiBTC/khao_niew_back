@@ -23,7 +23,6 @@ export class RolesGuard implements CanActivate {
 
         const { user } = context.switchToHttp().getRequest();
         if (!user) throw new ForbiddenException('No user found');
-
         // ถ้า route มี @Roles() → เช็คตรงกับ role เดียว
         if (requiredRoles && requiredRoles.length > 0) {
             if (!requiredRoles.includes(user.role)) {

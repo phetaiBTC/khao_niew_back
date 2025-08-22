@@ -13,7 +13,7 @@ export class AuthService {
         const user = await this.usersService.findOneByEmail(body.email)
         const isValid = await bcryptUtil.compare(body.password, user.password)
         if (!isValid) throw new Error('Invalid credentials')
-        const payload: PayloadDto = { id: user.id, username: user.username }
+        const payload: PayloadDto = { id: user.id, username: user.username, role: user.role }
         return {
             access_token: this.jwtService.sign(payload),
             role: user.role
