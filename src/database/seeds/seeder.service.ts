@@ -2,42 +2,31 @@
 import { Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import { EnumRole, User } from 'src/modules/users/entities/user.entity';
+import { Company } from 'src/modules/companies/entities/company.entity';
 import { bcryptUtil } from 'src/common/utils/bcrypt.util';
 
 @Injectable()
 export class SeederService {
-  constructor(private dataSource: DataSource) {}
-
+  constructor(private dataSource: DataSource) { }
   async seed() {
-    const userRepository = this.dataSource.getRepository(User);
-
-    const adminExists = await userRepository.findOne({ where: { email: 'admin@gmail.com' } });
-    if (!adminExists) {
-      const admin = userRepository.create({
-        username: 'Admin',
-        email: 'admin@gmail.com',
-        password: await bcryptUtil.hash('admin@123'),
-        phone: '02088888888',
-        role: EnumRole.ADMIN,
+    return this.dataSource.transaction(async (manager) => {
+      const company = manager.create(Company, {
+        name: 'KhaoNiew Co.,Ltd',
+        contact: '1234567890',
       });
-      await userRepository.save(admin);
-      console.log('Admin user created');
-    } else {
-      console.log('Admin already exists');
-    }
-
-    // เพิ่ม seed user ตัวอย่าง
-    // const companyUserExists = await userRepository.findOne({ where: { email: 'test@gmail.com' } });
-    // if (!companyUserExists) {
-    //   const company = userRepository.create({
-    //     username: 'Tester',
-    //     email: 'test@gmail.com',
-    //     password: await bcryptUtil.hash('test@gmail.com'),
-    //     phone: '02088888888',
-    //     role: EnumRole.COMPANY,
-    //   });
-    //   await userRepository.save(company);
-    //   console.log('Company user created');
-    // }
+      await manager.save(company);
+      const user = manager.create(User, {
+        username: 'admin',
+        phone: '02012345678',
+        email: 'admin@gmail.com',
+        password: await bcryptUtil.hash('password'),
+        role: EnumRole.ADMIN,
+        companies: company
+      });
+      await manager.save(user);
+      return {
+        message: 'Database seeded successfully',
+      };
+    })
   }
 }

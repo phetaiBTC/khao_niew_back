@@ -1,4 +1,4 @@
-import { IsEmail, IsEnum, IsNotEmpty, IsOptional, IsString } from "class-validator";
+import { IsEmail, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
 import { EnumRole } from "../entities/user.entity";
 
 export class CreateUserDto {
@@ -21,4 +21,8 @@ export class CreateUserDto {
     @IsOptional()
     @IsEnum(EnumRole)
     readonly role?: EnumRole;
+
+    @IsNotEmpty()
+    @IsNumber()
+    readonly companyId: number;
 }

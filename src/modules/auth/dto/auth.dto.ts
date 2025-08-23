@@ -15,4 +15,5 @@ export class PayloadDto {
     readonly id: number;
     readonly username: string;
     readonly role: EnumRole;
+    readonly company: number
 }
