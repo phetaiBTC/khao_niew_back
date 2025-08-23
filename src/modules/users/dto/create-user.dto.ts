@@ -22,7 +22,7 @@ export class CreateUserDto {
     @IsEnum(EnumRole)
     readonly role?: EnumRole;
 
-    @IsNotEmpty()
+    @IsOptional()
     @IsNumber()
     readonly companyId: number;
 }

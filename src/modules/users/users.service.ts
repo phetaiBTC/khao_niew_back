@@ -15,7 +15,7 @@ export class UsersService {
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>
   ) { }
-  async create(createUserDto: CreateUserDto,companyId:number) {
+  async create(createUserDto: CreateUserDto, companyId: number) {
     const EmailExists = await this.usersRepository.findOne({
       where: {
         email: createUserDto.email
@@ -26,12 +26,13 @@ export class UsersService {
     }
     const user = this.usersRepository.create({
       ...createUserDto,
-      companies: { id: companyId ? companyId : createUserDto.companyId},
+      companies: { id: createUserDto.companyId ? createUserDto.companyId : companyId },
       password: await bcryptUtil.hash(createUserDto.password),
     })
     await this.usersRepository.save(user)
     return {
-      message: 'User created successfully'
+      message: 'User created successfully',
+      user
     }
   }
 
@@ -70,7 +71,7 @@ export class UsersService {
   }
 
   async findOneByEmail(email: string) {
-    const user = await this.usersRepository.findOne({ where: { email },relations: ['companies'] })
+    const user = await this.usersRepository.findOne({ where: { email }, relations: ['companies'] })
     if (!user) {
       throw new BadRequestException('User not found')
     }
