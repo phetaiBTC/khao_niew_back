@@ -11,7 +11,6 @@ import { PayloadDto } from '../auth/dto/auth.dto';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Public()
   @Post()
   create(@Body() createUserDto: CreateUserDto,@AuthProfile() user: PayloadDto) {
     return this.usersService.create(createUserDto,user.company);
