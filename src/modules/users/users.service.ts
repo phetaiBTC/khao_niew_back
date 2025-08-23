@@ -15,7 +15,7 @@ export class UsersService {
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>
   ) { }
-  async create(createUserDto: CreateUserDto) {
+  async create(createUserDto: CreateUserDto,companyId:number) {
     const EmailExists = await this.usersRepository.findOne({
       where: {
         email: createUserDto.email
@@ -24,10 +24,12 @@ export class UsersService {
     if (EmailExists) {
       throw new BadRequestException('Email already exists')
     }
-    await this.usersRepository.save({
+    const user = this.usersRepository.create({
       ...createUserDto,
-      password: await bcryptUtil.hash(createUserDto.password)
+      companies: { id: companyId ? companyId : createUserDto.companyId},
+      password: await bcryptUtil.hash(createUserDto.password),
     })
+    await this.usersRepository.save(user)
     return {
       message: 'User created successfully'
     }
@@ -68,7 +70,7 @@ export class UsersService {
   }
 
   async findOneByEmail(email: string) {
-    const user = await this.usersRepository.findOneBy({ email })
+    const user = await this.usersRepository.findOne({ where: { email },relations: ['companies'] })
     if (!user) {
       throw new BadRequestException('User not found')
     }

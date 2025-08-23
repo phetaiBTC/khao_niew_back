@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateCompanyDto } from './dto/create-company.dto';
 import { UpdateCompanyDto } from './dto/update-company.dto';
 import { Repository } from 'typeorm';
@@ -39,25 +39,41 @@ export class CompaniesService {
     }
   }
 
-  findAll(query: PaginateDto) {
+  async findAll(query: PaginateDto) {
     const qb = this.companyRepository.createQueryBuilder('company').leftJoinAndSelect('company.user', 'user');
     if (query.search) {
       qb.where('company.name LIKE :search', {
         search: `%${query.search}%`,
       });
     }
-    return paginateUtil(qb, query);
+    return await paginateUtil(qb, query);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} company`;
+  async findOne(id: number) {
+    const company = await this.companyRepository.findOne({
+      where: { id },
+      relations: ['user']
+    });
+    if (!company) throw new NotFoundException('Company not found')
+    return company
   }
 
-  update(id: number, updateCompanyDto: UpdateCompanyDto) {
-    return `This action updates a #${id} company`;
+  async update(id: number, updateCompanyDto: UpdateCompanyDto) {
+    await this.findOne(id)
+    await this.companyRepository.update({ id }, {
+      name: updateCompanyDto.name,
+      contact: updateCompanyDto.contact
+    });
+    return {
+      message: 'Company updated successfully'
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} company`;
+  async remove(id: number) {
+    await this.findOne(id)
+    await this.companyRepository.delete({ id })
+    return {
+      message: 'Company deleted successfully'
+    }
   }
 }

@@ -4,6 +4,8 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PaginateDto } from 'src/common/dto/paginate.dto';
 import { Public } from 'src/common/decorator/auth.decorator';
+import { AuthProfile } from 'src/common/decorator/user.decorator';
+import { PayloadDto } from '../auth/dto/auth.dto';
 
 @Controller('users')
 export class UsersController {
@@ -11,8 +13,8 @@ export class UsersController {
 
   @Public()
   @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
+  create(@Body() createUserDto: CreateUserDto,@AuthProfile() user: PayloadDto) {
+    return this.usersService.create(createUserDto,user.company);
   }
 
   @Get()
