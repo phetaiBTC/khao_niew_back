@@ -7,6 +7,7 @@ import { Repository } from 'typeorm';
 import { bcryptUtil } from 'src/common/utils/bcrypt.util';
 import { PaginateDto } from 'src/common/dto/paginate.dto';
 import { plainToInstance } from 'class-transformer';
+import { paginateUtil } from 'src/common/utils/paginate.util';
 
 @Injectable()
 export class UsersService {
@@ -33,26 +34,13 @@ export class UsersService {
   }
 
   async findAll(query: PaginateDto) {
-    const page = query.page || 1
-    const per_page = query.per_page || 10
-    const search = query.search
-    const qp = this.usersRepository.createQueryBuilder('user')
-    if (search) {
-      qp.where('user.username LIKE :search OR user.email LIKE :search', { search: `%${search}%` })
+    const qb = this.usersRepository.createQueryBuilder('user');
+    if (query.search) {
+      qb.where('user.username LIKE :search OR user.email LIKE :search', {
+        search: `%${query.search}%`,
+      });
     }
-    const [users, total] = await qp
-      .skip((page - 1) * per_page)
-      .take(per_page)
-      .getManyAndCount()
-    return {
-      data: users,
-      pagination: {
-        page,
-        per_page,
-        total,
-        total_pages: Math.ceil(total / per_page)
-      }
-    }
+    return paginateUtil(qb, query);
   }
 
   async findOne(id: number) {

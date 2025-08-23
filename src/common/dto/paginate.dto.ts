@@ -1,3 +1,4 @@
+import { Type } from "class-transformer";
 import { IsEnum, IsNumber, IsOptional, IsString } from "class-validator";
 
 export enum PaginateDtoType {
@@ -6,17 +7,20 @@ export enum PaginateDtoType {
 }
 export class PaginateDto {
     @IsOptional()
+    @Type(() => Number)
     @IsNumber()
-    page: number;
-    @IsNumber()
+    page?: number;
+
     @IsOptional()
-    per_page: number;
+    @Type(() => Number)
+    @IsNumber()
+    per_page?: number;
 
     @IsOptional()
     @IsEnum(PaginateDtoType)
-    type: PaginateDtoType
+    type?: PaginateDtoType;
 
-    @IsString()
     @IsOptional()
-    search: string;
+    @IsString()
+    search?: string;
 }

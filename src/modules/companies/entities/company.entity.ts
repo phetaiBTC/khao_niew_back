@@ -12,4 +12,7 @@ export class Company extends ShardEntity {
 
     @OneToMany(() => User, (user) => user.companies)
     user: User[]
+
+    @Column({ nullable: true })
+    contact: string
 }
