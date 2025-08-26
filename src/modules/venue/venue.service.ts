@@ -1,12 +1,15 @@
 // src/modules/venue/venue.service.ts
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Or, Repository } from 'typeorm';
 import { Venue } from './entities/venue.entity';
 import { Image } from '../images/entities/image.entity';
 import { CreateVenueDto } from './dto/create-venue.dto';
 import { UpdateVenueDto } from './dto/update-venue.dto';
 import { In } from 'typeorm';
+import { OrderBy, PaginateDto } from 'src/common/dto/paginate.dto';
+import { paginateUtil } from 'src/common/utils/paginate.util';
+import { Pagination } from 'src/common/interface/pagination.interface';
 
 @Injectable()
 export class VenueService {
@@ -31,8 +34,24 @@ export class VenueService {
     return this.venueRepo.save(venue);
   }
 
-  findAll() {
-    return this.venueRepo.find({ relations: ['images', 'concerts'] });
+  findAll(query: PaginateDto) :Promise<Pagination<Venue>> {
+    const qb = this.venueRepo.createQueryBuilder('venue');
+    qb.leftJoinAndSelect('venue.images', 'images');
+    qb.leftJoinAndSelect('venue.concerts', 'concerts');
+
+    if (query.order_by) {
+      const direction =
+        query.order_by === OrderBy.ASC ? OrderBy.ASC : OrderBy.DESC;
+      qb.orderBy('venue.createdAt', direction);
+    }
+
+    if (query.search) {
+      qb.where('venue.name LIKE :search', {
+        search: `%${query.search}%`,
+      });
+    }
+
+    return paginateUtil(qb, query);
   }
 
   async findOne(id: number) {
