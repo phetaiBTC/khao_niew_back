@@ -1,0 +1,26 @@
+{
+    "sourceFile": "src/common/entity/concert.entity.ts",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 2,
+            "patches": [
+                {
+                    "date": 1755929070963,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1755930099508,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,6 +1,6 @@\n import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';\r\n-import { Venue } from '../../venue/entities/venue.entity';\r\n+import { Venue } from './;\r\n \r\n export enum ConcertStatus {\r\n   OPEN = 'open',\r\n   CLOSE = 'close',\r\n"
+                },
+                {
+                    "date": 1755930105480,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,6 +1,6 @@\n import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';\r\n-import { Venue } from './;\r\n+import { Venue } from './Venue.entity'\r\n \r\n export enum ConcertStatus {\r\n   OPEN = 'open',\r\n   CLOSE = 'close',\r\n"
+                }
+            ],
+            "date": 1755929070963,
+            "name": "Commit-0",
+            "content": "import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';\r\nimport { Venue } from '../../venue/entities/venue.entity';\r\n\r\nexport enum ConcertStatus {\r\n  OPEN = 'open',\r\n  CLOSE = 'close',\r\n  SOLD_OUT = 'sold_out',\r\n}\r\n\r\n@Entity('concert')\r\nexport class Concert {\r\n  @PrimaryGeneratedColumn()\r\n  id: number;\r\n\r\n  // entertainment_id can be added here if needed as a relation\r\n\r\n  @Column({ type: 'varchar', length: 50 })\r\n  start_time: string;\r\n\r\n  @Column({ type: 'varchar', length: 50 })\r\n  end_time: string;\r\n\r\n  @Column({ type: 'float' })\r\n  price: number;\r\n\r\n  @Column({ type: 'int' })\r\n  limit: number;\r\n\r\n  @Column({ type: 'date' })\r\n  date: Date;\r\n\r\n  @Column({ type: 'enum', enum: ConcertStatus })\r\n  status: ConcertStatus;\r\n\r\n  @ManyToOne(() => Venue)\r\n  @JoinColumn({ name: 'venue' })\r\n  venue: Venue;\r\n}"
+        }
+    ]
+}

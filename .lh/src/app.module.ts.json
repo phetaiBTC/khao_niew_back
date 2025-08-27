@@ -1,0 +1,38 @@
+{
+    "sourceFile": "src/app.module.ts",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 5,
+            "patches": [
+                {
+                    "date": 1755955457335,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1755955463729,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -17,8 +17,9 @@\n import { join } from 'path';\r\n import { RolesGuard } from './guards/role.guard';\r\n import { SeederModule } from './database/seeds/seeder.module';\r\n import { PaymentModule } from './modules/payment/payment.module';\r\n+import { TransactionModule } from './common/transaction/transaction.module';\r\n \r\n @Module({\r\n   imports: [\r\n     ConfigModule.forRoot({\r\n"
+                },
+                {
+                    "date": 1756228575374,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -31,8 +31,9 @@\n       serveRoot: '/uploads',\r\n     }),\r\n     TransactionModule,\r\n     TypeOrmConfig,\r\n+    \r\n     UsersModule,\r\n     EntertainmentsModule,\r\n     CompaniesModule,\r\n     ConcertsModule,\r\n"
+                },
+                {
+                    "date": 1756228583373,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -31,9 +31,9 @@\n       serveRoot: '/uploads',\r\n     }),\r\n     TransactionModule,\r\n     TypeOrmConfig,\r\n-    \r\n+    Bookin\r\n     UsersModule,\r\n     EntertainmentsModule,\r\n     CompaniesModule,\r\n     ConcertsModule,\r\n"
+                },
+                {
+                    "date": 1756273373630,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -18,9 +18,14 @@\n import { RolesGuard } from './guards/role.guard';\r\n import { SeederModule } from './database/seeds/seeder.module';\r\n import { PaymentModule } from './modules/payment/payment.module';\r\n import { TransactionModule } from './common/transaction/transaction.module';\r\n+import { BookingDetail } from './modules/booking/entities/bookingDetails.entity';\r\n \r\n+import { BookingDetailsController } from './modules/booking-details/booking-details.controller';\r\n+import { BookingDetailsService } from './modules/booking-details/booking-details.service';\r\n+import { BookingDetailsModule } from './modules/booking-details/booking-details.module';\r\n+\r\n @Module({\r\n   imports: [\r\n     ConfigModule.forRoot({\r\n       isGlobal: true,\r\n@@ -31,9 +36,9 @@\n       serveRoot: '/uploads',\r\n     }),\r\n     TransactionModule,\r\n     TypeOrmConfig,\r\n-    Bookin\r\n+    BookingDetail,\r\n     UsersModule,\r\n     EntertainmentsModule,\r\n     CompaniesModule,\r\n     ConcertsModule,\r\n@@ -43,11 +48,13 @@\n     BookingModule,\r\n     DetailsScanModule,\r\n     AuthModule,\r\n     SeederModule,\r\n-    PaymentModule\r\n+    PaymentModule,\r\n+    YourModuleNameModule,\r\n+    BookingDetailsModule\r\n   ],\r\n-  controllers: [],\r\n+  controllers: [BookingDetailsController],\r\n   providers: [\r\n     {\r\n       provide: APP_GUARD,\r\n       useClass: JwtAuthGuard,\r\n@@ -55,8 +62,9 @@\n     {\r\n       provide: APP_GUARD,\r\n       useClass: RolesGuard\r\n     },\r\n+    BookingDetailsService,\r\n   ],\r\n \r\n })\r\n export class AppModule { }\r\n"
+                },
+                {
+                    "date": 1756273438744,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -18,9 +18,9 @@\n import { RolesGuard } from './guards/role.guard';\r\n import { SeederModule } from './database/seeds/seeder.module';\r\n import { PaymentModule } from './modules/payment/payment.module';\r\n import { TransactionModule } from './common/transaction/transaction.module';\r\n-import { BookingDetail } from './modules/booking/entities/bookingDetails.entity';\r\n+import { BookingDetail } from './modules/booking-details/entities/bookingDetails.entity';\r\n \r\n import { BookingDetailsController } from './modules/booking-details/booking-details.controller';\r\n import { BookingDetailsService } from './modules/booking-details/booking-details.service';\r\n import { BookingDetailsModule } from './modules/booking-details/booking-details.module';\r\n@@ -49,9 +49,8 @@\n     DetailsScanModule,\r\n     AuthModule,\r\n     SeederModule,\r\n     PaymentModule,\r\n-    YourModuleNameModule,\r\n     BookingDetailsModule\r\n   ],\r\n   controllers: [BookingDetailsController],\r\n   providers: [\r\n"
+                }
+            ],
+            "date": 1755955457335,
+            "name": "Commit-0",
+            "content": "import { Module } from '@nestjs/common';\r\nimport { UsersModule } from './modules/users/users.module';\r\nimport { EntertainmentsModule } from './modules/entertainments/entertainments.module';\r\nimport { ConfigModule } from '@nestjs/config';\r\nimport { TypeOrmConfig } from './database/tpye-orm.module';\r\nimport { CompaniesModule } from './modules/companies/companies.module';\r\nimport { ConcertsModule } from './modules/concerts/concerts.module';\r\nimport { VenueModule } from './modules/venue/venue.module';\r\nimport { ImagesModule } from './modules/images/images.module';\r\nimport { CheckInModule } from './modules/check_in/check_in.module';\r\nimport { BookingModule } from './modules/booking/booking.module';\r\nimport { DetailsScanModule } from './modules/details_scan/details_scan.module';\r\nimport { AuthModule } from './modules/auth/auth.module';\r\nimport { APP_GUARD } from '@nestjs/core';\r\nimport { JwtAuthGuard } from './guards/auth.guard';\r\nimport { ServeStaticModule } from '@nestjs/serve-static';\r\nimport { join } from 'path';\r\nimport { RolesGuard } from './guards/role.guard';\r\nimport { SeederModule } from './database/seeds/seeder.module';\r\nimport { PaymentModule } from './modules/payment/payment.module';\r\n\r\n@Module({\r\n  imports: [\r\n    ConfigModule.forRoot({\r\n      isGlobal: true,\r\n      envFilePath: '.env',\r\n    }),\r\n    ServeStaticModule.forRoot({\r\n      rootPath: join(__dirname, '..', 'uploads'),\r\n      serveRoot: '/uploads',\r\n    }),\r\n    TransactionModule,\r\n    TypeOrmConfig,\r\n    UsersModule,\r\n    EntertainmentsModule,\r\n    CompaniesModule,\r\n    ConcertsModule,\r\n    VenueModule,\r\n    ImagesModule,\r\n    CheckInModule,\r\n    BookingModule,\r\n    DetailsScanModule,\r\n    AuthModule,\r\n    SeederModule,\r\n    PaymentModule\r\n  ],\r\n  controllers: [],\r\n  providers: [\r\n    {\r\n      provide: APP_GUARD,\r\n      useClass: JwtAuthGuard,\r\n    },\r\n    {\r\n      provide: APP_GUARD,\r\n      useClass: RolesGuard\r\n    },\r\n  ],\r\n\r\n})\r\nexport class AppModule { }\r\n"
+        }
+    ]
+}

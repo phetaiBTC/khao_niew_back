@@ -1,0 +1,34 @@
+{
+    "sourceFile": "src/common/entity/Detail.entity.ts",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 4,
+            "patches": [
+                {
+                    "date": 1755929338144,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1755930112606,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,6 +1,6 @@\n import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';\r\n-import { Company } from '../../companies/entities/company.entity';\r\n+import { Company } from '../';\r\n import { CheckIn } from '../../check_in/entities/check_in.entity';\r\n \r\n @Entity('details_scan')\r\n export class DetailsScan {\r\n"
+                },
+                {
+                    "date": 1755930215886,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,6 +1,6 @@\n import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';\r\n-import { Company } from '../';\r\n+import { Company } from './';\r\n import { CheckIn } from '../../check_in/entities/check_in.entity';\r\n \r\n @Entity('details_scan')\r\n export class DetailsScan {\r\n"
+                },
+                {
+                    "date": 1755930221071,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,7 +1,7 @@\n import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';\r\n-import { Company } from './';\r\n-import { CheckIn } from '../../check_in/entities/check_in.entity';\r\n+import { Company } from './Company.entity';\r\n+import { CheckIn } from '../';\r\n \r\n @Entity('details_scan')\r\n export class DetailsScan {\r\n   @PrimaryGeneratedColumn()\r\n"
+                },
+                {
+                    "date": 1755930227238,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,7 +1,7 @@\n import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';\r\n import { Company } from './Company.entity';\r\n-import { CheckIn } from '../';\r\n+import { CheckIn } from './CheckIn.entity';\r\n \r\n @Entity('details_scan')\r\n export class DetailsScan {\r\n   @PrimaryGeneratedColumn()\r\n"
+                }
+            ],
+            "date": 1755929338144,
+            "name": "Commit-0",
+            "content": "import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';\r\nimport { Company } from '../../companies/entities/company.entity';\r\nimport { CheckIn } from '../../check_in/entities/check_in.entity';\r\n\r\n@Entity('details_scan')\r\nexport class DetailsScan {\r\n  @PrimaryGeneratedColumn()\r\n  id: number;\r\n\r\n  @ManyToOne(() => Company)\r\n  @JoinColumn({ name: 'company' })\r\n  company: Company;\r\n\r\n  @Column({ type: 'int' })\r\n  amount: number;\r\n\r\n  @ManyToOne(() => CheckIn)\r\n  @JoinColumn({ name: 'CheckIn_id' })\r\n  checkIn: CheckIn;\r\n}"
+        }
+    ]
+}

@@ -1,0 +1,102 @@
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { CreateBookingDto } from './dto/create-booking.dto';
+import { UpdateBookingDto } from './dto/update-booking.dto';
+import { Booking } from './entities/booking.entity';
+import { Payment } from '../payment/entities/payment.entity';
+import { Concert } from '../concerts/entities/concert.entity';
+import { Repository, DataSource } from 'typeorm';
+import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
+import { TRANSACTION_MANAGER_SERVICE } from 'src/common/constants/inject-key';
+import type { ITransactionManager } from 'src/common/transaction/transaction.interface';
+import { BookingDetail } from './entities/bookingDetails.entity';
+import * as QRCode from 'qrcode';
+
+@Injectable()
+export class BookingService {
+  constructor(
+    @InjectDataSource() private readonly dataSource: DataSource,
+    @Inject(TRANSACTION_MANAGER_SERVICE)
+    private readonly transactionManagerService: ITransactionManager,
+    @InjectRepository(Booking)
+    private readonly bookingRepository: Repository<Booking>,
+    @InjectRepository(Concert)
+    private readonly concertRepository: Repository<Concert>,
+    @InjectRepository(BookingDetail)
+    private readonly bookingDetailRepository: Repository<BookingDetail>,
+  ) {}
+
+  // ... other methods remain the same ...
+
+  async validateQrCode(ticketCode: string) {
+    try {
+      console.log('Searching for ticket code:', ticketCode);
+      
+      // Find the booking detail by ticket code
+      const bookingDetail = await this.bookingDetailRepository.findOne({
+        where: { ticket_code: ticketCode },
+        relations: ['booking', 'booking.user', 'booking.concert', 'booking.payment']
+      });
+
+      if (!bookingDetail) {
+        console.log('Booking detail not found for ticket code:', ticketCode);
+        throw new NotFoundException('Invalid ticket code - booking detail not found');
+      }
+
+      console.log('Found booking detail:', {
+        id: bookingDetail.id,
+        ticketCode: bookingDetail.ticket_code,
+        bookingId: bookingDetail.booking?.id
+      });
+
+      let qrCodeData;
+      try {
+        // Parse QR code data
+        const qrBase64 = bookingDetail.qr_code.split(',')[1];
+        console.log('QR Base64 data length:', qrBase64.length);
+        
+        const qrDataString = Buffer.from(qrBase64, 'base64').toString();
+        console.log('Decoded QR data string:', qrDataString);
+        
+        qrCodeData = JSON.parse(qrDataString);
+        console.log('Parsed QR data:', qrCodeData);
+
+      } catch (parseError) {
+        console.error('Error parsing QR code data:', parseError);
+        throw new NotFoundException(`Error parsing QR code: ${parseError.message}`);
+      }
+
+      // Return ticket information
+      return {
+        ticketDetail: {
+          ticketCode: bookingDetail.ticket_code,
+          ticketNumber: qrCodeData.ticketNumber,
+          totalTickets: qrCodeData.totalTickets,
+        },
+        booking: {
+          id: bookingDetail.booking.id,
+          bookingDate: bookingDetail.booking.booking_date,
+          totalAmount: bookingDetail.booking.total_amount,
+        },
+        concert: {
+          id: bookingDetail.booking.concert.id,
+          date: qrCodeData.concertDate,
+        },
+        user: {
+          id: bookingDetail.booking.user.id,
+        },
+        payment: {
+          id: bookingDetail.booking.payment.id,
+          status: bookingDetail.booking.payment.status,
+        },
+        qrCodeData: qrCodeData, // Include raw QR data for debugging
+        isValid: true
+      };
+    } catch (error) {
+      console.error('Error in validateQrCode:', error);
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      throw new NotFoundException(`Invalid QR code format: ${error.message}`);
+    }
+  }
+}

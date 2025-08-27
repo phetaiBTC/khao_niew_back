@@ -1,0 +1,42 @@
+{
+    "sourceFile": "src/modules/users/entities/user.entity.ts",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 6,
+            "patches": [
+                {
+                    "date": 1755933366319,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1755933372583,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,8 +1,9 @@\n import { Exclude } from \"class-transformer\";\r\n import { ShardEntity } from \"src/common/entity/BaseEntity\";\r\n import { Company } from \"src/modules/companies/entities/company.entity\";\r\n import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from \"typeorm\";\r\n+import \r\n export enum EnumRole {\r\n     COMPANY = 'company',\r\n     ADMIN = 'admin'\r\n }\r\n"
+                },
+                {
+                    "date": 1755933385161,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,9 +1,9 @@\n import { Exclude } from \"class-transformer\";\r\n import { ShardEntity } from \"src/common/entity/BaseEntity\";\r\n import { Company } from \"src/modules/companies/entities/company.entity\";\r\n-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from \"typeorm\";\r\n-import \r\n+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne ,M} from \"typeorm\";\r\n+import { Booking } from \"src/modules/booking/entities/booking.entity\";\r\n export enum EnumRole {\r\n     COMPANY = 'company',\r\n     ADMIN = 'admin'\r\n }\r\n"
+                },
+                {
+                    "date": 1755942388439,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,8 +1,8 @@\n import { Exclude } from \"class-transformer\";\r\n import { ShardEntity } from \"src/common/entity/BaseEntity\";\r\n import { Company } from \"src/modules/companies/entities/company.entity\";\r\n-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne ,M} from \"typeorm\";\r\n+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne ,ManyToMany} from \"typeorm\";\r\n import { Booking } from \"src/modules/booking/entities/booking.entity\";\r\n export enum EnumRole {\r\n     COMPANY = 'company',\r\n     ADMIN = 'admin'\r\n@@ -30,7 +30,7 @@\n \r\n     @ManyToOne(()=> Company, company => company.user)\r\n     companies: Company\r\n \r\n-     @ManyToMany(() => Booking, booking => booking.users)\r\n+   @OneToMany(() => Booking, (booking) => booking.user)\r\n   bookings: Booking[];\r\n }\r\n"
+                },
+                {
+                    "date": 1755942393554,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,8 +1,8 @@\n import { Exclude } from \"class-transformer\";\r\n import { ShardEntity } from \"src/common/entity/BaseEntity\";\r\n import { Company } from \"src/modules/companies/entities/company.entity\";\r\n-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne ,ManyToMany} from \"typeorm\";\r\n+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne ,OneToMany} from \"typeorm\";\r\n import { Booking } from \"src/modules/booking/entities/booking.entity\";\r\n export enum EnumRole {\r\n     COMPANY = 'company',\r\n     ADMIN = 'admin'\r\n"
+                },
+                {
+                    "date": 1755942433704,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -30,7 +30,7 @@\n \r\n     @ManyToOne(()=> Company, company => company.user)\r\n     companies: Company\r\n \r\n-   @OneToMany(() => Booking, (booking) => booking.user)\r\n+   @OneToMany(() => Booking, (booking) => booking.userId)\r\n   bookings: Booking[];\r\n }\r\n"
+                },
+                {
+                    "date": 1755950572833,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -30,7 +30,7 @@\n \r\n     @ManyToOne(()=> Company, company => company.user)\r\n     companies: Company\r\n \r\n-   @OneToMany(() => Booking, (booking) => booking.userId)\r\n+   @OneToMany(() => Booking, (booking) => booking.user)\r\n   bookings: Booking[];\r\n }\r\n"
+                }
+            ],
+            "date": 1755933366319,
+            "name": "Commit-0",
+            "content": "import { Exclude } from \"class-transformer\";\r\nimport { ShardEntity } from \"src/common/entity/BaseEntity\";\r\nimport { Company } from \"src/modules/companies/entities/company.entity\";\r\nimport { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from \"typeorm\";\r\nexport enum EnumRole {\r\n    COMPANY = 'company',\r\n    ADMIN = 'admin'\r\n}\r\n@Entity()\r\nexport class User extends ShardEntity {\r\n    @PrimaryGeneratedColumn()\r\n    id: number;\r\n\r\n    @Column()\r\n    username: string;\r\n\r\n    @Exclude() \r\n    @Column()\r\n    password: string;\r\n\r\n    @Column({ unique: true })\r\n    email: string\r\n\r\n    @Column()\r\n    phone: string\r\n\r\n    @Column({ default: EnumRole.COMPANY })\r\n    role: EnumRole\r\n\r\n    @ManyToOne(()=> Company, company => company.user)\r\n    companies: Company\r\n\r\n     @ManyToMany(() => Booking, booking => booking.users)\r\n  bookings: Booking[];\r\n}\r\n"
+        }
+    ]
+}

@@ -1,0 +1,46 @@
+{
+    "sourceFile": "src/modules/booking-details/booking-details.controller.ts",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 7,
+            "patches": [
+                {
+                    "date": 1756273639672,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1756273646397,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,7 +1,12 @@\n-import { Controller } from '@nestjs/common';\r\n+import { Controller, Get } from '@nestjs/common';\r\n \r\n @Controller('booking-details')\r\n export class BookingDetailsController {\r\n \r\n-    \r\n+    constructor() {}\r\n+\r\n+     @Get('validate-ticket/:ticketCode')\r\n+      async validateTicket(@Param('ticketCode') ticketCode: string) {\r\n+        return this.bookingService.validateQrCode(ticketCode);\r\n+      }\r\n }\r\n"
+                },
+                {
+                    "date": 1756273804974,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,10 +1,12 @@\n-import { Controller, Get } from '@nestjs/common';\r\n+import { Controller, Get, Param } from '@nestjs/common';\r\n \r\n @Controller('booking-details')\r\n export class BookingDetailsController {\r\n \r\n-    constructor() {}\r\n+    constructor() {\r\n+        \r\n+    }\r\n \r\n      @Get('validate-ticket/:ticketCode')\r\n       async validateTicket(@Param('ticketCode') ticketCode: string) {\r\n         return this.bookingService.validateQrCode(ticketCode);\r\n"
+                },
+                {
+                    "date": 1756273817410,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,11 +1,11 @@\n import { Controller, Get, Param } from '@nestjs/common';\r\n-\r\n+import { BookingDetailsService } from './booking-details.service';\r\n @Controller('booking-details')\r\n export class BookingDetailsController {\r\n \r\n     constructor() {\r\n-        \r\n+\r\n     }\r\n \r\n      @Get('validate-ticket/:ticketCode')\r\n       async validateTicket(@Param('ticketCode') ticketCode: string) {\r\n"
+                },
+                {
+                    "date": 1756273823620,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -3,9 +3,9 @@\n @Controller('booking-details')\r\n export class BookingDetailsController {\r\n \r\n     constructor() {\r\n-\r\n+        private readonly bookingService: BookingDetailsService\r\n     }\r\n \r\n      @Get('validate-ticket/:ticketCode')\r\n       async validateTicket(@Param('ticketCode') ticketCode: string) {\r\n"
+                },
+                {
+                    "date": 1756273845164,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -3,9 +3,9 @@\n @Controller('booking-details')\r\n export class BookingDetailsController {\r\n \r\n     constructor() {\r\n-        private readonly bookingService: BookingDetailsService\r\n+      \r\n     }\r\n \r\n      @Get('validate-ticket/:ticketCode')\r\n       async validateTicket(@Param('ticketCode') ticketCode: string) {\r\n"
+                },
+                {
+                    "date": 1756273851536,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -2,10 +2,11 @@\n import { BookingDetailsService } from './booking-details.service';\r\n @Controller('booking-details')\r\n export class BookingDetailsController {\r\n \r\n-    constructor() {\r\n-      \r\n+    constructor(\r\n+          private readonly bookingService: BookingDetailsService\r\n+    ) {    \r\n     }\r\n \r\n      @Get('validate-ticket/:ticketCode')\r\n       async validateTicket(@Param('ticketCode') ticketCode: string) {\r\n"
+                },
+                {
+                    "date": 1756273858018,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -4,10 +4,9 @@\n export class BookingDetailsController {\r\n \r\n     constructor(\r\n           private readonly bookingService: BookingDetailsService\r\n-    ) {    \r\n-    }\r\n+    ) {}\r\n \r\n      @Get('validate-ticket/:ticketCode')\r\n       async validateTicket(@Param('ticketCode') ticketCode: string) {\r\n         return this.bookingService.validateQrCode(ticketCode);\r\n"
+                }
+            ],
+            "date": 1756273639672,
+            "name": "Commit-0",
+            "content": "import { Controller } from '@nestjs/common';\r\n\r\n@Controller('booking-details')\r\nexport class BookingDetailsController {\r\n\r\n    \r\n}\r\n"
+        }
+    ]
+}

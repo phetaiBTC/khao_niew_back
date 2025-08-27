@@ -1,0 +1,70 @@
+{
+    "sourceFile": "src/modules/booking-details/booking-details.service.ts",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 13,
+            "patches": [
+                {
+                    "date": 1756273669304,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1756273676087,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,7 +1,101 @@\n-import { Injectable } from '@nestjs/common';\r\n+import { Injectable, NotFoundException } from '@nestjs/common';\r\n \r\n @Injectable()\r\n export class BookingDetailsService {\r\n \r\n+    constructor() {}\r\n+\r\n+\r\n+      async validateQrCode(ticketCode: string) {\r\n+        try {\r\n+          console.log('Searching for ticket code:', ticketCode);\r\n+          \r\n+          // Find the booking detail by ticket code\r\n+          const bookingDetail = await this.bookingDetailRepository.findOne({\r\n+            where: { ticket_code: ticketCode },\r\n+            relations: ['booking', 'booking.user', 'booking.concert', 'booking.payment']\r\n+          });\r\n     \r\n+          if (!bookingDetail) {\r\n+            console.log('Booking detail not found for ticket code:', ticketCode);\r\n+            throw new NotFoundException('Invalid ticket code - booking detail not found');\r\n+          }\r\n+    \r\n+          console.log('Found booking detail:', {\r\n+            id: bookingDetail.id,\r\n+            ticketCode: bookingDetail.ticket_code,\r\n+            bookingId: bookingDetail.booking?.id\r\n+          });\r\n+    \r\n+          try {\r\n+            // Extract ticket information from the ticket code\r\n+            const [bookingId, ticketNumber] = ticketCode.split('-').map(Number);\r\n+            \r\n+            if (!bookingId || !ticketNumber) {\r\n+              throw new Error('Invalid ticket code format');\r\n+            }\r\n+    \r\n+            // Create QR code data object based on the booking details\r\n+            const qrCodeData = {\r\n+              bookingId: bookingDetail.booking.id,\r\n+              ticketCode: bookingDetail.ticket_code,\r\n+              concertId: bookingDetail.booking.concert.id,\r\n+              ticketNumber: ticketNumber,\r\n+              totalTickets: bookingDetail.booking.ticket_quantity,\r\n+              concertDate: bookingDetail.booking.concert.date,\r\n+              userId: bookingDetail.booking.user.id,\r\n+              bookingDate: bookingDetail.booking.booking_date,\r\n+            };\r\n+            \r\n+            console.log('Generated QR data:', qrCodeData);\r\n+    \r\n+            // Generate verification hash\r\n+            const calculatedHash = crypto\r\n+              .createHash('sha256')\r\n+              .update(`${ticketCode}-${bookingDetail.booking.id}-${bookingDetail.booking.concert.id}`)\r\n+              .digest('hex');\r\n+            \r\n+            // Add hash to QR code data\r\n+            qrCodeData['hash'] = calculatedHash;\r\n+            \r\n+            console.log('Verification hash:', calculatedHash);\r\n+    \r\n+            // Return ticket information\r\n+            return {\r\n+              ticketDetail: {\r\n+                ticketCode: bookingDetail.ticket_code,\r\n+                ticketNumber: qrCodeData.ticketNumber,\r\n+                totalTickets: qrCodeData.totalTickets,\r\n+              },\r\n+              booking: {\r\n+                id: bookingDetail.booking.id,\r\n+                bookingDate: bookingDetail.booking.booking_date,\r\n+                totalAmount: bookingDetail.booking.total_amount,\r\n+              },\r\n+              concert: {\r\n+                id: bookingDetail.booking.concert.id,\r\n+                date: qrCodeData.concertDate,\r\n+              },\r\n+              user: {\r\n+                id: bookingDetail.booking.user.id,\r\n+              },\r\n+              payment: {\r\n+                id: bookingDetail.booking.payment.id,\r\n+                status: bookingDetail.booking.payment.status,\r\n+              },\r\n+              qrCodeData: qrCodeData, // Include raw QR data for debugging\r\n+              isValid: true\r\n+            };\r\n+          } catch (parseError) {\r\n+            console.error('Error parsing QR code data:', parseError);\r\n+            throw new NotFoundException(`Error parsing QR code: ${parseError.message}`);\r\n+          }\r\n+        } catch (error) {\r\n+          console.error('Error in validateQrCode:', error);\r\n+          if (error instanceof NotFoundException) {\r\n+            throw error;\r\n+          }\r\n+          throw new NotFoundException(`Invalid QR code format: ${error.message}`);\r\n+        }\r\n+      }\r\n }\r\n"
+                },
+                {
+                    "date": 1756273709196,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -2,11 +2,11 @@\n \r\n @Injectable()\r\n export class BookingDetailsService {\r\n \r\n-    constructor() {}\r\n+    constr\r\n+uctor() {}\r\n \r\n-\r\n       async validateQrCode(ticketCode: string) {\r\n         try {\r\n           console.log('Searching for ticket code:', ticketCode);\r\n           \r\n"
+                },
+                {
+                    "date": 1756273715367,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,12 +1,21 @@\n import { Injectable, NotFoundException } from '@nestjs/common';\r\n+import { InjectDataSource } from '@nestjs/typeorm';\r\n \r\n @Injectable()\r\n export class BookingDetailsService {\r\n \r\n-    constr\r\n-uctor() {}\r\n-\r\n+      constructor(\r\n+        @InjectDataSource() private readonly dataSource: DataSource,\r\n+        @Inject(TRANSACTION_MANAGER_SERVICE)\r\n+        private readonly transactionManagerService: ITransactionManager,\r\n+        @InjectRepository(Booking)\r\n+        private readonly bookingRepository: Repository<Booking>,\r\n+        @InjectRepository(Concert)\r\n+        private readonly concertRepository: Repository<Concert>,\r\n+        @InjectRepository(BookingDetail)\r\n+        private readonly bookingDetailRepository: Repository<BookingDetail>,\r\n+      ) {}\r\n       async validateQrCode(ticketCode: string) {\r\n         try {\r\n           console.log('Searching for ticket code:', ticketCode);\r\n           \r\n"
+                },
+                {
+                    "date": 1756273721980,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,6 +1,7 @@\n import { Injectable, NotFoundException } from '@nestjs/common';\r\n import { InjectDataSource } from '@nestjs/typeorm';\r\n+import { DataSource } from 'typeorm';\r\n \r\n @Injectable()\r\n export class BookingDetailsService {\r\n \r\n"
+                },
+                {
+                    "date": 1756273738682,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,15 +1,14 @@\n import { Injectable, NotFoundException } from '@nestjs/common';\r\n import { InjectDataSource } from '@nestjs/typeorm';\r\n import { DataSource } from 'typeorm';\r\n+import { Booking } from '../booking/entities/booking.entity';\r\n \r\n @Injectable()\r\n export class BookingDetailsService {\r\n \r\n       constructor(\r\n         @InjectDataSource() private readonly dataSource: DataSource,\r\n-        @Inject(TRANSACTION_MANAGER_SERVICE)\r\n-        private readonly transactionManagerService: ITransactionManager,\r\n         @InjectRepository(Booking)\r\n         private readonly bookingRepository: Repository<Booking>,\r\n         @InjectRepository(Concert)\r\n         private readonly concertRepository: Repository<Concert>,\r\n"
+                },
+                {
+                    "date": 1756273747906,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,8 +1,9 @@\n import { Injectable, NotFoundException } from '@nestjs/common';\r\n-import { InjectDataSource } from '@nestjs/typeorm';\r\n+import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';\r\n import { DataSource } from 'typeorm';\r\n import { Booking } from '../booking/entities/booking.entity';\r\n+import { Concert } from '../concerts/entities/concert.entity';\r\n \r\n @Injectable()\r\n export class BookingDetailsService {\r\n \r\n"
+                },
+                {
+                    "date": 1756273755559,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,9 +1,10 @@\n import { Injectable, NotFoundException } from '@nestjs/common';\r\n import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';\r\n-import { DataSource } from 'typeorm';\r\n+import { DataSource, Repository } from 'typeorm';\r\n import { Booking } from '../booking/entities/booking.entity';\r\n import { Concert } from '../concerts/entities/concert.entity';\r\n+import { BookingDetail } from './entities/bookingDetails.entity';\r\n \r\n @Injectable()\r\n export class BookingDetailsService {\r\n \r\n"
+                },
+                {
+                    "date": 1756273769670,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -11,10 +11,10 @@\n       constructor(\r\n         @InjectDataSource() private readonly dataSource: DataSource,\r\n         @InjectRepository(Booking)\r\n         private readonly bookingRepository: Repository<Booking>,\r\n-        @InjectRepository(Concert)\r\n-        private readonly concertRepository: Repository<Concert>,\r\n+        // @InjectRepository(Concert)\r\n+        // private readonly concertRepository: Repository<Concert>,\r\n         @InjectRepository(BookingDetail)\r\n         private readonly bookingDetailRepository: Repository<BookingDetail>,\r\n       ) {}\r\n       async validateQrCode(ticketCode: string) {\r\n"
+                },
+                {
+                    "date": 1756273776857,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,9 +1,9 @@\n import { Injectable, NotFoundException } from '@nestjs/common';\r\n import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';\r\n import { DataSource, Repository } from 'typeorm';\r\n import { Booking } from '../booking/entities/booking.entity';\r\n-import { Concert } from '../concerts/entities/concert.entity';\r\n+// import { Concert } from '../concerts/entities/concert.entity';\r\n import { BookingDetail } from './entities/bookingDetails.entity';\r\n \r\n @Injectable()\r\n export class BookingDetailsService {\r\n"
+                },
+                {
+                    "date": 1756273878448,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -3,8 +3,9 @@\n import { DataSource, Repository } from 'typeorm';\r\n import { Booking } from '../booking/entities/booking.entity';\r\n // import { Concert } from '../concerts/entities/concert.entity';\r\n import { BookingDetail } from './entities/bookingDetails.entity';\r\n+import * as crypto from 'crypto';\r\n \r\n @Injectable()\r\n export class BookingDetailsService {\r\n \r\n"
+                },
+                {
+                    "date": 1756274000472,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -9,13 +9,8 @@\n @Injectable()\r\n export class BookingDetailsService {\r\n \r\n       constructor(\r\n-        @InjectDataSource() private readonly dataSource: DataSource,\r\n-        @InjectRepository(Booking)\r\n-        private readonly bookingRepository: Repository<Booking>,\r\n-        // @InjectRepository(Concert)\r\n-        // private readonly concertRepository: Repository<Concert>,\r\n         @InjectRepository(BookingDetail)\r\n         private readonly bookingDetailRepository: Repository<BookingDetail>,\r\n       ) {}\r\n       async validateQrCode(ticketCode: string) {\r\n"
+                },
+                {
+                    "date": 1756274008091,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,8 +1,8 @@\n import { Injectable, NotFoundException } from '@nestjs/common';\r\n import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';\r\n import { DataSource, Repository } from 'typeorm';\r\n-import { Booking } from '../booking/entities/booking.entity';\r\n+\r\n // import { Concert } from '../concerts/entities/concert.entity';\r\n import { BookingDetail } from './entities/bookingDetails.entity';\r\n import * as crypto from 'crypto';\r\n \r\n"
+                },
+                {
+                    "date": 1756274015218,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,9 +1,7 @@\n import { Injectable, NotFoundException } from '@nestjs/common';\r\n-import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';\r\n-import { DataSource, Repository } from 'typeorm';\r\n-\r\n-// import { Concert } from '../concerts/entities/concert.entity';\r\n+import { , InjectRepository } from '@nestjs/typeorm';\r\n+import { , Repository } from 'typeorm';\r\n import { BookingDetail } from './entities/bookingDetails.entity';\r\n import * as crypto from 'crypto';\r\n \r\n @Injectable()\r\n"
+                }
+            ],
+            "date": 1756273669304,
+            "name": "Commit-0",
+            "content": "import { Injectable } from '@nestjs/common';\r\n\r\n@Injectable()\r\nexport class BookingDetailsService {\r\n\r\n    \r\n}\r\n"
+        }
+    ]
+}

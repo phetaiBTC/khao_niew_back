@@ -1,0 +1,58 @@
+{
+    "sourceFile": "src/modules/booking/entities/payment.entity.ts",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 10,
+            "patches": [
+                {
+                    "date": 1755931228178,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1755931301513,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -13,11 +13,8 @@\n   @PrimaryGeneratedColumn()\r\n   id: number;\r\n \r\n   @ManyToOne(() => Booking)\r\n-  @JoinColumn({ name: 'booking_id' })\r\n-  booking: Booking;\r\n-\r\n   @Column({ type: 'float' })\r\n   amount: number;\r\n \r\n   @Column({ type: 'datetime' })\r\n"
+                },
+                {
+                    "date": 1755931308603,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -11,10 +11,9 @@\n @Entity('payment')\r\n export class Payment {\r\n   @PrimaryGeneratedColumn()\r\n   id: number;\r\n-\r\n-  @ManyToOne(() => Booking)\r\n+  \r\n   @Column({ type: 'float' })\r\n   amount: number;\r\n \r\n   @Column({ type: 'datetime' })\r\n"
+                },
+                {
+                    "date": 1755931316943,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,7 +1,7 @@\n import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';\r\n-import { Booking } from '../../booking/entities/booking.entity';\r\n \r\n+\r\n export enum PaymentStatus {\r\n   PENDING = 'pending',\r\n   SUCCESS = 'success',\r\n   FAILED = 'failed',\r\n@@ -11,9 +11,9 @@\n @Entity('payment')\r\n export class Payment {\r\n   @PrimaryGeneratedColumn()\r\n   id: number;\r\n-  \r\n+\r\n   @Column({ type: 'float' })\r\n   amount: number;\r\n \r\n   @Column({ type: 'datetime' })\r\n"
+                },
+                {
+                    "date": 1755931372544,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,7 +1,7 @@\n import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';\r\n+import { Booking } from '../../booking/entities/booking.entity';\r\n \r\n-\r\n export enum PaymentStatus {\r\n   PENDING = 'pending',\r\n   SUCCESS = 'success',\r\n   FAILED = 'failed',\r\n@@ -11,9 +11,9 @@\n @Entity('payment')\r\n export class Payment {\r\n   @PrimaryGeneratedColumn()\r\n   id: number;\r\n-\r\n+  \r\n   @Column({ type: 'float' })\r\n   amount: number;\r\n \r\n   @Column({ type: 'datetime' })\r\n"
+                },
+                {
+                    "date": 1755931381256,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,5 +1,5 @@\n-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';\r\n+import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn } from 'typeorm';\r\n import { Booking } from '../../booking/entities/booking.entity';\r\n \r\n export enum PaymentStatus {\r\n   PENDING = 'pending',\r\n"
+                },
+                {
+                    "date": 1755931386619,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -11,9 +11,11 @@\n @Entity('payment')\r\n export class Payment {\r\n   @PrimaryGeneratedColumn()\r\n   id: number;\r\n-  \r\n+     @OneToOne(() => Booking)\r\n+  @JoinColumn({ name: 'booking_id' })\r\n+  booking: Booking;\r\n   @Column({ type: 'float' })\r\n   amount: number;\r\n \r\n   @Column({ type: 'datetime' })\r\n"
+                },
+                {
+                    "date": 1755931393005,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -11,9 +11,10 @@\n @Entity('payment')\r\n export class Payment {\r\n   @PrimaryGeneratedColumn()\r\n   id: number;\r\n-     @OneToOne(() => Booking)\r\n+\r\n+  @OneToOne(() => Booking)\r\n   @JoinColumn({ name: 'booking_id' })\r\n   booking: Booking;\r\n   @Column({ type: 'float' })\r\n   amount: number;\r\n"
+                },
+                {
+                    "date": 1755931399187,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -14,9 +14,9 @@\n   id: number;\r\n \r\n   @OneToOne(() => Booking)\r\n   @JoinColumn({ name: 'booking_id' })\r\n-  booking: Booking;\r\n+      booking: Booking;\r\n   @Column({ type: 'float' })\r\n   amount: number;\r\n \r\n   @Column({ type: 'datetime' })\r\n"
+                },
+                {
+                    "date": 1755931405713,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -14,9 +14,9 @@\n   id: number;\r\n \r\n   @OneToOne(() => Booking)\r\n   @JoinColumn({ name: 'booking_id' })\r\n-      booking: Booking;\r\n+  booking: Booking;\r\n   @Column({ type: 'float' })\r\n   amount: number;\r\n \r\n   @Column({ type: 'datetime' })\r\n"
+                },
+                {
+                    "date": 1755931974936,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -8,15 +8,16 @@\n   REFUNDED = 'refunded',\r\n }\r\n \r\n @Entity('payment')\r\n-export class Payment {\r\n+export class Payment extends ShardEntity {\r\n   @PrimaryGeneratedColumn()\r\n   id: number;\r\n \r\n   @OneToOne(() => Booking)\r\n   @JoinColumn({ name: 'booking_id' })\r\n   booking: Booking;\r\n+\r\n   @Column({ type: 'float' })\r\n   amount: number;\r\n \r\n   @Column({ type: 'datetime' })\r\n"
+                }
+            ],
+            "date": 1755931228178,
+            "name": "Commit-0",
+            "content": "import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';\r\nimport { Booking } from '../../booking/entities/booking.entity';\r\n\r\nexport enum PaymentStatus {\r\n  PENDING = 'pending',\r\n  SUCCESS = 'success',\r\n  FAILED = 'failed',\r\n  REFUNDED = 'refunded',\r\n}\r\n\r\n@Entity('payment')\r\nexport class Payment {\r\n  @PrimaryGeneratedColumn()\r\n  id: number;\r\n\r\n  @ManyToOne(() => Booking)\r\n  @JoinColumn({ name: 'booking_id' })\r\n  booking: Booking;\r\n\r\n  @Column({ type: 'float' })\r\n  amount: number;\r\n\r\n  @Column({ type: 'datetime' })\r\n  payment_date: Date;\r\n\r\n  @Column({ type: 'enum', enum: PaymentStatus })\r\n  status: PaymentStatus;\r\n}"
+        }
+    ]
+}

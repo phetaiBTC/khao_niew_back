@@ -1,0 +1,26 @@
+{
+    "sourceFile": "src/modules/booking-details/entities/bookingDetails.entity.ts",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 2,
+            "patches": [
+                {
+                    "date": 1756273438718,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1756273474177,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -19,8 +19,8 @@\n   \r\n   @Column({ nullable: true })\r\n qr_code: string;\r\n \r\n-@Column({ type: 'varchar', unique: true })\r\n+  @Column({ type: 'varchar', unique: true })\r\n ticket_code: string;\r\n   // Add more fields as needed, e.g. seat number, ticket code, etc.\r\n }\r\n"
+                },
+                {
+                    "date": 1756273958718,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -2,11 +2,8 @@\n   Entity,\r\n   PrimaryGeneratedColumn,\r\n   Column,\r\n   ManyToOne,\r\n-  OneToOne,\r\n-  JoinColumn,\r\n-  CreateDateColumn\r\n } from 'typeorm';\r\n import { Booking } from '../../booking/entities/booking.entity';\r\n \r\n @Entity('bookingDetail')\r\n@@ -17,10 +14,10 @@\n   @ManyToOne(() => Booking, (booking) => booking.details)\r\n   booking: Booking;\r\n   \r\n   @Column({ nullable: true })\r\n-qr_code: string;\r\n+  qr_code: string;\r\n \r\n   @Column({ type: 'varchar', unique: true })\r\n-ticket_code: string;\r\n+  ticket_code: string;\r\n   // Add more fields as needed, e.g. seat number, ticket code, etc.\r\n }\r\n"
+                }
+            ],
+            "date": 1756273438718,
+            "name": "Commit-0",
+            "content": "import {\r\n  Entity,\r\n  PrimaryGeneratedColumn,\r\n  Column,\r\n  ManyToOne,\r\n  OneToOne,\r\n  JoinColumn,\r\n  CreateDateColumn\r\n} from 'typeorm';\r\nimport { Booking } from '../../booking/entities/booking.entity';\r\n\r\n@Entity('bookingDetail')\r\nexport class BookingDetail {\r\n  @PrimaryGeneratedColumn()\r\n  id: number;\r\n\r\n  @ManyToOne(() => Booking, (booking) => booking.details)\r\n  booking: Booking;\r\n  \r\n  @Column({ nullable: true })\r\nqr_code: string;\r\n\r\n@Column({ type: 'varchar', unique: true })\r\nticket_code: string;\r\n  // Add more fields as needed, e.g. seat number, ticket code, etc.\r\n}\r\n"
+        }
+    ]
+}
