@@ -11,6 +11,9 @@ import { Entertainment } from '../entertainments/entities/entertainment.entity';
 import { CreateConcertDto } from './dto/create-concert.dto';
 import { UpdateConcertDto } from './dto/update-concert.dto';
 import { timeToNumber } from 'src/common/utils/timeToNumber';
+import { PaginateDto } from 'src/common/dto/paginate.dto';
+import { paginateUtil } from 'src/common/utils/paginate.util';
+import { Pagination } from 'src/common/interface/pagination.interface';
 
 @Injectable()
 export class ConcertsService {
@@ -71,8 +74,23 @@ export class ConcertsService {
     return this.concertRepo.save(concert);
   }
 
-  async findAll() {
-    return this.concertRepo.find({ relations: ['venue', 'entertainments'] });
+  async findAll( query: PaginateDto ): Promise<Pagination<Concert>> {
+    const qb = this.concertRepo.createQueryBuilder('concert');
+    qb.leftJoinAndSelect('concert.venue', 'venue');
+    qb.leftJoinAndSelect('concert.entertainments', 'entertainments');
+    
+    if (query.order_by) {
+      const direction = query.order_by === 'ASC' ? 'ASC' : 'DESC';
+      qb.orderBy('concert.createdAt', direction);
+    }
+
+    if (query.search) {
+      qb.where('concert.date LIKE :search', {
+        search: `%${query.search}%`,
+      });
+    }
+
+    return await paginateUtil(qb, query);
   }
 
   async findOne(id: number) {

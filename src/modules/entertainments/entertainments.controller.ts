@@ -1,7 +1,10 @@
-import { Controller, Get, Post, Patch, Delete, Param, Body } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Delete, Param, Body, Query } from '@nestjs/common';
 import { EntertainmentsService } from './entertainments.service';
 import { CreateEntertainmentDto } from './dto/create-entertainment.dto';
 import { UpdateEntertainmentDto } from './dto/update-entertainment.dto';
+import { PaginateDto } from 'src/common/dto/paginate.dto';
+import { Pagination } from 'src/common/interface/pagination.interface';
+import { Entertainment } from './entities/entertainment.entity';
 
 @Controller('entertainments')
 export class EntertainmentsController {
@@ -13,8 +16,8 @@ export class EntertainmentsController {
   }
 
   @Get()
-  findAll() {
-    return this.entService.findAll();
+  findAll(@Query() query:PaginateDto) :Promise<Pagination<Entertainment>> {
+    return this.entService.findAll(query);
   }
 
   @Get(':id')
