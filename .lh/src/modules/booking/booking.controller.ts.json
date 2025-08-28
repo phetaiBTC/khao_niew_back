@@ -3,7 +3,7 @@
     "activeCommit": 0,
     "commits": [
         {
-            "activePatchIndex": 16,
+            "activePatchIndex": 30,
             "patches": [
                 {
                     "date": 1755932474978,
@@ -72,6 +72,62 @@
                 {
                     "date": 1756273920264,
                     "content": "Index: \n===================================================================\n--- \n+++ \n@@ -34,9 +34,6 @@\n   delete(@Param('id') id: string) {\r\n     return this.bookingService.delete(+id);\r\n   }\r\n \r\n-  @Get('validate-ticket/:ticketCode')\r\n-  async validateTicket(@Param('ticketCode') ticketCode: string) {\r\n-    return this.bookingService.validateQrCode(ticketCode);\r\n-  }\r\n+\r\n }\r\n"
+                },
+                {
+                    "date": 1756296716965,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -15,9 +15,9 @@\n     return this.bookingService.create(createBookingDto, userId);\r\n   }\r\n \r\n   @Get( '/all-bookings')\r\n-  findAll() {\r\n+  findAll( ) {\r\n     return this.bookingService.findAll();\r\n   }\r\n \r\n   @Get('/get-booking/:id')\r\n"
+                },
+                {
+                    "date": 1756296725343,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -15,9 +15,9 @@\n     return this.bookingService.create(createBookingDto, userId);\r\n   }\r\n \r\n   @Get( '/all-bookings')\r\n-  findAll( ) {\r\n+  findAll(search) {\r\n     return this.bookingService.findAll();\r\n   }\r\n \r\n   @Get('/get-booking/:id')\r\n"
+                },
+                {
+                    "date": 1756296750182,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -15,9 +15,9 @@\n     return this.bookingService.create(createBookingDto, userId);\r\n   }\r\n \r\n   @Get( '/all-bookings')\r\n-  findAll(search) {\r\n+  findAll(: string) {\r\n     return this.bookingService.findAll();\r\n   }\r\n \r\n   @Get('/get-booking/:id')\r\n"
+                },
+                {
+                    "date": 1756296757407,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -15,9 +15,9 @@\n     return this.bookingService.create(createBookingDto, userId);\r\n   }\r\n \r\n   @Get( '/all-bookings')\r\n-  findAll(: string) {\r\n+  findAll() {\r\n     return this.bookingService.findAll();\r\n   }\r\n \r\n   @Get('/get-booking/:id')\r\n"
+                },
+                {
+                    "date": 1756296894591,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -15,9 +15,9 @@\n     return this.bookingService.create(createBookingDto, userId);\r\n   }\r\n \r\n   @Get( '/all-bookings')\r\n-  findAll() {\r\n+  findAll(@Query() query:PaginateDto) {\r\n     return this.bookingService.findAll();\r\n   }\r\n \r\n   @Get('/get-booking/:id')\r\n"
+                },
+                {
+                    "date": 1756296901204,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,10 +1,11 @@\n-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';\r\n+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query } from '@nestjs/common';\r\n import { BookingService } from './booking.service';\r\n import { CreateBookingDto } from './dto/create-booking.dto';\r\n import { UpdateBookingDto } from './dto/update-booking.dto';\r\n import { JwtAuthGuard } from 'src/guards/auth.guard';\r\n import { AuthProfile } from 'src/common/decorator/user.decorator';\r\n+import { PaginateDto } from 'src/common/dto/paginate.dto';\r\n \r\n @Controller('booking')\r\n @UseGuards(JwtAuthGuard)\r\n export class BookingController {\r\n"
+                },
+                {
+                    "date": 1756302706129,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -17,12 +17,13 @@\n   }\r\n \r\n   @Get( '/all-bookings')\r\n   findAll(@Query() query:PaginateDto) {\r\n-    return this.bookingService.findAll();\r\n+    return this.bookingService.findAll(query);\r\n   }\r\n \r\n   @Get('/get-booking/:id')\r\n+\r\n   findOne(@Param('id') id: string) {\r\n     return this.bookingService.findOne(+id);\r\n   }  \r\n \r\n"
+                },
+                {
+                    "date": 1756302766617,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -21,9 +21,8 @@\n     return this.bookingService.findAll(query);\r\n   }\r\n \r\n   @Get('/get-booking/:id')\r\n-\r\n   findOne(@Param('id') id: string) {\r\n     return this.bookingService.findOne(+id);\r\n   }  \r\n \r\n@@ -33,9 +32,9 @@\n   }\r\n \r\n   @Delete('delete-booking/:id')\r\n   delete(@Param('id') id: string) {\r\n-    return this.bookingService.delete(+id);\r\n+    return this.bookingService.delete(id);\r\n   }\r\n \r\n \r\n }\r\n"
+                },
+                {
+                    "date": 1756302780220,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -31,9 +31,9 @@\n     return this.bookingService.update(+id, updateBookingDto);\r\n   }\r\n \r\n   @Delete('delete-booking/:id')\r\n-  delete(@Param('id') id: string) {\r\n+  delete(@Param('id') id: number) {\r\n     return this.bookingService.delete(id);\r\n   }\r\n \r\n \r\n"
+                },
+                {
+                    "date": 1756303193319,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -26,9 +26,9 @@\n     return this.bookingService.findOne(+id);\r\n   }  \r\n \r\n   @Patch('update-booking/:id')\r\n-  update(@Param('id') id: string, @Body() updateBookingDto: UpdateBookingDto) {\r\n+  update(@Param('id') id: num, @Body() updateBookingDto: UpdateBookingDto) {\r\n     return this.bookingService.update(+id, updateBookingDto);\r\n   }\r\n \r\n   @Delete('delete-booking/:id')\r\n"
+                },
+                {
+                    "date": 1756303202634,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -21,14 +21,14 @@\n     return this.bookingService.findAll(query);\r\n   }\r\n \r\n   @Get('/get-booking/:id')\r\n-  findOne(@Param('id') id: string) {\r\n+  findOne(@Param('id') id: number) {\r\n     return this.bookingService.findOne(+id);\r\n   }  \r\n \r\n   @Patch('update-booking/:id')\r\n-  update(@Param('id') id: num, @Body() updateBookingDto: UpdateBookingDto) {\r\n+  update(@Param('id') id: number, @Body() updateBookingDto: UpdateBookingDto) {\r\n     return this.bookingService.update(+id, updateBookingDto);\r\n   }\r\n \r\n   @Delete('delete-booking/:id')\r\n"
+                },
+                {
+                    "date": 1756303212356,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -27,9 +27,9 @@\n   }  \r\n \r\n   @Patch('update-booking/:id')\r\n   update(@Param('id') id: number, @Body() updateBookingDto: UpdateBookingDto) {\r\n-    return this.bookingService.update(+id, updateBookingDto);\r\n+    return this.bookingService.update(id, updateBookingDto);\r\n   }\r\n \r\n   @Delete('delete-booking/:id')\r\n   delete(@Param('id') id: number) {\r\n"
+                },
+                {
+                    "date": 1756303423726,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -25,13 +25,17 @@\n   findOne(@Param('id') id: number) {\r\n     return this.bookingService.findOne(+id);\r\n   }  \r\n \r\n-  @Patch('update-booking/:id')\r\n-  update(@Param('id') id: number, @Body() updateBookingDto: UpdateBookingDto) {\r\n-    return this.bookingService.update(id, updateBookingDto);\r\n+@Patch('update-booking/:id')\r\n+async update(@Param('id') id: number, @Body() updateBookingDto: UpdateBookingDto) {\r\n+  try {\r\n+    return await this.bookingService.update(+id, updateBookingDto);\r\n+  } catch (error) {\r\n+    console.error('Update error:', error);\r\n+    throw error;\r\n   }\r\n-\r\n+}\r\n   @Delete('delete-booking/:id')\r\n   delete(@Param('id') id: number) {\r\n     return this.bookingService.delete(id);\r\n   }\r\n"
+                },
+                {
+                    "date": 1756303778476,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -20,9 +20,9 @@\n   findAll(@Query() query:PaginateDto) {\r\n     return this.bookingService.findAll(query);\r\n   }\r\n \r\n-  @Get('/get-booking/:id')\r\n+  @Get('/get-one/:id')\r\n   findOne(@Param('id') id: number) {\r\n     return this.bookingService.findOne(+id);\r\n   }  \r\n \r\n"
                 }
             ],
             "date": 1755932474978,

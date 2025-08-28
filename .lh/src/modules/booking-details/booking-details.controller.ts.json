@@ -3,7 +3,7 @@
     "activeCommit": 0,
     "commits": [
         {
-            "activePatchIndex": 7,
+            "activePatchIndex": 15,
             "patches": [
                 {
                     "date": 1756273639672,
@@ -36,6 +36,38 @@
                 {
                     "date": 1756273858018,
                     "content": "Index: \n===================================================================\n--- \n+++ \n@@ -4,10 +4,9 @@\n export class BookingDetailsController {\r\n \r\n     constructor(\r\n           private readonly bookingService: BookingDetailsService\r\n-    ) {    \r\n-    }\r\n+    ) {}\r\n \r\n      @Get('validate-ticket/:ticketCode')\r\n       async validateTicket(@Param('ticketCode') ticketCode: string) {\r\n         return this.bookingService.validateQrCode(ticketCode);\r\n"
+                },
+                {
+                    "date": 1756301600926,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -6,9 +6,9 @@\n     constructor(\r\n           private readonly bookingService: BookingDetailsService\r\n     ) {}\r\n \r\n-     @Get('validate-ticket/:ticketCode')\r\n-      async validateTicket(@Param('ticketCode') ticketCode: string) {\r\n-        return this.bookingService.validateQrCode(ticketCode);\r\n-      }\r\n+//      @Get('validate-ticket/:ticketCode')\r\n+//       async validateTicket(@Param('ticketCode') ticketCode: string) {\r\n+//         return this.bookingService.validateQrCode(ticketCode);\r\n+//       }\r\n }\r\n"
+                },
+                {
+                    "date": 1756303875093,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -6,9 +6,6 @@\n     constructor(\r\n           private readonly bookingService: BookingDetailsService\r\n     ) {}\r\n \r\n-//      @Get('validate-ticket/:ticketCode')\r\n-//       async validateTicket(@Param('ticketCode') ticketCode: string) {\r\n-//         return this.bookingService.validateQrCode(ticketCode);\r\n-//       }\r\n+   \r\n }\r\n"
+                },
+                {
+                    "date": 1756303889285,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -6,6 +6,9 @@\n     constructor(\r\n           private readonly bookingService: BookingDetailsService\r\n     ) {}\r\n \r\n-   \r\n+      @Get('/get-booking-details-by-booking-id/:id')\r\n+      get(@Param('id') id: number) {\r\n+        return this.bookingService.findBookingDetailsByBookingId(+id);\r\n+      }\r\n }\r\n"
+                },
+                {
+                    "date": 1756303900592,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -7,8 +7,8 @@\n           private readonly bookingService: BookingDetailsService\r\n     ) {}\r\n \r\n       @Get('/get-booking-details-by-booking-id/:id')\r\n-      get(@Param('id') id: number) {\r\n+      getBookingDetails() {\r\n         return this.bookingService.findBookingDetailsByBookingId(+id);\r\n       }\r\n }\r\n"
+                },
+                {
+                    "date": 1756303907892,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -7,8 +7,8 @@\n           private readonly bookingService: BookingDetailsService\r\n     ) {}\r\n \r\n       @Get('/get-booking-details-by-booking-id/:id')\r\n-      getBookingDetails() {\r\n+      getBookingDetails(query : ) {\r\n         return this.bookingService.findBookingDetailsByBookingId(+id);\r\n       }\r\n }\r\n"
+                },
+                {
+                    "date": 1756303915780,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,14 +1,15 @@\n import { Controller, Get, Param } from '@nestjs/common';\r\n import { BookingDetailsService } from './booking-details.service';\r\n+import { Pagination } from 'src/common/interface/pagination.interface';\r\n @Controller('booking-details')\r\n export class BookingDetailsController {\r\n \r\n     constructor(\r\n           private readonly bookingService: BookingDetailsService\r\n     ) {}\r\n \r\n       @Get('/get-booking-details-by-booking-id/:id')\r\n-      getBookingDetails(query : ) {\r\n+      getBookingDetails(query : Pagination) {\r\n         return this.bookingService.findBookingDetailsByBookingId(+id);\r\n       }\r\n }\r\n"
+                },
+                {
+                    "date": 1756303923142,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -9,7 +9,7 @@\n     ) {}\r\n \r\n       @Get('/get-booking-details-by-booking-id/:id')\r\n       getBookingDetails(query : Pagination) {\r\n-        return this.bookingService.findBookingDetailsByBookingId(+id);\r\n+        return this.bookingService.findBookingDetailsByBookingId();\r\n       }\r\n }\r\n"
+                },
+                {
+                    "date": 1756303934812,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -8,8 +8,8 @@\n           private readonly bookingService: BookingDetailsService\r\n     ) {}\r\n \r\n       @Get('/get-booking-details-by-booking-id/:id')\r\n-      getBookingDetails(query : PaginateDto) {\r\n+      getBookingDetails(query : PaginateDt) {\r\n         return this.bookingService.findBookingDetailsByBookingId(query);\r\n       }\r\n }\r\n"
                 }
             ],
             "date": 1756273639672,

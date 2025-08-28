@@ -3,7 +3,7 @@
     "activeCommit": 0,
     "commits": [
         {
-            "activePatchIndex": 11,
+            "activePatchIndex": 12,
             "patches": [
                 {
                     "date": 1756273499227,
@@ -52,6 +52,10 @@
                 {
                     "date": 1756273900939,
                     "content": "Index: \n===================================================================\n--- \n+++ \n@@ -3,15 +3,13 @@\n import { BookingDetailsController } from './booking-details.controller';\r\n import { Booking } from '../booking/entities/booking.entity';\r\n import { TypeOrmModule } from '@nestjs/typeorm';\r\n import { BookingDetail } from './entities/bookingDetails.entity';\r\n-``\r\n+\r\n @Module({\r\n     imports: [TypeOrmModule.forFeature([Booking , BookingDetail])],\r\n     controllers: [BookingDetailsController       \r\n     ],\r\n     providers: [BookingDetailsService],\r\n     exports: [BookingDetailsService],\r\n })\r\n-export class BookingDetailsModule {\r\n-\r\n-}\r\n+export class BookingDetailsModule {}\r\n"
+                },
+                {
+                    "date": 1756294439833,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -5,9 +5,9 @@\n import { TypeOrmModule } from '@nestjs/typeorm';\r\n import { BookingDetail } from './entities/bookingDetails.entity';\r\n \r\n @Module({\r\n-    imports: [TypeOrmModule.forFeature([Booking , BookingDetail])],\r\n+    imports: [TypeOrmModule.forFeature([BookingDetail,Booking , ])],\r\n     controllers: [BookingDetailsController       \r\n     ],\r\n     providers: [BookingDetailsService],\r\n     exports: [BookingDetailsService],\r\n"
                 }
             ],
             "date": 1756273499227,

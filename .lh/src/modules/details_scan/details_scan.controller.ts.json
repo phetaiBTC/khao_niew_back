@@ -1,0 +1,34 @@
+{
+    "sourceFile": "src/modules/details_scan/details_scan.controller.ts",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 4,
+            "patches": [
+                {
+                    "date": 1756392638688,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1756392646114,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -12,9 +12,9 @@\n     return this.detailsScanService.create(createDetailsScanDto);\r\n   }\r\n \r\n   @Get()\r\n-  findAll(k) {\r\n+  findAll(@Body() bodyq) {\r\n     return this.detailsScanService.findAll();\r\n   }\r\n \r\n   @Get(':id')\r\n"
+                },
+                {
+                    "date": 1756392651874,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,5 +1,5 @@\n-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';\r\n+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';\r\n import { DetailsScanService } from './details_scan.service';\r\n import { CreateDetailsScanDto } from './dto/create-details_scan.dto';\r\n import { UpdateDetailsScanDto } from './dto/update-details_scan.dto';\r\n \r\n@@ -12,9 +12,9 @@\n     return this.detailsScanService.create(createDetailsScanDto);\r\n   }\r\n \r\n   @Get()\r\n-  findAll(@Body() bodyq) {\r\n+  findAll(@Query) {\r\n     return this.detailsScanService.findAll();\r\n   }\r\n \r\n   @Get(':id')\r\n"
+                },
+                {
+                    "date": 1756392657588,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,8 +1,9 @@\n import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';\r\n import { DetailsScanService } from './details_scan.service';\r\n import { CreateDetailsScanDto } from './dto/create-details_scan.dto';\r\n import { UpdateDetailsScanDto } from './dto/update-details_scan.dto';\r\n+import { PaginateDto } from 'src/common/dto/paginate.dto';\r\n \r\n @Controller('details-scan')\r\n export class DetailsScanController {\r\n   constructor(private readonly detailsScanService: DetailsScanService) {}\r\n@@ -12,9 +13,9 @@\n     return this.detailsScanService.create(createDetailsScanDto);\r\n   }\r\n \r\n   @Get()\r\n-  findAll(@Query) {\r\n+  findAll(@Query() query: PaginateDto) {\r\n     return this.detailsScanService.findAll();\r\n   }\r\n \r\n   @Get(':id')\r\n"
+                },
+                {
+                    "date": 1756392664152,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -14,9 +14,9 @@\n   }\r\n \r\n   @Get()\r\n   findAll(@Query() query: PaginateDto) {\r\n-    return this.detailsScanService.findAll();\r\n+    return this.detailsScanService.findAll( query);\r\n   }\r\n \r\n   @Get(':id')\r\n   findOne(@Param('id') id: string) {\r\n"
+                }
+            ],
+            "date": 1756392638688,
+            "name": "Commit-0",
+            "content": "import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';\r\nimport { DetailsScanService } from './details_scan.service';\r\nimport { CreateDetailsScanDto } from './dto/create-details_scan.dto';\r\nimport { UpdateDetailsScanDto } from './dto/update-details_scan.dto';\r\n\r\n@Controller('details-scan')\r\nexport class DetailsScanController {\r\n  constructor(private readonly detailsScanService: DetailsScanService) {}\r\n\r\n  @Post()\r\n  create(@Body() createDetailsScanDto: CreateDetailsScanDto) {\r\n    return this.detailsScanService.create(createDetailsScanDto);\r\n  }\r\n\r\n  @Get()\r\n  findAll(k) {\r\n    return this.detailsScanService.findAll();\r\n  }\r\n\r\n  @Get(':id')\r\n  findOne(@Param('id') id: string) {\r\n    return this.detailsScanService.findOne(+id);\r\n  }\r\n\r\n  @Patch(':id')\r\n  update(@Param('id') id: string, @Body() updateDetailsScanDto: UpdateDetailsScanDto) {\r\n    return this.detailsScanService.update(+id, updateDetailsScanDto);\r\n  }\r\n\r\n  @Delete(':id')\r\n  remove(@Param('id') id: string) {\r\n    return this.detailsScanService.remove(+id);\r\n  }\r\n}\r\n"
+        }
+    ]
+}

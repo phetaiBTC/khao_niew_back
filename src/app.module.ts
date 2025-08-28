@@ -19,10 +19,6 @@ import { RolesGuard } from './guards/role.guard';
 import { SeederModule } from './database/seeds/seeder.module';
 import { PaymentModule } from './modules/payment/payment.module';
 import { TransactionModule } from './common/transaction/transaction.module';
-import { BookingDetail } from './modules/booking-details/entities/bookingDetails.entity';
-
-import { BookingDetailsController } from './modules/booking-details/booking-details.controller';
-import { BookingDetailsService } from './modules/booking-details/booking-details.service';
 import { BookingDetailsModule } from './modules/booking-details/booking-details.module';
 
 @Module({
@@ -37,7 +33,7 @@ import { BookingDetailsModule } from './modules/booking-details/booking-details.
     }),
     TransactionModule,
     TypeOrmConfig,
-    BookingDetail,
+
     UsersModule,
     EntertainmentsModule,
     CompaniesModule,
@@ -52,7 +48,6 @@ import { BookingDetailsModule } from './modules/booking-details/booking-details.
     PaymentModule,
     BookingDetailsModule
   ],
-  controllers: [BookingDetailsController],
   providers: [
     {
       provide: APP_GUARD,
@@ -62,7 +57,6 @@ import { BookingDetailsModule } from './modules/booking-details/booking-details.
       provide: APP_GUARD,
       useClass: RolesGuard
     },
-    BookingDetailsService,
   ],
 
 })

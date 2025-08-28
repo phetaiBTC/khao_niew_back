@@ -1,0 +1,42 @@
+{
+    "sourceFile": "src/modules/check_in/dto/create-check_in.dto.ts",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 6,
+            "patches": [
+                {
+                    "date": 1756306256413,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1756306276918,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,3 +1,5 @@\n+\r\n+\r\n export class CreateCheckInDto {\r\n-    \r\n+    booking_details: number;\r\n }\r\n"
+                },
+                {
+                    "date": 1756306282376,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,5 +1,5 @@\n+import { IsNumber, IsDateString, ValidateNested } from 'class-validator';\r\n \r\n-\r\n export class CreateCheckInDto {\r\n-    booking_details: number;\r\n+   \r\n }\r\n"
+                },
+                {
+                    "date": 1756306302070,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,5 +1,8 @@\n import { IsNumber, IsDateString, ValidateNested } from 'class-validator';\r\n \r\n export class CreateCheckInDto {\r\n+    @IsNumber()\r\n+    booking_details: number;\r\n+    \r\n    \r\n }\r\n"
+                },
+                {
+                    "date": 1756306310776,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,8 +1,7 @@\n import { IsNumber, IsDateString, ValidateNested } from 'class-validator';\r\n \r\n export class CreateCheckInDto {\r\n     @IsNumber()\r\n-    booking_details: number;\r\n-    \r\n+    booking_details: number;    \r\n    \r\n }\r\n"
+                },
+                {
+                    "date": 1756308037994,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,7 +1,14 @@\n-import { IsNumber, IsDateString, ValidateNested } from 'class-validator';\r\n+import { IsNumber, IsNotEmpty } from 'class-validator';\r\n \r\n export class CreateCheckInDto {\r\n     @IsNumber()\r\n-    booking_details: number;    \r\n-   \r\n+    @IsNotEmpty()\r\n+    booking_details: number;\r\n+\r\n+    @IsNumber()\r\n+    @IsNotEmpty()\r\n+    company_id: number;\r\n+\r\n+    @IsNumber()\r\n+    amount?: number; // Optional - will use concert price if not provided\r\n }\r\n"
+                },
+                {
+                    "date": 1756309435044,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -3,12 +3,5 @@\n export class CreateCheckInDto {\r\n     @IsNumber()\r\n     @IsNotEmpty()\r\n     booking_details: number;\r\n-\r\n-    @IsNumber()\r\n-    @IsNotEmpty()\r\n-    company_id: number;\r\n-\r\n-    @IsNumber()\r\n-    amount?: number; // Optional - will use concert price if not provided\r\n }\r\n"
+                }
+            ],
+            "date": 1756306256413,
+            "name": "Commit-0",
+            "content": "export class CreateCheckInDto {\r\n    \r\n}\r\n"
+        }
+    ]
+}

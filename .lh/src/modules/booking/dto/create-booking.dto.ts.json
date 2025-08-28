@@ -3,7 +3,7 @@
     "activeCommit": 0,
     "commits": [
         {
-            "activePatchIndex": 33,
+            "activePatchIndex": 35,
             "patches": [
                 {
                     "date": 1755934990322,
@@ -140,6 +140,14 @@
                 {
                     "date": 1756136116453,
                     "content": "Index: \n===================================================================\n--- \n+++ \n@@ -7,11 +7,8 @@\n   ticket_quantity: number;\r\n \r\n   @IsNumber()\r\n   unit_price: number;\r\n-\r\n-  @IsNumber()\r\n-  user: number;\r\n   \r\n   @IsNumber()\r\n   concert: number;\r\n \r\n"
+                },
+                {
+                    "date": 1756301965229,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -11,8 +11,5 @@\n   \r\n   @IsNumber()\r\n   concert: number;\r\n \r\n-   @ValidateNested()\r\n-  @Type(() => CreatePaymentDto)   // 👈 tells class-transformer how to parse JSON into CreatePaymentDto\r\n-  payment: CreatePaymentDto;\r\n }\r\n"
+                },
+                {
+                    "date": 1756302157400,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -4,11 +4,8 @@\n \r\n export class CreateBookingDto {\r\n   @IsNumber()\r\n   ticket_quantity: number;\r\n-\r\n-  @IsNumber()\r\n-  unit_price: number;\r\n   \r\n   @IsNumber()\r\n   concert: number;\r\n \r\n"
                 }
             ],
             "date": 1755934990322,

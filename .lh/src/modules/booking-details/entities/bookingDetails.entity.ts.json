@@ -3,7 +3,7 @@
     "activeCommit": 0,
     "commits": [
         {
-            "activePatchIndex": 2,
+            "activePatchIndex": 27,
             "patches": [
                 {
                     "date": 1756273438718,
@@ -16,6 +16,106 @@
                 {
                     "date": 1756273958718,
                     "content": "Index: \n===================================================================\n--- \n+++ \n@@ -2,11 +2,8 @@\n   Entity,\r\n   PrimaryGeneratedColumn,\r\n   Column,\r\n   ManyToOne,\r\n-  OneToOne,\r\n-  JoinColumn,\r\n-  CreateDateColumn\r\n } from 'typeorm';\r\n import { Booking } from '../../booking/entities/booking.entity';\r\n \r\n @Entity('bookingDetail')\r\n@@ -17,10 +14,10 @@\n   @ManyToOne(() => Booking, (booking) => booking.details)\r\n   booking: Booking;\r\n   \r\n   @Column({ nullable: true })\r\n-qr_code: string;\r\n+  qr_code: string;\r\n \r\n   @Column({ type: 'varchar', unique: true })\r\n-ticket_code: string;\r\n+  ticket_code: string;\r\n   // Add more fields as needed, e.g. seat number, ticket code, etc.\r\n }\r\n"
+                },
+                {
+                    "date": 1756296464509,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -5,9 +5,9 @@\n   ManyToOne,\r\n } from 'typeorm';\r\n import { Booking } from '../../booking/entities/booking.entity';\r\n \r\n-@Entity('bookingDetail')\r\n+@Entity('bookingdetail')\r\n export class BookingDetail {\r\n   @PrimaryGeneratedColumn()\r\n   id: number;\r\n \r\n"
+                },
+                {
+                    "date": 1756296528006,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -5,9 +5,8 @@\n   ManyToOne,\r\n } from 'typeorm';\r\n import { Booking } from '../../booking/entities/booking.entity';\r\n \r\n-@Entity('bookingdetail')\r\n export class BookingDetail {\r\n   @PrimaryGeneratedColumn()\r\n   id: number;\r\n \r\n"
+                },
+                {
+                    "date": 1756296550105,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -5,8 +5,9 @@\n   ManyToOne,\r\n } from 'typeorm';\r\n import { Booking } from '../../booking/entities/booking.entity';\r\n \r\n+@Entity('bookingdetail')\r\n export class BookingDetail {\r\n   @PrimaryGeneratedColumn()\r\n   id: number;\r\n \r\n"
+                },
+                {
+                    "date": 1756301560345,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -12,12 +12,6 @@\n   id: number;\r\n \r\n   @ManyToOne(() => Booking, (booking) => booking.details)\r\n   booking: Booking;\r\n-  \r\n-  @Column({ nullable: true })\r\n-  qr_code: string;\r\n-\r\n-  @Column({ type: 'varchar', unique: true })\r\n-  ticket_code: string;\r\n   // Add more fields as needed, e.g. seat number, ticket code, etc.\r\n }\r\n"
+                },
+                {
+                    "date": 1756305915279,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -12,6 +12,7 @@\n   id: number;\r\n \r\n   @ManyToOne(() => Booking, (booking) => booking.details)\r\n   booking: Booking;\r\n-  // Add more fields as needed, e.g. seat number, ticket code, etc.\r\n+   @OneToOne(() => Booking, (booking) => booking.payment)\r\n+    booking: Booking;\r\n }\r\n"
+                },
+                {
+                    "date": 1756305922844,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -2,8 +2,9 @@\n   Entity,\r\n   PrimaryGeneratedColumn,\r\n   Column,\r\n   ManyToOne,\r\n+  OneToOne\r\n } from 'typeorm';\r\n import { Booking } from '../../booking/entities/booking.entity';\r\n \r\n @Entity('bookingdetail')\r\n@@ -12,7 +13,8 @@\n   id: number;\r\n \r\n   @ManyToOne(() => Booking, (booking) => booking.details)\r\n   booking: Booking;\r\n+\r\n    @OneToOne(() => Booking, (booking) => booking.payment)\r\n     booking: Booking;\r\n }\r\n"
+                },
+                {
+                    "date": 1756305928445,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -15,6 +15,6 @@\n   @ManyToOne(() => Booking, (booking) => booking.details)\r\n   booking: Booking;\r\n \r\n    @OneToOne(() => Booking, (booking) => booking.payment)\r\n-    booking: Booking;\r\n+    check: Booking;\r\n }\r\n"
+                },
+                {
+                    "date": 1756305938518,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -5,9 +5,9 @@\n   ManyToOne,\r\n   OneToOne\r\n } from 'typeorm';\r\n import { Booking } from '../../booking/entities/booking.entity';\r\n-\r\n+import {}\r\n @Entity('bookingdetail')\r\n export class BookingDetail {\r\n   @PrimaryGeneratedColumn()\r\n   id: number;\r\n@@ -15,6 +15,6 @@\n   @ManyToOne(() => Booking, (booking) => booking.details)\r\n   booking: Booking;\r\n \r\n    @OneToOne(() => Booking, (booking) => booking.payment)\r\n-    check: Booking;\r\n+    check_in: Booking;\r\n }\r\n"
+                },
+                {
+                    "date": 1756305950645,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -5,16 +5,16 @@\n   ManyToOne,\r\n   OneToOne\r\n } from 'typeorm';\r\n import { Booking } from '../../booking/entities/booking.entity';\r\n-import {}\r\n+import { CheckIn } from '../../check-in/entities/check_in.entity';\r\n @Entity('bookingdetail')\r\n export class BookingDetail {\r\n   @PrimaryGeneratedColumn()\r\n   id: number;\r\n \r\n   @ManyToOne(() => Booking, (booking) => booking.details)\r\n   booking: Booking;\r\n \r\n-   @OneToOne(() => Booking, (booking) => booking.payment)\r\n+   @OneToOne(() => CheckIn, (booking) => booking.payment)\r\n     check_in: Booking;\r\n }\r\n"
+                },
+                {
+                    "date": 1756305958451,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -14,7 +14,7 @@\n \r\n   @ManyToOne(() => Booking, (booking) => booking.details)\r\n   booking: Booking;\r\n \r\n-   @OneToOne(() => CheckIn, (booking) => booking.payment)\r\n-    check_in: Booking;\r\n+   @OneToOne(() => CheckIn, (CheckIn) => booking.payment)\r\n+    check_in: CheckIn;\r\n }\r\n"
+                },
+                {
+                    "date": 1756305967537,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -5,9 +5,9 @@\n   ManyToOne,\r\n   OneToOne\r\n } from 'typeorm';\r\n import { Booking } from '../../booking/entities/booking.entity';\r\n-import { CheckIn } from '../../check-in/entities/check_in.entity';\r\n+import \r\n @Entity('bookingdetail')\r\n export class BookingDetail {\r\n   @PrimaryGeneratedColumn()\r\n   id: number;\r\n"
+                },
+                {
+                    "date": 1756305981562,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -5,9 +5,9 @@\n   ManyToOne,\r\n   OneToOne\r\n } from 'typeorm';\r\n import { Booking } from '../../booking/entities/booking.entity';\r\n-import \r\n+import {}\r\n @Entity('bookingdetail')\r\n export class BookingDetail {\r\n   @PrimaryGeneratedColumn()\r\n   id: number;\r\n"
+                },
+                {
+                    "date": 1756305987905,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -5,9 +5,9 @@\n   ManyToOne,\r\n   OneToOne\r\n } from 'typeorm';\r\n import { Booking } from '../../booking/entities/booking.entity';\r\n-import {}\r\n+import {Check}\r\n @Entity('bookingdetail')\r\n export class BookingDetail {\r\n   @PrimaryGeneratedColumn()\r\n   id: number;\r\n"
+                },
+                {
+                    "date": 1756305999250,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -5,16 +5,16 @@\n   ManyToOne,\r\n   OneToOne\r\n } from 'typeorm';\r\n import { Booking } from '../../booking/entities/booking.entity';\r\n-import {Check}\r\n+import { CheckIn } from 'src/modules/check_in/entities/check_in.entity';\r\n @Entity('bookingdetail')\r\n export class BookingDetail {\r\n   @PrimaryGeneratedColumn()\r\n   id: number;\r\n \r\n   @ManyToOne(() => Booking, (booking) => booking.details)\r\n   booking: Booking;\r\n \r\n-   @OneToOne(() => CheckIn, (CheckIn) => booking.payment)\r\n+   @OneToOne(() => CheckIn, (CheckIn) => c.payment)\r\n     check_in: CheckIn;\r\n }\r\n"
+                },
+                {
+                    "date": 1756306007637,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -14,7 +14,7 @@\n \r\n   @ManyToOne(() => Booking, (booking) => booking.details)\r\n   booking: Booking;\r\n \r\n-   @OneToOne(() => CheckIn, (CheckIn) => c.payment)\r\n+   @OneToOne(() => CheckIn, (checkin) => checkin.payment)\r\n     check_in: CheckIn;\r\n }\r\n"
+                },
+                {
+                    "date": 1756306013862,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -14,7 +14,7 @@\n \r\n   @ManyToOne(() => Booking, (booking) => booking.details)\r\n   booking: Booking;\r\n \r\n-   @OneToOne(() => CheckIn, (checkin) => checkin.payment)\r\n+   @OneToOne(() => CheckIn, (checkin) => checkin.booking_details)\r\n     check_in: CheckIn;\r\n }\r\n"
+                },
+                {
+                    "date": 1756306025259,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -16,5 +16,6 @@\n   booking: Booking;\r\n \r\n    @OneToOne(() => CheckIn, (checkin) => checkin.booking_details)\r\n     check_in: CheckIn;\r\n+    \r\n }\r\n"
+                },
+                {
+                    "date": 1756306033232,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -16,6 +16,7 @@\n   booking: Booking;\r\n \r\n    @OneToOne(() => CheckIn, (checkin) => checkin.booking_details)\r\n     check_in: CheckIn;\r\n-    \r\n+\r\n+    @\r\n }\r\n"
+                },
+                {
+                    "date": 1756306057401,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -17,6 +17,7 @@\n \r\n    @OneToOne(() => CheckIn, (checkin) => checkin.booking_details)\r\n     check_in: CheckIn;\r\n \r\n-    @\r\n+    @Column({ type: 'int' })\r\n+    amount: number;\r\n }\r\n"
+                },
+                {
+                    "date": 1756306062485,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -17,7 +17,7 @@\n \r\n    @OneToOne(() => CheckIn, (checkin) => checkin.booking_details)\r\n     check_in: CheckIn;\r\n \r\n-    @Column({ type: 'int' })\r\n+    @Column()\r\n     amount: number;\r\n }\r\n"
+                },
+                {
+                    "date": 1756306115148,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -18,6 +18,6 @@\n    @OneToOne(() => CheckIn, (checkin) => checkin.booking_details)\r\n     check_in: CheckIn;\r\n \r\n     @Column()\r\n-    amount: number;\r\n+    status: boolean ;\r\n }\r\n"
+                },
+                {
+                    "date": 1756306126009,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -18,6 +18,6 @@\n    @OneToOne(() => CheckIn, (checkin) => checkin.booking_details)\r\n     check_in: CheckIn;\r\n \r\n     @Column()\r\n-    status: boolean ;\r\n+    status: boolean def;\r\n }\r\n"
+                },
+                {
+                    "date": 1756306154925,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -18,6 +18,6 @@\n    @OneToOne(() => CheckIn, (checkin) => checkin.booking_details)\r\n     check_in: CheckIn;\r\n \r\n     @Column()\r\n-    status: boolean def;\r\n+    status: boolean default = false;\r\n }\r\n"
+                },
+                {
+                    "date": 1756306203314,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -15,9 +15,18 @@\n   @ManyToOne(() => Booking, (booking) => booking.details)\r\n   booking: Booking;\r\n \r\n    @OneToOne(() => CheckIn, (checkin) => checkin.booking_details)\r\n-    check_in: CheckIn;\r\n+  check_in: CheckIn;\r\n \r\n+  @Column({ type: 'boolean', default: false })\r\n+  status: boolean;\r\n+\r\n+  @Column()\r\n+  ticket_code: string;\r\n+\r\n+  @Column({ type: 'text', nullable: true })\r\n+  qr_code: string;\r\n+\r\n     @Column()\r\n     status: boolean default = false;\r\n }\r\n"
+                },
+                {
+                    "date": 1756306209770,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -19,14 +19,5 @@\n   check_in: CheckIn;\r\n \r\n   @Column({ type: 'boolean', default: false })\r\n   status: boolean;\r\n-\r\n-  @Column()\r\n-  ticket_code: string;\r\n-\r\n-  @Column({ type: 'text', nullable: true })\r\n-  qr_code: string;\r\n-\r\n-    @Column()\r\n-    status: boolean default = false;\r\n }\r\n"
                 }
             ],
             "date": 1756273438718,

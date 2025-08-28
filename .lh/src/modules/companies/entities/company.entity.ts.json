@@ -1,0 +1,42 @@
+{
+    "sourceFile": "src/modules/companies/entities/company.entity.ts",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 6,
+            "patches": [
+                {
+                    "date": 1756307117451,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1756307330367,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -16,7 +16,7 @@\n \r\n     @Column({ nullable: true })\r\n     contact: string\r\n \r\n-    @OneToMany(() => DetailsScan, (detailsScan) => detailsScan.company)\r\n+    @On(() => DetailsScan, (detailsScan) => detailsScan.company)\r\n     details_scans: DetailsScan[]\r\n }\r\n"
+                },
+                {
+                    "date": 1756307336580,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,7 +1,7 @@\n import { ShardEntity } from \"src/common/entity/BaseEntity\";\r\n import { User } from \"src/modules/users/entities/user.entity\";\r\n-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from \"typeorm\";\r\n+import { Column, Entity, OneToMany, OneToOne, PrimaryGeneratedColumn } from \"typeorm\";\r\n import { DetailsScan } from \"src/modules/details_scan/entities/details_scan.entity\";\r\n \r\n @Entity()\r\n export class Company extends ShardEntity {\r\n"
+                },
+                {
+                    "date": 1756307342172,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -16,7 +16,7 @@\n \r\n     @Column({ nullable: true })\r\n     contact: string\r\n \r\n-    @On(() => DetailsScan, (detailsScan) => detailsScan.company)\r\n-    details_scans: DetailsScan[]\r\n+    @OneToOne(() => DetailsScan, (detailsScan) => detailsScan.company)\r\n+    details_scans: DetailsScan\r\n }\r\n"
+                },
+                {
+                    "date": 1756312800751,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -16,7 +16,8 @@\n \r\n     @Column({ nullable: true })\r\n     contact: string\r\n \r\n-    @OneToOne(() => DetailsScan, (detailsScan) => detailsScan.company)\r\n-    details_scans: DetailsScan\r\n+      @ManyToOne(() => DetailsScan, (detailsScan) => detailsScan.check_ins, { nullable: true })\r\n+  @JoinColumn({ name: 'details_scan_id' })\r\n+  detailsScan: DetailsScan;\r\n }\r\n"
+                },
+                {
+                    "date": 1756390858004,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,7 +1,7 @@\n import { ShardEntity } from \"src/common/entity/BaseEntity\";\r\n import { User } from \"src/modules/users/entities/user.entity\";\r\n-import { Column, Entity, OneToMany, OneToOne, PrimaryGeneratedColumn } from \"typeorm\";\r\n+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from \"typeorm\";\r\n import { DetailsScan } from \"src/modules/details_scan/entities/details_scan.entity\";\r\n \r\n @Entity()\r\n export class Company extends ShardEntity {\r\n@@ -16,8 +16,8 @@\n \r\n     @Column({ nullable: true })\r\n     contact: string\r\n \r\n-      @ManyToOne(() => DetailsScan, (detailsScan) => detailsScan.check_ins, { nullable: true })\r\n+      @ManyToOne(() => DetailsScan, (detailsScan) => detailsScan., { nullable: true })\r\n   @JoinColumn({ name: 'details_scan_id' })\r\n   detailsScan: DetailsScan;\r\n }\r\n"
+                },
+                {
+                    "date": 1756390866080,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -16,8 +16,8 @@\n \r\n     @Column({ nullable: true })\r\n     contact: string\r\n \r\n-      @ManyToOne(() => DetailsScan, (detailsScan) => detailsScan., { nullable: true })\r\n+      @ManyToOne(() => DetailsScan, (detailsScan) => detailsScan.checkIns, { nullable: true })\r\n   @JoinColumn({ name: 'details_scan_id' })\r\n   detailsScan: DetailsScan;\r\n }\r\n"
+                }
+            ],
+            "date": 1756307117451,
+            "name": "Commit-0",
+            "content": "import { ShardEntity } from \"src/common/entity/BaseEntity\";\r\nimport { User } from \"src/modules/users/entities/user.entity\";\r\nimport { Column, Entity, OneToMany, PrimaryGeneratedColumn } from \"typeorm\";\r\nimport { DetailsScan } from \"src/modules/details_scan/entities/details_scan.entity\";\r\n\r\n@Entity()\r\nexport class Company extends ShardEntity {\r\n    @PrimaryGeneratedColumn()\r\n    id: number\r\n\r\n    @Column()\r\n    name:string\r\n\r\n    @OneToMany(() => User, (user) => user.companies)\r\n    user: User[]\r\n\r\n    @Column({ nullable: true })\r\n    contact: string\r\n\r\n    @OneToMany(() => DetailsScan, (detailsScan) => detailsScan.company)\r\n    details_scans: DetailsScan[]\r\n}\r\n"
+        }
+    ]
+}
