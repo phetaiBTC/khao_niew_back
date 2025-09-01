@@ -1,6 +1,6 @@
 import { ShardEntity } from 'src/common/entity/BaseEntity';
 import { Entertainment } from 'src/modules/entertainments/entities/entertainment.entity';
-
+import { Booking } from 'src/modules/booking/entities/booking.entity';
 import { Venue } from 'src/modules/venue/entities/venue.entity';
 import {
   Entity,
@@ -9,6 +9,7 @@ import {
   ManyToOne,
   ManyToMany,
   JoinTable,
+  OneToMany,
 } from 'typeorm';
 
 export enum EnumConcertStatus {
@@ -36,7 +37,11 @@ export class Concert extends ShardEntity {
   @Column('date')
   date: string;
 
-  @Column({ type: 'enum', enum: EnumConcertStatus, default: EnumConcertStatus.OPEN })
+  @Column({
+    type: 'enum',
+    enum: EnumConcertStatus,
+    default: EnumConcertStatus.OPEN,
+  })
   status: EnumConcertStatus;
 
   @ManyToMany(() => Entertainment, (entertainment) => entertainment.concerts)
@@ -45,5 +50,7 @@ export class Concert extends ShardEntity {
 
   @ManyToOne(() => Venue, (venue) => venue.concerts)
   venue: Venue;
-}
 
+  @OneToMany(() => Booking, (booking) => booking.concert)
+  bookings: Booking[];
+}

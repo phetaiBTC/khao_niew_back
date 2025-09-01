@@ -22,6 +22,7 @@ export class PaginateDto {
     @IsNumber()
     per_page?: number;
 
+
     @IsOptional()
     @IsEnum(PaginateDtoType)
     type?: PaginateDtoType;

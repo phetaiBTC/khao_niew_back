@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { DetailsScanService } from './details_scan.service';
 import { CreateDetailsScanDto } from './dto/create-details_scan.dto';
 import { UpdateDetailsScanDto } from './dto/update-details_scan.dto';
+import { PaginateDto } from 'src/common/dto/paginate.dto';
 
 @Controller('details-scan')
 export class DetailsScanController {
@@ -13,8 +14,8 @@ export class DetailsScanController {
   }
 
   @Get()
-  findAll() {
-    return this.detailsScanService.findAll();
+  findAll(@Query() query: PaginateDto) {
+    return this.detailsScanService.findAll( query);
   }
 
   @Get(':id')

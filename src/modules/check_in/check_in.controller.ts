@@ -7,7 +7,7 @@ import { UpdateCheckInDto } from './dto/update-check_in.dto';
 export class CheckInController {
   constructor(private readonly checkInService: CheckInService) {}
 
-  @Post()
+  @Post('/create-check-in')
   create(@Body() createCheckInDto: CreateCheckInDto) {
     return this.checkInService.create(createCheckInDto);
   }
