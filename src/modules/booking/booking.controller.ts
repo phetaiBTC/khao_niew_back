@@ -5,6 +5,7 @@ import { UpdateBookingDto } from './dto/update-booking.dto';
 import { JwtAuthGuard } from 'src/guards/auth.guard';
 import { AuthProfile } from 'src/common/decorator/user.decorator';
 import { PaginateDto } from 'src/common/dto/paginate.dto';
+import { BookingPaginateDto } from './dto/booking-paginate.dto';
 
 @Controller('booking')
 @UseGuards(JwtAuthGuard)
@@ -17,7 +18,7 @@ export class BookingController {
   }
 
   @Get( '/all-bookings')
-  findAll(@Query() query:PaginateDto) {
+  findAll(@Query() query:BookingPaginateDto) {
     return this.bookingService.findAll(query);
   }
 

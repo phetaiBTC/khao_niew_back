@@ -11,6 +11,7 @@ import type { ITransactionManager } from 'src/common/transaction/transaction.int
 import { BookingDetail } from '../booking-details/entities/bookingDetails.entity';
 import { PaginateDto } from 'src/common/dto/paginate.dto';
 import { paginateUtil } from 'src/common/utils/paginate.util';
+import { BookingPaginateDto } from './dto/booking-paginate.dto';
 @Injectable()
 export class BookingService {
   constructor(
@@ -68,7 +69,6 @@ export class BookingService {
       const result = await this.transactionManagerService.runInTransaction(
         this.dataSource,
         async (manager) => {
-          console.log('Creating payment...');
 
           // Create payment
           const payment = manager.create(Payment, {
@@ -90,7 +90,7 @@ export class BookingService {
           });
 
           const savedBooking = await manager.save(Booking, booking);
-          console.log('Booking created:', booking);
+
           // After saving booking...
           const details: BookingDetail[] = [];
           for (let i = 0; i < booking.ticket_quantity; i++) {
@@ -116,7 +116,7 @@ export class BookingService {
     }
   }
 
-  async findAll(query: PaginateDto) {
+  async findAll(query: BookingPaginateDto) {
     const { status } = query;
     
     const queryBuilder = this.bookingRepository
