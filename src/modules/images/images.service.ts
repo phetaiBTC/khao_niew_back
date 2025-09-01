@@ -7,7 +7,8 @@ import { Venue } from '../venue/entities/venue.entity';
 import { Entertainment } from '../entertainments/entities/entertainment.entity';
 import { CreateImageDto } from './dto/create-image.dto';
 import { UpdateImageDto } from './dto/update-image.dto';
-
+import { fileExists, removeFile } from 'src/common/interceptors/upload-image.interceptor';
+import { join } from 'path';
 
 @Injectable()
 export class ImageService {
@@ -22,26 +23,27 @@ export class ImageService {
     private readonly entertainmentRepo: Repository<Entertainment>,
   ) {}
 
-async createMany(dto: CreateImageDto, urls: string[]) {
-  const images = urls.map(url => this.imageRepo.create({ url }));
+  async createMany(dto: CreateImageDto, urls: string[]) {
+    const images = urls.map((url) => this.imageRepo.create({ url }));
 
-  if (dto.venueIds?.length) {
-    const venues = await this.venueRepo.findBy({ id: In(dto.venueIds) });
-    images.forEach(img => (img.venues = venues));
+    if (dto.venueIds?.length) {
+      const venues = await this.venueRepo.findBy({ id: In(dto.venueIds) });
+      images.forEach((img) => (img.venues = venues));
+    }
+
+    if (dto.entertainmentIds?.length) {
+      const entertainments = await this.entertainmentRepo.findBy({
+        id: In(dto.entertainmentIds),
+      });
+      images.forEach((img) => (img.entertainments = entertainments));
+    }
+
+    return this.imageRepo.save(images); // save หลาย record ได้
   }
-
-  if (dto.entertainmentIds?.length) {
-    const entertainments = await this.entertainmentRepo.findBy({ id: In(dto.entertainmentIds) });
-    images.forEach(img => (img.entertainments = entertainments));
-  }
-
-  return this.imageRepo.save(images); // save หลาย record ได้
-}
 
   findAll() {
     return this.imageRepo.find({ relations: ['venues', 'entertainments'] });
   }
-  
 
   async findOne(id: number) {
     const image = await this.imageRepo.findOne({
@@ -52,8 +54,7 @@ async createMany(dto: CreateImageDto, urls: string[]) {
     return image;
   }
 
-
-  async update(id: number, dto: UpdateImageDto, url : string) {
+  async update(id: number, dto: UpdateImageDto, url: string) {
     const image = await this.findOne(id);
 
     if (dto.venueIds) {
@@ -62,7 +63,9 @@ async createMany(dto: CreateImageDto, urls: string[]) {
     }
 
     if (dto.entertainmentIds) {
-      const entertainments = await this.entertainmentRepo.findBy({ id: In(dto.entertainmentIds) });
+      const entertainments = await this.entertainmentRepo.findBy({
+        id: In(dto.entertainmentIds),
+      });
       image.entertainments = entertainments;
     }
 
@@ -71,9 +74,18 @@ async createMany(dto: CreateImageDto, urls: string[]) {
     return this.imageRepo.save(image);
   }
 
-  async remove(id: number) {
-    const image = await this.findOne(id);
-    this.imageRepo.remove(image);
-    return { message : 'Image removed successfully' };
+
+async remove(id: number) {
+  const image = await this.findOne(id);
+  if (!image) throw new Error('Image not found');
+  const filePath = join(process.cwd(), image.url.replace(/^\//, ''));
+
+  if (await fileExists(filePath)) {
+    await removeFile(filePath);
   }
+
+  await this.imageRepo.remove(image);
+
+  return { message: 'Image removed successfully' };
+}
 }

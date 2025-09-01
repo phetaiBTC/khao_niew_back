@@ -1,14 +1,16 @@
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname, join } from 'path';
-import { BadRequestException, InternalServerErrorException } from '@nestjs/common';
+import {
+  BadRequestException,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { promises as fs } from 'fs';
 
 export const customUploadInterceptor = (
   folder: string,
   field = 'file',
   multiple = false,
-  maxCount = 10, // กำหนดจำนวนไฟล์สูงสุด
 ) => {
   const storage = diskStorage({
     destination: async (req, file, cb) => {
@@ -37,7 +39,10 @@ export const customUploadInterceptor = (
         }
       } catch (err) {
         console.error('Error checking file existence:', err);
-        cb(new InternalServerErrorException('Error checking file existence'), '');
+        cb(
+          new InternalServerErrorException('Error checking file existence'),
+          '',
+        );
       }
     },
   });
@@ -47,24 +52,33 @@ export const customUploadInterceptor = (
     limits: { fileSize: 1024 * 1024 * 2 }, // 2MB
     fileFilter: (req, file, cb) => {
       if (!file.mimetype.match(/\/(jpg|jpeg|png)$/)) {
-        return cb(new BadRequestException('Only image files are allowed!'), false);
+        return cb(
+          new BadRequestException('Only image files are allowed!'),
+          false,
+        );
       }
       cb(null, true);
     },
   };
 
-  // เลือก interceptor
   return multiple
-    ? FilesInterceptor(field, maxCount, options) // หลายไฟล์
-    : FileInterceptor(field, options);          // ไฟล์เดียว
+    ? FilesInterceptor(field, undefined, options)
+    : FileInterceptor(field, options);
 };
 
-// Helper function
-async function fileExists(filePath: string): Promise<boolean> {
+export async function fileExists(filePath: string): Promise<boolean> {
   try {
     await fs.access(filePath);
     return true;
   } catch (error) {
     return false;
+  }
+}
+
+export async function removeFile(filePath: string) {
+  try {
+    await fs.unlink(filePath);
+  } catch (err) {
+    console.error('Failed to delete file:', err);
   }
 }
