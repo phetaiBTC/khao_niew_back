@@ -22,21 +22,21 @@ export class ImageService {
     private readonly entertainmentRepo: Repository<Entertainment>,
   ) {}
 
-  async create(dto: CreateImageDto, url : string) {
-    const image = this.imageRepo.create({ url: url });
+async createMany(dto: CreateImageDto, urls: string[]) {
+  const images = urls.map(url => this.imageRepo.create({ url }));
 
-    if (dto.venueIds?.length) {
-      const venues = await this.venueRepo.findBy({ id: In(dto.venueIds) });
-      image.venues = venues;
-    }
-
-    if (dto.entertainmentIds?.length) {
-      const entertainments = await this.entertainmentRepo.findBy({ id: In(dto.entertainmentIds) });
-      image.entertainments = entertainments;
-    }
-
-    return this.imageRepo.save(image);
+  if (dto.venueIds?.length) {
+    const venues = await this.venueRepo.findBy({ id: In(dto.venueIds) });
+    images.forEach(img => (img.venues = venues));
   }
+
+  if (dto.entertainmentIds?.length) {
+    const entertainments = await this.entertainmentRepo.findBy({ id: In(dto.entertainmentIds) });
+    images.forEach(img => (img.entertainments = entertainments));
+  }
+
+  return this.imageRepo.save(images); // save หลาย record ได้
+}
 
   findAll() {
     return this.imageRepo.find({ relations: ['venues', 'entertainments'] });
@@ -73,6 +73,7 @@ export class ImageService {
 
   async remove(id: number) {
     const image = await this.findOne(id);
-    return this.imageRepo.remove(image);
+    this.imageRepo.remove(image);
+    return { message : 'Image removed successfully' };
   }
 }
