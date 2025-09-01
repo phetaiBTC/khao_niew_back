@@ -1,0 +1,46 @@
+{
+    "sourceFile": "src/modules/auth/auth.service.ts",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 7,
+            "patches": [
+                {
+                    "date": 1755938074633,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1755938194712,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -11,8 +11,9 @@\n     ) { }\r\n     async login(body: AuthDto) {\r\n         const user = await this.usersService.findOneByEmail(body.email)\r\n         // return user\r\n+        console.log()\r\n         const isValid = await bcryptUtil.compare(body.password, user.password)\r\n         if (!isValid) throw new Error('Invalid credentials')\r\n         const payload: PayloadDto = { id: user.id, username: user.username, role: user.role , company: user.companies.id}\r\n         return {\r\n"
+                },
+                {
+                    "date": 1755938216640,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -11,9 +11,10 @@\n     ) { }\r\n     async login(body: AuthDto) {\r\n         const user = await this.usersService.findOneByEmail(body.email)\r\n         // return user\r\n-        console.log()\r\n+        console.log(user)\r\n+        console.log(body.password, user.password)\r\n         const isValid = await bcryptUtil.compare(body.password, user.password)\r\n         if (!isValid) throw new Error('Invalid credentials')\r\n         const payload: PayloadDto = { id: user.id, username: user.username, role: user.role , company: user.companies.id}\r\n         return {\r\n"
+                },
+                {
+                    "date": 1755938222556,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -11,9 +11,9 @@\n     ) { }\r\n     async login(body: AuthDto) {\r\n         const user = await this.usersService.findOneByEmail(body.email)\r\n         // return user\r\n-        console.log(user)\r\n+        console.log(\"\",user)\r\n         console.log(body.password, user.password)\r\n         const isValid = await bcryptUtil.compare(body.password, user.password)\r\n         if (!isValid) throw new Error('Invalid credentials')\r\n         const payload: PayloadDto = { id: user.id, username: user.username, role: user.role , company: user.companies.id}\r\n"
+                },
+                {
+                    "date": 1755938229851,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -11,10 +11,10 @@\n     ) { }\r\n     async login(body: AuthDto) {\r\n         const user = await this.usersService.findOneByEmail(body.email)\r\n         // return user\r\n-        console.log(\"\",user)\r\n-        console.log(body.password, user.password)\r\n+        console.log(\"email\",user)\r\n+        console.log(\"\"body.password, user.password)\r\n         const isValid = await bcryptUtil.compare(body.password, user.password)\r\n         if (!isValid) throw new Error('Invalid credentials')\r\n         const payload: PayloadDto = { id: user.id, username: user.username, role: user.role , company: user.companies.id}\r\n         return {\r\n"
+                },
+                {
+                    "date": 1755938236211,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -12,9 +12,9 @@\n     async login(body: AuthDto) {\r\n         const user = await this.usersService.findOneByEmail(body.email)\r\n         // return user\r\n         console.log(\"email\",user)\r\n-        console.log(\"\"body.password, user.password)\r\n+        console.log(\"password \",body.password, user.password)\r\n         const isValid = await bcryptUtil.compare(body.password, user.password)\r\n         if (!isValid) throw new Error('Invalid credentials')\r\n         const payload: PayloadDto = { id: user.id, username: user.username, role: user.role , company: user.companies.id}\r\n         return {\r\n"
+                },
+                {
+                    "date": 1755938319248,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -14,8 +14,9 @@\n         // return user\r\n         console.log(\"email\",user)\r\n         console.log(\"password \",body.password, user.password)\r\n         const isValid = await bcryptUtil.compare(body.password, user.password)\r\n+        console.log(isValid)\r\n         if (!isValid) throw new Error('Invalid credentials')\r\n         const payload: PayloadDto = { id: user.id, username: user.username, role: user.role , company: user.companies.id}\r\n         return {\r\n             access_token: this.jwtService.sign(payload),\r\n"
+                },
+                {
+                    "date": 1755938518780,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -14,9 +14,9 @@\n         // return user\r\n         console.log(\"email\",user)\r\n         console.log(\"password \",body.password, user.password)\r\n         const isValid = await bcryptUtil.compare(body.password, user.password)\r\n-        console.log(\"\"isValid)\r\n+        console.log(\"\",isValid)\r\n         if (!isValid) throw new Error('Invalid credentials')\r\n         const payload: PayloadDto = { id: user.id, username: user.username, role: user.role , company: user.companies.id}\r\n         return {\r\n             access_token: this.jwtService.sign(payload),\r\n"
+                }
+            ],
+            "date": 1755938074633,
+            "name": "Commit-0",
+            "content": "import { Injectable } from '@nestjs/common';\r\nimport { AuthDto, PayloadDto } from './dto/auth.dto';\r\nimport { UsersService } from '../users/users.service';\r\nimport { bcryptUtil } from 'src/common/utils/bcrypt.util';\r\nimport { JwtService } from '@nestjs/jwt';\r\n@Injectable()\r\nexport class AuthService {\r\n    constructor(\r\n        readonly usersService: UsersService,\r\n        readonly jwtService: JwtService\r\n    ) { }\r\n    async login(body: AuthDto) {\r\n        const user = await this.usersService.findOneByEmail(body.email)\r\n        // return user\r\n        const isValid = await bcryptUtil.compare(body.password, user.password)\r\n        if (!isValid) throw new Error('Invalid credentials')\r\n        const payload: PayloadDto = { id: user.id, username: user.username, role: user.role , company: user.companies.id}\r\n        return {\r\n            access_token: this.jwtService.sign(payload),\r\n            role: user.role\r\n        }\r\n    }\r\n\r\n    async profile(id: number) {\r\n        const user = await this.usersService.findOne(id)\r\n        return user\r\n    }\r\n}\r\n"
+        }
+    ]
+}

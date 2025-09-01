@@ -1,0 +1,162 @@
+{
+    "sourceFile": "src/modules/check_in/entities/check_in.entity.ts",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 36,
+            "patches": [
+                {
+                    "date": 1755930843179,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1756305262037,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,1 +1,4 @@\n-export class CheckIn {}\r\n+export class CheckIn {\r\n+\r\n+    \r\n+}\r\n"
+                },
+                {
+                    "date": 1756305268925,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,4 +1,4 @@\n export class CheckIn {\r\n \r\n-    \r\n+    @\r\n }\r\n"
+                },
+                {
+                    "date": 1756305293386,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,4 +1,5 @@\n+\r\n export class CheckIn {\r\n \r\n     @\r\n }\r\n"
+                },
+                {
+                    "date": 1756305299215,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,5 +1,14 @@\n-\r\n+import {\r\n+  Entity,\r\n+  PrimaryGeneratedColumn,\r\n+  Column,\r\n+  ManyToOne,\r\n+  OneToOne,\r\n+  JoinColumn,\r\n+  CreateDateColumn,\r\n+  OneToMany\r\n+} from 'typeorm';\r\n export class CheckIn {\r\n \r\n     @\r\n }\r\n"
+                },
+                {
+                    "date": 1756305312776,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -8,7 +8,16 @@\n   CreateDateColumn,\r\n   OneToMany\r\n } from 'typeorm';\r\n export class CheckIn {\r\n+  @PrimaryGeneratedColumn()\r\n+  id: number;\r\n \r\n-    @\r\n+    @Column({ type: 'timestamp' })\r\n+    check_in_time: Date;\r\n+\r\n+    @Column({ type: 'timestamp', nullable: true })\r\n+    check_out_time: Date | null;\r\n+\r\n+    @ManyToOne(() => Booking, (booking) => booking.check_ins)\r\n+    booking: Booking;\r\n }\r\n"
+                },
+                {
+                    "date": 1756305319510,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -8,10 +8,10 @@\n   CreateDateColumn,\r\n   OneToMany\r\n } from 'typeorm';\r\n export class CheckIn {\r\n-  @PrimaryGeneratedColumn()\r\n-  id: number;\r\n+    @PrimaryGeneratedColumn()\r\n+    id: number;\r\n \r\n     @Column({ type: 'timestamp' })\r\n     check_in_time: Date;\r\n \r\n"
+                },
+                {
+                    "date": 1756305326488,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -12,12 +12,6 @@\n     @PrimaryGeneratedColumn()\r\n     id: number;\r\n \r\n     @Column({ type: 'timestamp' })\r\n-    check_in_time: Date;\r\n-\r\n-    @Column({ type: 'timestamp', nullable: true })\r\n-    check_out_time: Date | null;\r\n-\r\n-    @ManyToOne(() => Booking, (booking) => booking.check_ins)\r\n-    booking: Booking;\r\n+    \r\n }\r\n"
+                },
+                {
+                    "date": 1756305335113,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -12,6 +12,6 @@\n     @PrimaryGeneratedColumn()\r\n     id: number;\r\n \r\n     @Column({ type: 'timestamp' })\r\n-    \r\n+    date\r\n }\r\n"
+                },
+                {
+                    "date": 1756305530494,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -10,8 +10,8 @@\n } from 'typeorm';\r\n export class CheckIn {\r\n     @PrimaryGeneratedColumn()\r\n     id: number;\r\n-\r\n+    \r\n     @Column({ type: 'timestamp' })\r\n-    date\r\n+    date_scan: Date;\r\n }\r\n"
+                },
+                {
+                    "date": 1756305724918,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -10,8 +10,10 @@\n } from 'typeorm';\r\n export class CheckIn {\r\n     @PrimaryGeneratedColumn()\r\n     id: number;\r\n-    \r\n+    @OneToOne(() => Payment, { cascade: true })\r\n+      @JoinColumn()\r\n+      payment: Payment;\r\n     @Column({ type: 'timestamp' })\r\n     date_scan: Date;\r\n }\r\n"
+                },
+                {
+                    "date": 1756305730012,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -12,8 +12,8 @@\n     @PrimaryGeneratedColumn()\r\n     id: number;\r\n     @OneToOne(() => Payment, { cascade: true })\r\n       @JoinColumn()\r\n-      payment: Payment;\r\n+      paymd=ent: Payment;\r\n     @Column({ type: 'timestamp' })\r\n     date_scan: Date;\r\n }\r\n"
+                },
+                {
+                    "date": 1756305737793,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -10,10 +10,8 @@\n } from 'typeorm';\r\n export class CheckIn {\r\n     @PrimaryGeneratedColumn()\r\n     id: number;\r\n-    @OneToOne(() => Payment, { cascade: true })\r\n-      @JoinColumn()\r\n-      paymd=ent: Payment;\r\n+    \r\n     @Column({ type: 'timestamp' })\r\n     date_scan: Date;\r\n }\r\n"
+                },
+                {
+                    "date": 1756305747489,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -10,8 +10,10 @@\n } from 'typeorm';\r\n export class CheckIn {\r\n     @PrimaryGeneratedColumn()\r\n     id: number;\r\n-    \r\n+    @OneToOne(() => Payment, { cascade: true })\r\n+      @JoinColumn()\r\n+      booking: Payment;\r\n     @Column({ type: 'timestamp' })\r\n     date_scan: Date;\r\n }\r\n"
+                },
+                {
+                    "date": 1756305755355,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -7,13 +7,15 @@\n   JoinColumn,\r\n   CreateDateColumn,\r\n   OneToMany\r\n } from 'typeorm';\r\n+\r\n+\r\n export class CheckIn {\r\n     @PrimaryGeneratedColumn()\r\n     id: number;\r\n     @OneToOne(() => Payment, { cascade: true })\r\n       @JoinColumn()\r\n-      booking: Payment;\r\n+      booking_details: Payment;\r\n     @Column({ type: 'timestamp' })\r\n     date_scan: Date;\r\n }\r\n"
+                },
+                {
+                    "date": 1756305762093,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -7,10 +7,11 @@\n   JoinColumn,\r\n   CreateDateColumn,\r\n   OneToMany\r\n } from 'typeorm';\r\n-\r\n-\r\n+import { Payment } from '../../payment/entities/payment.entity';\r\n+import { ShardEntity } from 'src/common/entity/BaseEntity';\r\n+@Entity('check_in')\r\n export class CheckIn {\r\n     @PrimaryGeneratedColumn()\r\n     id: number;\r\n     @OneToOne(() => Payment, { cascade: true })\r\n"
+                },
+                {
+                    "date": 1756305774093,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -10,13 +10,13 @@\n } from 'typeorm';\r\n import { Payment } from '../../payment/entities/payment.entity';\r\n import { ShardEntity } from 'src/common/entity/BaseEntity';\r\n @Entity('check_in')\r\n-export class CheckIn {\r\n+export class CheckIn extends ShardEntity {\r\n     @PrimaryGeneratedColumn()\r\n     id: number;\r\n     @OneToOne(() => Payment, { cascade: true })\r\n       @JoinColumn()\r\n       booking_details: Payment;\r\n     @Column({ type: 'timestamp' })\r\n-    date_scan: Date;\r\n+    date_scan: ;\r\n }\r\n"
+                },
+                {
+                    "date": 1756305782602,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -17,6 +17,6 @@\n     @OneToOne(() => Payment, { cascade: true })\r\n       @JoinColumn()\r\n       booking_details: Payment;\r\n     @Column({ type: 'timestamp' })\r\n-    date_scan: ;\r\n+    date_scan:  ;\r\n }\r\n"
+                },
+                {
+                    "date": 1756305826277,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -16,7 +16,7 @@\n     id: number;\r\n     @OneToOne(() => Payment, { cascade: true })\r\n       @JoinColumn()\r\n       booking_details: Payment;\r\n-    @Column({ type: 'timestamp' })\r\n+    @CreateDateColumn()\r\n     date_scan:  ;\r\n }\r\n"
+                },
+                {
+                    "date": 1756305832228,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -16,7 +16,8 @@\n     id: number;\r\n     @OneToOne(() => Payment, { cascade: true })\r\n       @JoinColumn()\r\n       booking_details: Payment;\r\n+\r\n     @CreateDateColumn()\r\n-    date_scan:  ;\r\n+    date_scan:   ;\r\n }\r\n"
+                },
+                {
+                    "date": 1756305852428,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -15,9 +15,9 @@\n     @PrimaryGeneratedColumn()\r\n     id: number;\r\n     @OneToOne(() => Payment, { cascade: true })\r\n       @JoinColumn()\r\n-      booking_details: Payment;\r\n+    booking_details: Payment;\r\n \r\n     @CreateDateColumn()\r\n-    date_scan:   ;\r\n+    date_scan:  Date;\r\n }\r\n"
+                },
+                {
+                    "date": 1756305861210,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -7,9 +7,9 @@\n   JoinColumn,\r\n   CreateDateColumn,\r\n   OneToMany\r\n } from 'typeorm';\r\n-import { Payment } from '../../payment/entities/payment.entity';\r\n+import \r\n import { ShardEntity } from 'src/common/entity/BaseEntity';\r\n @Entity('check_in')\r\n export class CheckIn extends ShardEntity {\r\n     @PrimaryGeneratedColumn()\r\n"
+                },
+                {
+                    "date": 1756305868051,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -7,9 +7,9 @@\n   JoinColumn,\r\n   CreateDateColumn,\r\n   OneToMany\r\n } from 'typeorm';\r\n-import \r\n+import { BookingDetail } from 'src/modules/booking-details/entities/bookingDetails.entity';\r\n import { ShardEntity } from 'src/common/entity/BaseEntity';\r\n @Entity('check_in')\r\n export class CheckIn extends ShardEntity {\r\n     @PrimaryGeneratedColumn()\r\n"
+                },
+                {
+                    "date": 1756305874099,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -13,11 +13,11 @@\n @Entity('check_in')\r\n export class CheckIn extends ShardEntity {\r\n     @PrimaryGeneratedColumn()\r\n     id: number;\r\n-    @OneToOne(() => Payment, { cascade: true })\r\n+    @OneToOne(() => BookingDetail, { cascade: true })\r\n       @JoinColumn()\r\n-    booking_details: Payment;\r\n+    booking_details: BookingDetail;\r\n \r\n     @CreateDateColumn()\r\n     date_scan:  Date;\r\n }\r\n"
+                },
+                {
+                    "date": 1756307202478,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -19,5 +19,6 @@\n     booking_details: BookingDetail;\r\n \r\n     @CreateDateColumn()\r\n     date_scan:  Date;\r\n+    \r\n }\r\n"
+                },
+                {
+                    "date": 1756307210272,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -9,8 +9,9 @@\n   OneToMany\r\n } from 'typeorm';\r\n import { BookingDetail } from 'src/modules/booking-details/entities/bookingDetails.entity';\r\n import { ShardEntity } from 'src/common/entity/BaseEntity';\r\n+import {D}\r\n @Entity('check_in')\r\n export class CheckIn extends ShardEntity {\r\n     @PrimaryGeneratedColumn()\r\n     id: number;\r\n@@ -19,6 +20,7 @@\n     booking_details: BookingDetail;\r\n \r\n     @CreateDateColumn()\r\n     date_scan:  Date;\r\n-    \r\n+\r\n+\r\n }\r\n"
+                },
+                {
+                    "date": 1756307223691,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -9,9 +9,9 @@\n   OneToMany\r\n } from 'typeorm';\r\n import { BookingDetail } from 'src/modules/booking-details/entities/bookingDetails.entity';\r\n import { ShardEntity } from 'src/common/entity/BaseEntity';\r\n-import {D}\r\n+import {DetailsScan} from 'src/modules/details_scan/entities/details_scan.entity'\r\n @Entity('check_in')\r\n export class CheckIn extends ShardEntity {\r\n     @PrimaryGeneratedColumn()\r\n     id: number;\r\n@@ -21,6 +21,8 @@\n \r\n     @CreateDateColumn()\r\n     date_scan:  Date;\r\n \r\n+    \r\n \r\n+\r\n }\r\n"
+                },
+                {
+                    "date": 1756307243677,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -21,8 +21,15 @@\n \r\n     @CreateDateColumn()\r\n     date_scan:  Date;\r\n \r\n-    \r\n+    @OneToMany(() => DetailsScan, (detailsScan) => detailsScan.check_in)\r\n+     details_scans: DetailsScan[];\r\n \r\n+    @Column({ type: 'boolean', default: false })\r\n+    is_verified: boolean;\r\n \r\n+    @Column({ type: 'varchar', length: 255, nullable: true })\r\n+    notes: string;\r\n+\r\n+\r\n }\r\n"
+                },
+                {
+                    "date": 1756307256910,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -22,14 +22,5 @@\n     @CreateDateColumn()\r\n     date_scan:  Date;\r\n \r\n     @OneToMany(() => DetailsScan, (detailsScan) => detailsScan.check_in)\r\n-     details_scans: DetailsScan[];\r\n-\r\n-    @Column({ type: 'boolean', default: false })\r\n-    is_verified: boolean;\r\n-\r\n-    @Column({ type: 'varchar', length: 255, nullable: true })\r\n-    notes: string;\r\n-\r\n-\r\n-}\r\n+     details_scans: DetailsScan[]}\r\n"
+                },
+                {
+                    "date": 1756310435677,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -22,5 +22,7 @@\n     @CreateDateColumn()\r\n     date_scan:  Date;\r\n \r\n     @OneToMany(() => DetailsScan, (detailsScan) => detailsScan.check_in)\r\n-     details_scans: DetailsScan[]}\r\n+     details_scans: DetailsScan[]\r\n+    \r\n+    }\r\n"
+                },
+                {
+                    "date": 1756312289052,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -21,8 +21,8 @@\n \r\n     @CreateDateColumn()\r\n     date_scan:  Date;\r\n \r\n-    @OneToMany(() => DetailsScan, (detailsScan) => detailsScan.check_in)\r\n+    @OneToMany(() => DetailsScan, (detailsScan) => detailsScan.)\r\n      details_scans: DetailsScan[]\r\n     \r\n     }\r\n"
+                },
+                {
+                    "date": 1756312927096,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -21,8 +21,8 @@\n \r\n     @CreateDateColumn()\r\n     date_scan:  Date;\r\n \r\n-    @OneToMany(() => DetailsScan, (detailsScan) => detailsScan.)\r\n+    @OneToMany(() => DetailsScan, (detailsScan) => detailsScan.check_ins)\r\n      details_scans: DetailsScan[]\r\n     \r\n     }\r\n"
+                },
+                {
+                    "date": 1756313233729,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -22,7 +22,8 @@\n     @CreateDateColumn()\r\n     date_scan:  Date;\r\n \r\n     @OneToMany(() => DetailsScan, (detailsScan) => detailsScan.check_ins)\r\n+    \r\n      details_scans: DetailsScan[]\r\n     \r\n     }\r\n"
+                },
+                {
+                    "date": 1756313771586,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -21,9 +21,7 @@\n \r\n     @CreateDateColumn()\r\n     date_scan:  Date;\r\n \r\n-    @OneToMany(() => DetailsScan, (detailsScan) => detailsScan.check_ins)\r\n-    \r\n-     details_scans: DetailsScan[]\r\n-    \r\n+    @ManyToOne(() => DetailsScan, (detailsScan) => detailsScan.check_ins)\r\n+details_scan: DetailsScan;\r\n     }\r\n"
+                },
+                {
+                    "date": 1756387333346,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -22,6 +22,6 @@\n     @CreateDateColumn()\r\n     date_scan:  Date;\r\n \r\n     @ManyToOne(() => DetailsScan, (detailsScan) => detailsScan.check_ins)\r\n-details_scan: DetailsScan;\r\n+    details_scan: DetailsScan;\r\n     }\r\n"
+                },
+                {
+                    "date": 1756390782218,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -21,7 +21,7 @@\n \r\n     @CreateDateColumn()\r\n     date_scan:  Date;\r\n \r\n-    @ManyToOne(() => DetailsScan, (detailsScan) => detailsScan.check_ins)\r\n-    details_scan: DetailsScan;\r\n+  @OneToMany(() => CheckIn, (checkIn) => checkIn.detailsScan)\r\n+checkIns: CheckIn[];\r\n     }\r\n"
+                },
+                {
+                    "date": 1756390812031,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -21,7 +21,7 @@\n \r\n     @CreateDateColumn()\r\n     date_scan:  Date;\r\n \r\n-  @OneToMany(() => CheckIn, (checkIn) => checkIn.detailsScan)\r\n-checkIns: CheckIn[];\r\n+   @ManyToOne(() => DetailsScan, (detailsScan) => detailsScan.checkIns)\r\n+detailsScan: DetailsScan;\r\n     }\r\n"
+                }
+            ],
+            "date": 1755930843179,
+            "name": "Commit-0",
+            "content": "export class CheckIn {}\r\n"
+        }
+    ]
+}

@@ -1,0 +1,134 @@
+{
+    "sourceFile": "src/modules/booking/booking.module.ts",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 29,
+            "patches": [
+                {
+                    "date": 1755932280991,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1755932288721,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -2,9 +2,9 @@\n import { BookingService } from './booking.service';\r\n import { BookingController } from './booking.controller';\r\n \r\n @Module({\r\n-  import \r\n+  imports: ,\r\n   controllers: [BookingController],\r\n   providers: [BookingService],\r\n })\r\n export class BookingModule {}\r\n"
+                },
+                {
+                    "date": 1755932300546,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,10 +1,11 @@\n import { Module } from '@nestjs/common';\r\n import { BookingService } from './booking.service';\r\n import { BookingController } from './booking.controller';\r\n \r\n+\r\n @Module({\r\n-  imports: ,\r\n+  imports: [Ty],\r\n   controllers: [BookingController],\r\n   providers: [BookingService],\r\n })\r\n export class BookingModule {}\r\n"
+                },
+                {
+                    "date": 1755932308238,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,11 +1,11 @@\n import { Module } from '@nestjs/common';\r\n import { BookingService } from './booking.service';\r\n import { BookingController } from './booking.controller';\r\n+import { TypeOrmModule } from '@nestjs/typeorm';\r\n \r\n-\r\n @Module({\r\n-  imports: [Ty],\r\n+    imports: [TypeOrmModule.forFeature([Booking, Payment])],\r\n   controllers: [BookingController],\r\n   providers: [BookingService],\r\n })\r\n export class BookingModule {}\r\n"
+                },
+                {
+                    "date": 1755932316685,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,8 +1,10 @@\n import { Module } from '@nestjs/common';\r\n import { BookingService } from './booking.service';\r\n import { BookingController } from './booking.controller';\r\n import { TypeOrmModule } from '@nestjs/typeorm';\r\n+import { Booking } from './entities/booking.entity';\r\n+import { Payment } from './entities/payment.entity';\r\n \r\n @Module({\r\n     imports: [TypeOrmModule.forFeature([Booking, Payment])],\r\n   controllers: [BookingController],\r\n"
+                },
+                {
+                    "date": 1755932323624,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -5,9 +5,9 @@\n import { Booking } from './entities/booking.entity';\r\n import { Payment } from './entities/payment.entity';\r\n \r\n @Module({\r\n-    imports: [TypeOrmModule.forFeature([Booking, Payment])],\r\n+  imports: [TypeOrmModule.forFeature([Booking, Payment])],\r\n   controllers: [BookingController],\r\n   providers: [BookingService],\r\n })\r\n export class BookingModule {}\r\n"
+                },
+                {
+                    "date": 1755932333806,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -8,6 +8,7 @@\n @Module({\r\n   imports: [TypeOrmModule.forFeature([Booking, Payment])],\r\n   controllers: [BookingController],\r\n   providers: [BookingService],\r\n+  export \r\n })\r\n export class BookingModule {}\r\n"
+                },
+                {
+                    "date": 1755932339812,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -8,7 +8,7 @@\n @Module({\r\n   imports: [TypeOrmModule.forFeature([Booking, Payment])],\r\n   controllers: [BookingController],\r\n   providers: [BookingService],\r\n-  export \r\n+  exports:[]\r\n })\r\n export class BookingModule {}\r\n"
+                },
+                {
+                    "date": 1755932346796,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -8,7 +8,7 @@\n @Module({\r\n   imports: [TypeOrmModule.forFeature([Booking, Payment])],\r\n   controllers: [BookingController],\r\n   providers: [BookingService],\r\n-  exports:[]\r\n+  exports:[Booking]\r\n })\r\n export class BookingModule {}\r\n"
+                },
+                {
+                    "date": 1755932361775,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -8,7 +8,7 @@\n @Module({\r\n   imports: [TypeOrmModule.forFeature([Booking, Payment])],\r\n   controllers: [BookingController],\r\n   providers: [BookingService],\r\n-  exports:[Booking]\r\n+  exports:[BookingService,]\r\n })\r\n export class BookingModule {}\r\n"
+                },
+                {
+                    "date": 1755932367704,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -8,7 +8,7 @@\n @Module({\r\n   imports: [TypeOrmModule.forFeature([Booking, Payment])],\r\n   controllers: [BookingController],\r\n   providers: [BookingService],\r\n-  exports:[BookingService,]\r\n+  exports:[BookingService,Payment]\r\n })\r\n export class BookingModule {}\r\n"
+                },
+                {
+                    "date": 1755932373349,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -8,7 +8,7 @@\n @Module({\r\n   imports: [TypeOrmModule.forFeature([Booking, Payment])],\r\n   controllers: [BookingController],\r\n   providers: [BookingService],\r\n-  exports:[BookingService,Payment]\r\n+  exports:[BookingService]\r\n })\r\n export class BookingModule {}\r\n"
+                },
+                {
+                    "date": 1755940284509,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -2,9 +2,9 @@\n import { BookingService } from './booking.service';\r\n import { BookingController } from './booking.controller';\r\n import { TypeOrmModule } from '@nestjs/typeorm';\r\n import { Booking } from './entities/booking.entity';\r\n-import { Payment } from './entities/payment.entity';\r\n+import { Payment } from '../payment/entities/payment.entity';\r\n \r\n @Module({\r\n   imports: [TypeOrmModule.forFeature([Booking, Payment])],\r\n   controllers: [BookingController],\r\n"
+                },
+                {
+                    "date": 1755940320072,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -5,9 +5,9 @@\n import { Booking } from './entities/booking.entity';\r\n import { Payment } from '../payment/entities/payment.entity';\r\n \r\n @Module({\r\n-  imports: [TypeOrmModule.forFeature([Booking, Payment])],\r\n+  imports: [TypeOrmModule.forFeature([Booking])],\r\n   controllers: [BookingController],\r\n   providers: [BookingService],\r\n   exports:[BookingService]\r\n })\r\n"
+                },
+                {
+                    "date": 1755949210032,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -7,8 +7,18 @@\n \r\n @Module({\r\n   imports: [TypeOrmModule.forFeature([Booking])],\r\n   controllers: [BookingController],\r\n-  providers: [BookingService],\r\n+  providers: [BookingService \r\n+    providers: [\r\n+        {\r\n+            provide: 'StudentRepository',\r\n+            useClass: StudentRepositoryOrm\r\n+        },\r\n+        {\r\n+            provide: TRANSACTION_MANAGER_SERVICE,\r\n+            useClass: TransactionManagerService,\r\n+        },\r\n+  ],\r\n   exports:[BookingService]\r\n })\r\n export class BookingModule {}\r\n"
+                },
+                {
+                    "date": 1755949226656,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -7,10 +7,10 @@\n \r\n @Module({\r\n   imports: [TypeOrmModule.forFeature([Booking])],\r\n   controllers: [BookingController],\r\n-  providers: [BookingService \r\n-    providers: [\r\n+  providers: [BookingService ,\r\n+   \r\n         {\r\n             provide: 'StudentRepository',\r\n             useClass: StudentRepositoryOrm\r\n         },\r\n"
+                },
+                {
+                    "date": 1755949241776,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -11,9 +11,9 @@\n   providers: [BookingService ,\r\n    \r\n         {\r\n             provide: 'StudentRepository',\r\n-            useClass: StudentRepositoryOrm\r\n+            useClass: Book\r\n         },\r\n         {\r\n             provide: TRANSACTION_MANAGER_SERVICE,\r\n             useClass: TransactionManagerService,\r\n"
+                },
+                {
+                    "date": 1755949250309,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -11,9 +11,9 @@\n   providers: [BookingService ,\r\n    \r\n         {\r\n             provide: 'StudentRepository',\r\n-            useClass: Book\r\n+            useClass: BookingRepository\r\n         },\r\n         {\r\n             provide: TRANSACTION_MANAGER_SERVICE,\r\n             useClass: TransactionManagerService,\r\n"
+                },
+                {
+                    "date": 1755949297772,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -8,14 +8,9 @@\n @Module({\r\n   imports: [TypeOrmModule.forFeature([Booking])],\r\n   controllers: [BookingController],\r\n   providers: [BookingService ,\r\n-   \r\n         {\r\n-            provide: 'StudentRepository',\r\n-            useClass: BookingRepository\r\n-        },\r\n-        {\r\n             provide: TRANSACTION_MANAGER_SERVICE,\r\n             useClass: TransactionManagerService,\r\n         },\r\n   ],\r\n"
+                },
+                {
+                    "date": 1755949305009,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -9,9 +9,9 @@\n   imports: [TypeOrmModule.forFeature([Booking])],\r\n   controllers: [BookingController],\r\n   providers: [BookingService ,\r\n         {\r\n-            provide: TRANSACTION_MANAGER_SERVICE,\r\n+            provide: TRANSACTION_MANAGER_SERVICEE,\r\n             useClass: TransactionManagerService,\r\n         },\r\n   ],\r\n   exports:[BookingService]\r\n"
+                },
+                {
+                    "date": 1755949312683,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -3,15 +3,17 @@\n import { BookingController } from './booking.controller';\r\n import { TypeOrmModule } from '@nestjs/typeorm';\r\n import { Booking } from './entities/booking.entity';\r\n import { Payment } from '../payment/entities/payment.entity';\r\n+import { TRANSACTION_MANAGER_SERVICE } from 'src/common/constants/inject-key';\r\n+import { TransactionManagerService } from 'src/common/transaction/transaction.service';\r\n \r\n @Module({\r\n   imports: [TypeOrmModule.forFeature([Booking])],\r\n   controllers: [BookingController],\r\n   providers: [BookingService ,\r\n         {\r\n-            provide: TRANSACTION_MANAGER_SERVICEE,\r\n+            provide: TRANSACTION_MANAGER_SERVICE,\r\n             useClass: TransactionManagerService,\r\n         },\r\n   ],\r\n   exports:[BookingService]\r\n"
+                },
+                {
+                    "date": 1755954699870,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -7,9 +7,10 @@\n import { TRANSACTION_MANAGER_SERVICE } from 'src/common/constants/inject-key';\r\n import { TransactionManagerService } from 'src/common/transaction/transaction.service';\r\n \r\n @Module({\r\n-  imports: [TypeOrmModule.forFeature([Booking])],\r\n+  imports: [TypeOrmModule.forFeature([Booking]),\r\n+TransactionModule,],\r\n   controllers: [BookingController],\r\n   providers: [BookingService ,\r\n         {\r\n             provide: TRANSACTION_MANAGER_SERVICE,\r\n"
+                },
+                {
+                    "date": 1755954727361,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -5,11 +5,12 @@\n import { Booking } from './entities/booking.entity';\r\n import { Payment } from '../payment/entities/payment.entity';\r\n import { TRANSACTION_MANAGER_SERVICE } from 'src/common/constants/inject-key';\r\n import { TransactionManagerService } from 'src/common/transaction/transaction.service';\r\n+import { TransactionModule } from 'src/common/transaction/transaction.module';\r\n \r\n @Module({\r\n-  imports: [TypeOrmModule.forFeature([Booking]),\r\n+  imports: [TypeOrmModule.forFeature([Booking ,]),\r\n TransactionModule,],\r\n   controllers: [BookingController],\r\n   providers: [BookingService ,\r\n         {\r\n"
+                },
+                {
+                    "date": 1755954743019,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -8,9 +8,9 @@\n import { TransactionManagerService } from 'src/common/transaction/transaction.service';\r\n import { TransactionModule } from 'src/common/transaction/transaction.module';\r\n \r\n @Module({\r\n-  imports: [TypeOrmModule.forFeature([Booking ,]),\r\n+  imports: [TypeOrmModule.forFeature([Booking , Payment]),\r\n TransactionModule,],\r\n   controllers: [BookingController],\r\n   providers: [BookingService ,\r\n         {\r\n"
+                },
+                {
+                    "date": 1755958028499,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -8,9 +8,9 @@\n import { TransactionManagerService } from 'src/common/transaction/transaction.service';\r\n import { TransactionModule } from 'src/common/transaction/transaction.module';\r\n \r\n @Module({\r\n-  imports: [TypeOrmModule.forFeature([Booking , Payment]),\r\n+  imports: [TypeOrmModule.forFeature([Booking , Payment, Concert]),\r\n TransactionModule,],\r\n   controllers: [BookingController],\r\n   providers: [BookingService ,\r\n         {\r\n"
+                },
+                {
+                    "date": 1755958033853,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -6,11 +6,12 @@\n import { Payment } from '../payment/entities/payment.entity';\r\n import { TRANSACTION_MANAGER_SERVICE } from 'src/common/constants/inject-key';\r\n import { TransactionManagerService } from 'src/common/transaction/transaction.service';\r\n import { TransactionModule } from 'src/common/transaction/transaction.module';\r\n+import { Concert } from '../concerts/entities/concert.entity';\r\n \r\n @Module({\r\n-  imports: [TypeOrmModule.forFeature([Booking , Payment, Concert]),\r\n+  imports: [TypeOrmModule.forFeature([Booking , Payment, Concert,U]),\r\n TransactionModule,],\r\n   controllers: [BookingController],\r\n   providers: [BookingService ,\r\n         {\r\n"
+                },
+                {
+                    "date": 1755958039039,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -7,11 +7,12 @@\n import { TRANSACTION_MANAGER_SERVICE } from 'src/common/constants/inject-key';\r\n import { TransactionManagerService } from 'src/common/transaction/transaction.service';\r\n import { TransactionModule } from 'src/common/transaction/transaction.module';\r\n import { Concert } from '../concerts/entities/concert.entity';\r\n+import { User } from '../users/entities/user.entity';\r\n \r\n @Module({\r\n-  imports: [TypeOrmModule.forFeature([Booking , Payment, Concert,U]),\r\n+  imports: [TypeOrmModule.forFeature([Booking , Payment, Concert,User]),\r\n TransactionModule,],\r\n   controllers: [BookingController],\r\n   providers: [BookingService ,\r\n         {\r\n"
+                },
+                {
+                    "date": 1756226413971,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -8,9 +8,9 @@\n import { TransactionManagerService } from 'src/common/transaction/transaction.service';\r\n import { TransactionModule } from 'src/common/transaction/transaction.module';\r\n import { Concert } from '../concerts/entities/concert.entity';\r\n import { User } from '../users/entities/user.entity';\r\n-\r\n+import { BookingDetail } from './entities/bookingDetails.entity';\r\n @Module({\r\n   imports: [TypeOrmModule.forFeature([Booking , Payment, Concert,User]),\r\n TransactionModule,],\r\n   controllers: [BookingController],\r\n"
+                },
+                {
+                    "date": 1756226419982,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -10,9 +10,9 @@\n import { Concert } from '../concerts/entities/concert.entity';\r\n import { User } from '../users/entities/user.entity';\r\n import { BookingDetail } from './entities/bookingDetails.entity';\r\n @Module({\r\n-  imports: [TypeOrmModule.forFeature([Booking , Payment, Concert,User]),\r\n+  imports: [TypeOrmModule.forFeature([Booking , Payment, Concert,User,),\r\n TransactionModule,],\r\n   controllers: [BookingController],\r\n   providers: [BookingService ,\r\n         {\r\n"
+                },
+                {
+                    "date": 1756273438744,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -8,11 +8,11 @@\n import { TransactionManagerService } from 'src/common/transaction/transaction.service';\r\n import { TransactionModule } from 'src/common/transaction/transaction.module';\r\n import { Concert } from '../concerts/entities/concert.entity';\r\n import { User } from '../users/entities/user.entity';\r\n-import { BookingDetail } from './entities/bookingDetails.entity';\r\n+import { BookingDetail } from '../booking-details/entities/bookingDetails.entity';\r\n @Module({\r\n-  imports: [TypeOrmModule.forFeature([Booking , Payment, Concert,User,),\r\n+  imports: [TypeOrmModule.forFeature([Booking , Payment, Concert,User, BookingDetail]),\r\n TransactionModule,],\r\n   controllers: [BookingController],\r\n   providers: [BookingService ,\r\n         {\r\n"
+                }
+            ],
+            "date": 1755932280991,
+            "name": "Commit-0",
+            "content": "import { Module } from '@nestjs/common';\r\nimport { BookingService } from './booking.service';\r\nimport { BookingController } from './booking.controller';\r\n\r\n@Module({\r\n  import \r\n  controllers: [BookingController],\r\n  providers: [BookingService],\r\n})\r\nexport class BookingModule {}\r\n"
+        }
+    ]
+}

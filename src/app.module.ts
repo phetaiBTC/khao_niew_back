@@ -17,6 +17,9 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { RolesGuard } from './guards/role.guard';
 import { SeederModule } from './database/seeds/seeder.module';
+import { PaymentModule } from './modules/payment/payment.module';
+import { TransactionModule } from './common/transaction/transaction.module';
+import { BookingDetailsModule } from './modules/booking-details/booking-details.module';
 
 @Module({
   imports: [
@@ -28,7 +31,9 @@ import { SeederModule } from './database/seeds/seeder.module';
       rootPath: join(__dirname, '..', 'uploads'),
       serveRoot: '/uploads',
     }),
+    TransactionModule,
     TypeOrmConfig,
+
     UsersModule,
     EntertainmentsModule,
     CompaniesModule,
@@ -39,9 +44,10 @@ import { SeederModule } from './database/seeds/seeder.module';
     BookingModule,
     DetailsScanModule,
     AuthModule,
-    SeederModule
+    SeederModule,
+    PaymentModule,
+    BookingDetailsModule
   ],
-  controllers: [],
   providers: [
     {
       provide: APP_GUARD,

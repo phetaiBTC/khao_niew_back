@@ -1,0 +1,54 @@
+{
+    "sourceFile": "src/modules/concerts/entities/concert.entity.ts",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 9,
+            "patches": [
+                {
+                    "date": 1755933404135,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1755933413033,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,7 +1,7 @@\n import { ShardEntity } from 'src/common/entity/BaseEntity';\r\n import { Entertainment } from 'src/modules/entertainments/entities/entertainment.entity';\r\n-\r\n+import {}\r\n import { Venue } from 'src/modules/venue/entities/venue.entity';\r\n import {\r\n   Entity,\r\n   Column,\r\n"
+                },
+                {
+                    "date": 1755933422031,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,15 +1,16 @@\n import { ShardEntity } from 'src/common/entity/BaseEntity';\r\n import { Entertainment } from 'src/modules/entertainments/entities/entertainment.entity';\r\n-import {}\r\n+import { Booking } from 'src/modules/booking/entities/booking.entity';\r\n import { Venue } from 'src/modules/venue/entities/venue.entity';\r\n import {\r\n   Entity,\r\n   Column,\r\n   PrimaryGeneratedColumn,\r\n   ManyToOne,\r\n   ManyToMany,\r\n   JoinTable,\r\n+  Man\r\n } from 'typeorm';\r\n \r\n export enum EnumConcertStatus {\r\n   OPEN = 'open',\r\n"
+                },
+                {
+                    "date": 1755933427128,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -8,9 +8,8 @@\n   PrimaryGeneratedColumn,\r\n   ManyToOne,\r\n   ManyToMany,\r\n   JoinTable,\r\n-  Man\r\n } from 'typeorm';\r\n \r\n export enum EnumConcertStatus {\r\n   OPEN = 'open',\r\n"
+                },
+                {
+                    "date": 1755942355270,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -47,7 +47,8 @@\n   venue: Venue;\r\n \r\n   \r\n   @ManyToMany(() => Booking, booking => booking.concerts)\r\n+  bookings: Booking[];  @ManyToMany(() => Booking, booking => booking.concerts)\r\n   bookings: Booking[];\r\n }\r\n \r\n"
+                },
+                {
+                    "date": 1755942366159,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -46,9 +46,8 @@\n   @ManyToOne(() => Venue, (venue) => venue.concerts)\r\n   venue: Venue;\r\n \r\n   \r\n-  @ManyToMany(() => Booking, booking => booking.concerts)\r\n-  bookings: Booking[];  @ManyToMany(() => Booking, booking => booking.concerts)\r\n+@OneToMany(() => Booking, (booking) => booking.concert)\r\n   bookings: Booking[];\r\n }\r\n \r\n"
+                },
+                {
+                    "date": 1755942373245,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -8,8 +8,9 @@\n   PrimaryGeneratedColumn,\r\n   ManyToOne,\r\n   ManyToMany,\r\n   JoinTable,\r\n+  OneToMany\r\n } from 'typeorm';\r\n \r\n export enum EnumConcertStatus {\r\n   OPEN = 'open',\r\n"
+                },
+                {
+                    "date": 1755942426569,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -47,8 +47,8 @@\n   @ManyToOne(() => Venue, (venue) => venue.concerts)\r\n   venue: Venue;\r\n \r\n   \r\n-@OneToMany(() => Booking, (booking) => booking.concert)\r\n+@OneToMany(() => Booking, (booking) => booking.concertId)\r\n   bookings: Booking[];\r\n }\r\n \r\n"
+                },
+                {
+                    "date": 1755950565619,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -47,8 +47,8 @@\n   @ManyToOne(() => Venue, (venue) => venue.concerts)\r\n   venue: Venue;\r\n \r\n   \r\n-@OneToMany(() => Booking, (booking) => booking.concertId)\r\n+@OneToMany(() => Booking, (booking) => booking.conce)\r\n   bookings: Booking[];\r\n }\r\n \r\n"
+                },
+                {
+                    "date": 1755955933030,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -8,9 +8,9 @@\n   PrimaryGeneratedColumn,\r\n   ManyToOne,\r\n   ManyToMany,\r\n   JoinTable,\r\n-  OneToMany\r\n+  OneToMany,\r\n } from 'typeorm';\r\n \r\n export enum EnumConcertStatus {\r\n   OPEN = 'open',\r\n@@ -36,9 +36,13 @@\n \r\n   @Column('date')\r\n   date: string;\r\n \r\n-  @Column({ type: 'enum', enum: EnumConcertStatus, default: EnumConcertStatus.OPEN })\r\n+  @Column({\r\n+    type: 'enum',\r\n+    enum: EnumConcertStatus,\r\n+    default: EnumConcertStatus.OPEN,\r\n+  })\r\n   status: EnumConcertStatus;\r\n \r\n   @ManyToMany(() => Entertainment, (entertainment) => entertainment.concerts)\r\n   @JoinTable({ name: 'concert_entertainment' })\r\n@@ -46,9 +50,7 @@\n \r\n   @ManyToOne(() => Venue, (venue) => venue.concerts)\r\n   venue: Venue;\r\n \r\n-  \r\n-@OneToMany(() => Booking, (booking) => booking.conce)\r\n+  @OneToMany(() => Booking, (booking) => booking.concert)\r\n   bookings: Booking[];\r\n }\r\n-\r\n"
+                }
+            ],
+            "date": 1755933404135,
+            "name": "Commit-0",
+            "content": "import { ShardEntity } from 'src/common/entity/BaseEntity';\r\nimport { Entertainment } from 'src/modules/entertainments/entities/entertainment.entity';\r\n\r\nimport { Venue } from 'src/modules/venue/entities/venue.entity';\r\nimport {\r\n  Entity,\r\n  Column,\r\n  PrimaryGeneratedColumn,\r\n  ManyToOne,\r\n  ManyToMany,\r\n  JoinTable,\r\n} from 'typeorm';\r\n\r\nexport enum EnumConcertStatus {\r\n  OPEN = 'open',\r\n  CLOSE = 'close',\r\n  SOLD_OUT = 'sold_out',\r\n}\r\n@Entity()\r\nexport class Concert extends ShardEntity {\r\n  @PrimaryGeneratedColumn()\r\n  id: number;\r\n\r\n  @Column()\r\n  startTime: string;\r\n\r\n  @Column()\r\n  endTime: string;\r\n\r\n  @Column('int')\r\n  price: number;\r\n\r\n  @Column('int')\r\n  limit: number;\r\n\r\n  @Column('date')\r\n  date: string;\r\n\r\n  @Column({ type: 'enum', enum: EnumConcertStatus, default: EnumConcertStatus.OPEN })\r\n  status: EnumConcertStatus;\r\n\r\n  @ManyToMany(() => Entertainment, (entertainment) => entertainment.concerts)\r\n  @JoinTable({ name: 'concert_entertainment' })\r\n  entertainments: Entertainment[];\r\n\r\n  @ManyToOne(() => Venue, (venue) => venue.concerts)\r\n  venue: Venue;\r\n\r\n  \r\n  @ManyToMany(() => Booking, booking => booking.concerts)\r\n  bookings: Booking[];\r\n}\r\n\r\n"
+        }
+    ]
+}

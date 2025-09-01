@@ -1,0 +1,38 @@
+{
+    "sourceFile": "src/modules/check_in/check_in.controller.ts",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 5,
+            "patches": [
+                {
+                    "date": 1756306742366,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1756306749271,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -6,9 +6,9 @@\n @Controller('check-in')\r\n export class CheckInController {\r\n   constructor(private readonly checkInService: CheckInService) {}\r\n \r\n-  @Post('/')\r\n+  @Post('/id')\r\n   create(@Body() createCheckInDto: CreateCheckInDto) {\r\n     return this.checkInService.create(createCheckInDto);\r\n   }\r\n \r\n"
+                },
+                {
+                    "date": 1756306759307,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -6,9 +6,9 @@\n @Controller('check-in')\r\n export class CheckInController {\r\n   constructor(private readonly checkInService: CheckInService) {}\r\n \r\n-  @Post('/id')\r\n+  @Post('/check-in')\r\n   create(@Body() createCheckInDto: CreateCheckInDto) {\r\n     return this.checkInService.create(createCheckInDto);\r\n   }\r\n \r\n"
+                },
+                {
+                    "date": 1756306830363,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -6,9 +6,9 @@\n @Controller('check-in')\r\n export class CheckInController {\r\n   constructor(private readonly checkInService: CheckInService) {}\r\n \r\n-  @Post('/check-in')\r\n+  @Post('/cratecheck-in')\r\n   create(@Body() createCheckInDto: CreateCheckInDto) {\r\n     return this.checkInService.create(createCheckInDto);\r\n   }\r\n \r\n"
+                },
+                {
+                    "date": 1756307698571,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,14 +1,14 @@\n import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';\r\n import { CheckInService } from './check_in.service';\r\n import { CreateCheckInDto } from './dto/create-check_in.dto';\r\n import { UpdateCheckInDto } from './dto/update-check_in.dto';\r\n-\r\n+import \r\n @Controller('check-in')\r\n export class CheckInController {\r\n   constructor(private readonly checkInService: CheckInService) {}\r\n \r\n-  @Post('/cratecheck-in')\r\n+  @Post('/create-check-in')\r\n   create(@Body() createCheckInDto: CreateCheckInDto) {\r\n     return this.checkInService.create(createCheckInDto);\r\n   }\r\n \r\n"
+                },
+                {
+                    "date": 1756307723476,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,9 +1,9 @@\n import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';\r\n import { CheckInService } from './check_in.service';\r\n import { CreateCheckInDto } from './dto/create-check_in.dto';\r\n import { UpdateCheckInDto } from './dto/update-check_in.dto';\r\n-import \r\n+\r\n @Controller('check-in')\r\n export class CheckInController {\r\n   constructor(private readonly checkInService: CheckInService) {}\r\n \r\n"
+                }
+            ],
+            "date": 1756306742366,
+            "name": "Commit-0",
+            "content": "import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';\r\nimport { CheckInService } from './check_in.service';\r\nimport { CreateCheckInDto } from './dto/create-check_in.dto';\r\nimport { UpdateCheckInDto } from './dto/update-check_in.dto';\r\n\r\n@Controller('check-in')\r\nexport class CheckInController {\r\n  constructor(private readonly checkInService: CheckInService) {}\r\n\r\n  @Post('/')\r\n  create(@Body() createCheckInDto: CreateCheckInDto) {\r\n    return this.checkInService.create(createCheckInDto);\r\n  }\r\n\r\n  @Get()\r\n  findAll() {\r\n    return this.checkInService.findAll();\r\n  }\r\n\r\n  @Get(':id')\r\n  findOne(@Param('id') id: string) {\r\n    return this.checkInService.findOne(+id);\r\n  }\r\n\r\n  @Patch(':id')\r\n  update(@Param('id') id: string, @Body() updateCheckInDto: UpdateCheckInDto) {\r\n    return this.checkInService.update(+id, updateCheckInDto);\r\n  }\r\n\r\n  @Delete(':id')\r\n  remove(@Param('id') id: string) {\r\n    return this.checkInService.remove(+id);\r\n  }\r\n}\r\n"
+        }
+    ]
+}

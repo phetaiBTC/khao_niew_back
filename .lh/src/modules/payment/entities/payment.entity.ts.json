@@ -1,0 +1,54 @@
+{
+    "sourceFile": "src/modules/payment/entities/payment.entity.ts",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 9,
+            "patches": [
+                {
+                    "date": 1755955752792,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1755959605059,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -19,9 +19,9 @@\n \r\n   @Column({ type: 'float' })\r\n   amount: number;\r\n \r\n-  @Column({ type: 'datetime' })\r\n+  CreateDateColumn\r\n   payment_date: Date;\r\n \r\n   @Column({ type: 'enum', enum: PaymentStatus })\r\n   status: PaymentStatus;\r\n"
+                },
+                {
+                    "date": 1755959631872,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,5 +1,5 @@\n-import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn } from 'typeorm';\r\n+import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn ,} from 'typeorm';\r\n import { Booking } from '../../booking/entities/booking.entity';\r\n import { ShardEntity } from 'src/common/entity/BaseEntity';\r\n \r\n export enum PaymentStatus {\r\n@@ -19,9 +19,9 @@\n \r\n   @Column({ type: 'float' })\r\n   amount: number;\r\n \r\n-  CreateDateColumn\r\n+  @CreateDateColumn({ type: 'timestamp' })\r\n   payment_date: Date;\r\n \r\n   @Column({ type: 'enum', enum: PaymentStatus })\r\n   status: PaymentStatus;\r\n"
+                },
+                {
+                    "date": 1755959649437,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,5 +1,5 @@\n-import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn ,} from 'typeorm';\r\n+import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn ,CreateDateColumn} from 'typeorm';\r\n import { Booking } from '../../booking/entities/booking.entity';\r\n import { ShardEntity } from 'src/common/entity/BaseEntity';\r\n \r\n export enum PaymentStatus {\r\n"
+                },
+                {
+                    "date": 1756134167026,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,5 +1,12 @@\n-import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn ,CreateDateColumn} from 'typeorm';\r\n+import {\r\n+  Entity,\r\n+  PrimaryGeneratedColumn,\r\n+  Column,\r\n+  OneToOne,\r\n+  JoinColumn,\r\n+  CreateDateColumn,\r\n+} from 'typeorm';\r\n import { Booking } from '../../booking/entities/booking.entity';\r\n import { ShardEntity } from 'src/common/entity/BaseEntity';\r\n \r\n export enum PaymentStatus {\r\n@@ -13,16 +20,16 @@\n export class Payment extends ShardEntity {\r\n   @PrimaryGeneratedColumn()\r\n   id: number;\r\n \r\n-@OneToOne(() => Booking, (booking) => booking.payment)\r\n-booking: Booking;\r\n+  @OneToOne(() => Booking, (booking) => booking.payment)\r\n+  booking: Booking;\r\n \r\n   @Column({ type: 'float' })\r\n   amount: number;\r\n \r\n   @CreateDateColumn({ type: 'timestamp' })\r\n   payment_date: Date;\r\n \r\n   @Column({ type: 'enum', enum: PaymentStatus })\r\n\\ No newline at end of file\n-  status: PaymentStatus;\r\n-}\n+  status: PaymentStatus ;\r\n+}\r\n"
+                },
+                {
+                    "date": 1756134174867,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -30,6 +30,6 @@\n   @CreateDateColumn({ type: 'timestamp' })\r\n   payment_date: Date;\r\n \r\n   @Column({ type: 'enum', enum: PaymentStatus })\r\n-  status: PaymentStatus ;\r\n+  status: PaymentStatus;\r\n }\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1756134183369,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -29,7 +29,7 @@\n \r\n   @CreateDateColumn({ type: 'timestamp' })\r\n   payment_date: Date;\r\n \r\n-  @Column({ type: 'enum', enum: PaymentStatus })\r\n+  @Column({ type: 'enum', enum: PaymentStatus , default: PaymentStatus.PENDING })\r\n   status: PaymentStatus;\r\n }\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1756134217674,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -26,10 +26,8 @@\n \r\n   @Column({ type: 'float' })\r\n   amount: number;\r\n \r\n-  @CreateDateColumn({ type: 'timestamp' })\r\n-  payment_date: Date;\r\n \r\n   @Column({ type: 'enum', enum: PaymentStatus , default: PaymentStatus.PENDING })\r\n   status: PaymentStatus;\r\n }\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1756134224662,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -26,8 +26,5 @@\n \r\n   @Column({ type: 'float' })\r\n   amount: number;\r\n \r\n-\r\n-  @Column({ type: 'enum', enum: PaymentStatus , default: PaymentStatus.PENDING })\r\n-  status: PaymentStatus;\r\n }\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1756134283516,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -26,5 +26,10 @@\n \r\n   @Column({ type: 'float' })\r\n   amount: number;\r\n \r\n+  @CreateDateColumn({ type: 'timestamp' })\r\n+  payment_date: Date;\r\n+\r\n+  @Column({ type: 'enum', enum: PaymentStatus , default: PaymentStatus.PENDING })\r\n+  status: PaymentStatus;\r\n }\n\\ No newline at end of file\n"
+                }
+            ],
+            "date": 1755955752792,
+            "name": "Commit-0",
+            "content": "import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn } from 'typeorm';\r\nimport { Booking } from '../../booking/entities/booking.entity';\r\nimport { ShardEntity } from 'src/common/entity/BaseEntity';\r\n\r\nexport enum PaymentStatus {\r\n  PENDING = 'pending',\r\n  SUCCESS = 'success',\r\n  FAILED = 'failed',\r\n  REFUNDED = 'refunded',\r\n}\r\n\r\n@Entity('payment')\r\nexport class Payment extends ShardEntity {\r\n  @PrimaryGeneratedColumn()\r\n  id: number;\r\n\r\n@OneToOne(() => Booking, (booking) => booking.payment)\r\nbooking: Booking;\r\n\r\n  @Column({ type: 'float' })\r\n  amount: number;\r\n\r\n  @Column({ type: 'datetime' })\r\n  payment_date: Date;\r\n\r\n  @Column({ type: 'enum', enum: PaymentStatus })\r\n  status: PaymentStatus;\r\n}"
+        }
+    ]
+}

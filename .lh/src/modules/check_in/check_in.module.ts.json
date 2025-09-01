@@ -1,0 +1,74 @@
+{
+    "sourceFile": "src/modules/check_in/check_in.module.ts",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 14,
+            "patches": [
+                {
+                    "date": 1756306436726,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1756306447307,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,9 +1,16 @@\n import { Module } from '@nestjs/common';\r\n import { CheckInService } from './check_in.service';\r\n import { CheckInController } from './check_in.controller';\r\n-import \r\n+import { TypeOrmModule } from '@nestjs/typeorm';\r\n+import { CheckIn } from './entities/check_in.entity';\r\n+import { BookingDetail } from '../booking-details/entities/bookingDetails.entity';\r\n+import { BookingDetailsModule } from '../booking-details/booking-details.module';\r\n @Module({\r\n+  imports: [TypeOrmModule.forFeature([CheckIn, BookingDetail]),\r\n+  BookingDetailsModule],\r\n   controllers: [CheckInController],\r\n   providers: [CheckInService],\r\n+  exports:[CheckInService]\r\n })\r\n+\r\n export class CheckInModule {}\r\n"
+                },
+                {
+                    "date": 1756306465617,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -6,9 +6,9 @@\n import { BookingDetail } from '../booking-details/entities/bookingDetails.entity';\r\n import { BookingDetailsModule } from '../booking-details/booking-details.module';\r\n @Module({\r\n   imports: [TypeOrmModule.forFeature([CheckIn, BookingDetail]),\r\n-  BookingDetailsModule],\r\n+  BookingDetailsModule ,],\r\n   controllers: [CheckInController],\r\n   providers: [CheckInService],\r\n   exports:[CheckInService]\r\n })\r\n"
+                },
+                {
+                    "date": 1756307585604,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -4,11 +4,12 @@\n import { TypeOrmModule } from '@nestjs/typeorm';\r\n import { CheckIn } from './entities/check_in.entity';\r\n import { BookingDetail } from '../booking-details/entities/bookingDetails.entity';\r\n import { BookingDetailsModule } from '../booking-details/booking-details.module';\r\n+import { DetailsScan } from 'src/modules/details_scan/entities/details_scan.entity';\r\n @Module({\r\n   imports: [TypeOrmModule.forFeature([CheckIn, BookingDetail]),\r\n-  BookingDetailsModule ,],\r\n+  BookingDetailsModule],\r\n   controllers: [CheckInController],\r\n   providers: [CheckInService],\r\n   exports:[CheckInService]\r\n })\r\n"
+                },
+                {
+                    "date": 1756307638495,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -5,10 +5,11 @@\n import { CheckIn } from './entities/check_in.entity';\r\n import { BookingDetail } from '../booking-details/entities/bookingDetails.entity';\r\n import { BookingDetailsModule } from '../booking-details/booking-details.module';\r\n import { DetailsScan } from 'src/modules/details_scan/entities/details_scan.entity';\r\n+\r\n @Module({\r\n-  imports: [TypeOrmModule.forFeature([CheckIn, BookingDetail]),\r\n+  imports: [TypeOrmModule.forFeature([CheckIn, BookingDetail, DetailsScan]),\r\n   BookingDetailsModule],\r\n   controllers: [CheckInController],\r\n   providers: [CheckInService],\r\n   exports:[CheckInService]\r\n"
+                },
+                {
+                    "date": 1756307643857,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -5,9 +5,9 @@\n import { CheckIn } from './entities/check_in.entity';\r\n import { BookingDetail } from '../booking-details/entities/bookingDetails.entity';\r\n import { BookingDetailsModule } from '../booking-details/booking-details.module';\r\n import { DetailsScan } from 'src/modules/details_scan/entities/details_scan.entity';\r\n-\r\n+import {T}\r\n @Module({\r\n   imports: [TypeOrmModule.forFeature([CheckIn, BookingDetail, DetailsScan]),\r\n   BookingDetailsModule],\r\n   controllers: [CheckInController],\r\n"
+                },
+                {
+                    "date": 1756307667801,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -5,9 +5,11 @@\n import { CheckIn } from './entities/check_in.entity';\r\n import { BookingDetail } from '../booking-details/entities/bookingDetails.entity';\r\n import { BookingDetailsModule } from '../booking-details/booking-details.module';\r\n import { DetailsScan } from 'src/modules/details_scan/entities/details_scan.entity';\r\n-import {T}\r\n+import { TRANSACTION_MANAGER_SERVICE } from 'src/common/constants/inject-key';\r\n+import { TransactionManagerService } from 'src/common/transaction/transaction.service';\r\n+import { TransactionModule } from 'src/common/transaction/transaction.module';\r\n @Module({\r\n   imports: [TypeOrmModule.forFeature([CheckIn, BookingDetail, DetailsScan]),\r\n   BookingDetailsModule],\r\n   controllers: [CheckInController],\r\n"
+                },
+                {
+                    "date": 1756307676654,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -9,10 +9,10 @@\n import { TRANSACTION_MANAGER_SERVICE } from 'src/common/constants/inject-key';\r\n import { TransactionManagerService } from 'src/common/transaction/transaction.service';\r\n import { TransactionModule } from 'src/common/transaction/transaction.module';\r\n @Module({\r\n-  imports: [TypeOrmModule.forFeature([CheckIn, BookingDetail, DetailsScan]),\r\n-  BookingDetailsModule],\r\n+  imports: [TypeOrmModule.forFeature([CheckIn, BookingDetail, DetailsScan ,]),\r\n+  BookingDetailsModule,],\r\n   controllers: [CheckInController],\r\n   providers: [CheckInService],\r\n   exports:[CheckInService]\r\n })\r\n"
+                },
+                {
+                    "date": 1756307688052,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -10,11 +10,15 @@\n import { TransactionManagerService } from 'src/common/transaction/transaction.service';\r\n import { TransactionModule } from 'src/common/transaction/transaction.module';\r\n @Module({\r\n   imports: [TypeOrmModule.forFeature([CheckIn, BookingDetail, DetailsScan ,]),\r\n-  BookingDetailsModule,],\r\n+  BookingDetailsModule,\r\n+  TransactionModule,\r\n+],\r\n   controllers: [CheckInController],\r\n-  providers: [CheckInService],\r\n+  providers: [CheckInService ,\r\n+    \r\n+  ],\r\n   exports:[CheckInService]\r\n })\r\n \r\n export class CheckInModule {}\r\n"
+                },
+                {
+                    "date": 1756310699237,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -9,15 +9,18 @@\n import { TRANSACTION_MANAGER_SERVICE } from 'src/common/constants/inject-key';\r\n import { TransactionManagerService } from 'src/common/transaction/transaction.service';\r\n import { TransactionModule } from 'src/common/transaction/transaction.module';\r\n @Module({\r\n-  imports: [TypeOrmModule.forFeature([CheckIn, BookingDetail, DetailsScan ,]),\r\n+  imports: [TypeOrmModule.forFeature([CheckIn, BookingDetail, DetailsScan ),\r\n   BookingDetailsModule,\r\n   TransactionModule,\r\n ],\r\n   controllers: [CheckInController],\r\n   providers: [CheckInService ,\r\n-    \r\n+    {\r\n+        provide: TRANSACTION_MANAGER_SERVICE,\r\n+        useClass: TransactionManagerService,\r\n+    },\r\n   ],\r\n   exports:[CheckInService]\r\n })\r\n \r\n"
+                },
+                {
+                    "date": 1756310705687,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -9,9 +9,9 @@\n import { TRANSACTION_MANAGER_SERVICE } from 'src/common/constants/inject-key';\r\n import { TransactionManagerService } from 'src/common/transaction/transaction.service';\r\n import { TransactionModule } from 'src/common/transaction/transaction.module';\r\n @Module({\r\n-  imports: [TypeOrmModule.forFeature([CheckIn, BookingDetail, DetailsScan ),\r\n+  imports: [TypeOrmModule.forFeature([CheckIn, BookingDetail, DetailsScan [] ),\r\n   BookingDetailsModule,\r\n   TransactionModule,\r\n ],\r\n   controllers: [CheckInController],\r\n"
+                },
+                {
+                    "date": 1756310711570,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -9,9 +9,9 @@\n import { TRANSACTION_MANAGER_SERVICE } from 'src/common/constants/inject-key';\r\n import { TransactionManagerService } from 'src/common/transaction/transaction.service';\r\n import { TransactionModule } from 'src/common/transaction/transaction.module';\r\n @Module({\r\n-  imports: [TypeOrmModule.forFeature([CheckIn, BookingDetail, DetailsScan [] ),\r\n+  imports: [TypeOrmModule.forFeature([CheckIn, BookingDetail, DetailsScan ] ),\r\n   BookingDetailsModule,\r\n   TransactionModule,\r\n ],\r\n   controllers: [CheckInController],\r\n"
+                },
+                {
+                    "date": 1756391206473,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -10,8 +10,9 @@\n import { TransactionManagerService } from 'src/common/transaction/transaction.service';\r\n import { TransactionModule } from 'src/common/transaction/transaction.module';\r\n @Module({\r\n   imports: [TypeOrmModule.forFeature([CheckIn, BookingDetail, DetailsScan ] ),\r\n+  \r\n   BookingDetailsModule,\r\n   TransactionModule,\r\n ],\r\n   controllers: [CheckInController],\r\n"
+                },
+                {
+                    "date": 1756391214113,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -10,9 +10,9 @@\n import { TransactionManagerService } from 'src/common/transaction/transaction.service';\r\n import { TransactionModule } from 'src/common/transaction/transaction.module';\r\n @Module({\r\n   imports: [TypeOrmModule.forFeature([CheckIn, BookingDetail, DetailsScan ] ),\r\n-  \r\n+  Det\r\n   BookingDetailsModule,\r\n   TransactionModule,\r\n ],\r\n   controllers: [CheckInController],\r\n"
+                },
+                {
+                    "date": 1756391222712,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -8,11 +8,12 @@\n import { DetailsScan } from 'src/modules/details_scan/entities/details_scan.entity';\r\n import { TRANSACTION_MANAGER_SERVICE } from 'src/common/constants/inject-key';\r\n import { TransactionManagerService } from 'src/common/transaction/transaction.service';\r\n import { TransactionModule } from 'src/common/transaction/transaction.module';\r\n+import { DetailsScanModule } from '../details_scan/details_scan.module';\r\n @Module({\r\n   imports: [TypeOrmModule.forFeature([CheckIn, BookingDetail, DetailsScan ] ),\r\n-  Det\r\n+  DetailsScanModule,\r\n   BookingDetailsModule,\r\n   TransactionModule,\r\n ],\r\n   controllers: [CheckInController],\r\n"
+                }
+            ],
+            "date": 1756306436726,
+            "name": "Commit-0",
+            "content": "import { Module } from '@nestjs/common';\r\nimport { CheckInService } from './check_in.service';\r\nimport { CheckInController } from './check_in.controller';\r\nimport \r\n@Module({\r\n  controllers: [CheckInController],\r\n  providers: [CheckInService],\r\n})\r\nexport class CheckInModule {}\r\n"
+        }
+    ]
+}

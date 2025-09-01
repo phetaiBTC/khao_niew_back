@@ -24,6 +24,7 @@ export class ConcertsService {
     private entertainmentRepo: Repository<Entertainment>,
   ) {}
 
+
   async create(dto: CreateConcertDto) {
     const venue = await this.venueRepo.findOne({ where: { id: dto.venueId } });
     if (!venue) throw new NotFoundException('Venue not found');

@@ -1,0 +1,158 @@
+{
+    "sourceFile": "src/modules/booking/dto/create-booking.dto.ts",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 35,
+            "patches": [
+                {
+                    "date": 1755934990322,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1755935032940,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,4 +1,5 @@\n+\r\n export class CreateBookingDto {\r\n \r\n-    \r\n+\r\n }\r\n"
+                },
+                {
+                    "date": 1755935094544,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,5 +1,9 @@\n-\r\n+import { IsString, IsOptional, IsArray, IsNumber, IsEnum } from 'class-validator';\r\n export class CreateBookingDto {\r\n \r\n+ticket_quantity\r\n+unit_price\r\n \r\n+total_amount\r\n+booking_date\r\n }\r\n"
+                },
+                {
+                    "date": 1755936883384,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,9 +1,15 @@\n import { IsString, IsOptional, IsArray, IsNumber, IsEnum } from 'class-validator';\r\n+\r\n export class CreateBookingDto {\r\n+  @IsNumber()\r\n+  ticket_quantity: number;\r\n \r\n-ticket_quantity\r\n-unit_price\r\n+  @IsNumber()\r\n+  unit_price: number;\r\n \r\n-total_amount\r\n-booking_date\r\n-}\r\n+  @IsNumber()\r\n+  total_amount: number;\r\n+\r\n+  @IsString()\r\n+  booking_date: string; // or @IsDate() if you're using a date library like moment.js\r\n+}\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1755936889666,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,5 +1,5 @@\n-import { IsString, IsOptional, IsArray, IsNumber, IsEnum } from 'class-validator';\r\n+import { IsString, IsNumber } from 'class-validator';\r\n \r\n export class CreateBookingDto {\r\n   @IsNumber()\r\n   ticket_quantity: number;\r\n"
+                },
+                {
+                    "date": 1755936933512,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -8,8 +8,9 @@\n   unit_price: number;\r\n \r\n   @IsNumber()\r\n   total_amount: number;\r\n+  \r\n \r\n   @IsString()\r\n   booking_date: string; // or @IsDate() if you're using a date library like moment.js\r\n }\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1755940519786,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -8,9 +8,11 @@\n   unit_price: number;\r\n \r\n   @IsNumber()\r\n   total_amount: number;\r\n-  \r\n \r\n+  // @IsString()\r\n+  // payment: string;\r\n+\r\n   @IsString()\r\n   booking_date: string; // or @IsDate() if you're using a date library like moment.js\r\n }\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1755941216317,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -11,8 +11,8 @@\n   total_amount: number;\r\n \r\n   // @IsString()\r\n   // payment: string;\r\n-\r\n+  \r\n   @IsString()\r\n   booking_date: string; // or @IsDate() if you're using a date library like moment.js\r\n }\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1755941228567,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -11,8 +11,8 @@\n   total_amount: number;\r\n \r\n   // @IsString()\r\n   // payment: string;\r\n-  \r\n+  users\r\n   @IsString()\r\n   booking_date: string; // or @IsDate() if you're using a date library like moment.js\r\n }\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1755941263380,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -11,8 +11,9 @@\n   total_amount: number;\r\n \r\n   // @IsString()\r\n   // payment: string;\r\n+  @IsNumber()\r\n   users\r\n   @IsString()\r\n   booking_date: string; // or @IsDate() if you're using a date library like moment.js\r\n }\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1755941381418,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,19 +1,23 @@\n import { IsString, IsNumber } from 'class-validator';\r\n \r\n export class CreateBookingDto {\r\n+export class CreateBookingDto {\r\n   @IsNumber()\r\n   ticket_quantity: number;\r\n \r\n-  @IsNumber()\r\n+  @IsFloat()\r\n   unit_price: number;\r\n \r\n-  @IsNumber()\r\n+  @IsFloat()\r\n   total_amount: number;\r\n \r\n-  // @IsString()\r\n-  // payment: string;\r\n+  @IsDate()\r\n+  booking_date: Date;\r\n+\r\n   @IsNumber()\r\n-  users\r\n-  @IsString()\r\n-  booking_date: string; // or @IsDate() if you're using a date library like moment.js\r\n+  userId: number;\r\n+\r\n+  @IsNumber()\r\n+  concertId: number;\r\n+}\r\n }\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1755941390476,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,8 +1,7 @@\n-import { IsString, IsNumber } from 'class-validator';\r\n+import { IsString, IsNumber,IsFloat } from 'class-validator';\r\n \r\n export class CreateBookingDto {\r\n-export class CreateBookingDto {\r\n   @IsNumber()\r\n   ticket_quantity: number;\r\n \r\n   @IsFloat()\r\n"
+                },
+                {
+                    "date": 1755941395716,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,5 +1,5 @@\n-import { IsString, IsNumber,IsFloat } from 'class-validator';\r\n+import { IsString, IsNumber,IsFloat,IsDate } from 'class-validator';\r\n \r\n export class CreateBookingDto {\r\n   @IsNumber()\r\n   ticket_quantity: number;\r\n"
+                },
+                {
+                    "date": 1755941440584,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,14 +1,14 @@\n-import { IsString, IsNumber,IsFloat,IsDate } from 'class-validator';\r\n+import { IsString, IsNumber,IsNumber,IsDate } from 'class-validator';\r\n \r\n export class CreateBookingDto {\r\n   @IsNumber()\r\n   ticket_quantity: number;\r\n \r\n-  @IsFloat()\r\n+  @IsNumber()\r\n   unit_price: number;\r\n \r\n-  @IsFloat()\r\n+  @IsNumber()\r\n   total_amount: number;\r\n \r\n   @IsDate()\r\n   booking_date: Date;\r\n@@ -18,5 +18,4 @@\n \r\n   @IsNumber()\r\n   concertId: number;\r\n }\r\n-}\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1755942490670,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,5 +1,5 @@\n-import { IsString, IsNumber,IsNumber,IsDate } from 'class-validator';\r\n+import { IsString, IsNumber,IsDate } from 'class-validator';\r\n \r\n export class CreateBookingDto {\r\n   @IsNumber()\r\n   ticket_quantity: number;\r\n@@ -14,8 +14,8 @@\n   booking_date: Date;\r\n \r\n   @IsNumber()\r\n   userId: number;\r\n-\r\n+  \r\n   @IsNumber()\r\n   concertId: number;\r\n }\r\n"
+                },
+                {
+                    "date": 1755950080683,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,6 +1,6 @@\n import { IsString, IsNumber,IsDate } from 'class-validator';\r\n-\r\n+import \r\n export class CreateBookingDto {\r\n   @IsNumber()\r\n   ticket_quantity: number;\r\n \r\n"
+                },
+                {
+                    "date": 1755950087174,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,6 +1,6 @@\n import { IsString, IsNumber,IsDate } from 'class-validator';\r\n-import \r\n+import {Create}\r\n export class CreateBookingDto {\r\n   @IsNumber()\r\n   ticket_quantity: number;\r\n \r\n"
+                },
+                {
+                    "date": 1755950092970,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,7 +1,7 @@\n import { IsString, IsNumber,IsDate } from 'class-validator';\r\n-import {Create}\r\n-export class CreateBookingDto {\r\n+import { CreatePaymentDto } from 'src/modules/payment/dto/create-payment.dto';\r\n+export class CreateBookingDto  {\r\n   @IsNumber()\r\n   ticket_quantity: number;\r\n \r\n   @IsNumber()\r\n"
+                },
+                {
+                    "date": 1755950099346,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,7 +1,7 @@\n import { IsString, IsNumber,IsDate } from 'class-validator';\r\n import { CreatePaymentDto } from 'src/modules/payment/dto/create-payment.dto';\r\n-export class CreateBookingDto  {\r\n+export class CreateBookingDto ex {\r\n   @IsNumber()\r\n   ticket_quantity: number;\r\n \r\n   @IsNumber()\r\n"
+                },
+                {
+                    "date": 1755951384656,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,7 +1,7 @@\n import { IsString, IsNumber,IsDate } from 'class-validator';\r\n import { CreatePaymentDto } from 'src/modules/payment/dto/create-payment.dto';\r\n-export class CreateBookingDto ex {\r\n+export class CreateBookingDto extends CreatePaymentDto {\r\n   @IsNumber()\r\n   ticket_quantity: number;\r\n \r\n   @IsNumber()\r\n@@ -13,9 +13,9 @@\n   @IsDate()\r\n   booking_date: Date;\r\n \r\n   @IsNumber()\r\n-  userId: number;\r\n+  user: number;\r\n   \r\n   @IsNumber()\r\n   concertId: number;\r\n }\r\n"
+                },
+                {
+                    "date": 1755951391321,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -16,6 +16,6 @@\n   @IsNumber()\r\n   user: number;\r\n   \r\n   @IsNumber()\r\n-  concertId: number;\r\n+  concert: number;\r\n }\r\n"
+                },
+                {
+                    "date": 1755951403848,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -17,5 +17,7 @@\n   user: number;\r\n   \r\n   @IsNumber()\r\n   concert: number;\r\n+\r\n+  @\r\n }\r\n"
+                },
+                {
+                    "date": 1755951409877,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -18,6 +18,7 @@\n   \r\n   @IsNumber()\r\n   concert: number;\r\n \r\n-  @\r\n+  @IsNumber()\r\n+  payment: number;\r\n }\r\n"
+                },
+                {
+                    "date": 1755951418450,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -18,7 +18,6 @@\n   \r\n   @IsNumber()\r\n   concert: number;\r\n \r\n-  @IsNumber()\r\n-  payment: number;\r\n+ \r\n }\r\n"
+                },
+                {
+                    "date": 1755951685502,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -9,10 +9,10 @@\n \r\n   @IsNumber()\r\n   total_amount: number;\r\n \r\n-  @IsDate()\r\n-  booking_date: Date;\r\n+  @IsDateString()\r\n+booking_date: string;\r\n \r\n   @IsNumber()\r\n   user: number;\r\n   \r\n"
+                },
+                {
+                    "date": 1755951692401,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,5 +1,5 @@\n-import { IsString, IsNumber,IsDate } from 'class-validator';\r\n+import { IsString, IsNumber,IsDate ,IsDateString} from 'class-validator';\r\n import { CreatePaymentDto } from 'src/modules/payment/dto/create-payment.dto';\r\n export class CreateBookingDto extends CreatePaymentDto {\r\n   @IsNumber()\r\n   ticket_quantity: number;\r\n"
+                },
+                {
+                    "date": 1755951747835,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,7 +1,7 @@\n import { IsString, IsNumber,IsDate ,IsDateString} from 'class-validator';\r\n import { CreatePaymentDto } from 'src/modules/payment/dto/create-payment.dto';\r\n-export class CreateBookingDto extends CreatePaymentDto {\r\n+export class CreateBookingDto {\r\n   @IsNumber()\r\n   ticket_quantity: number;\r\n \r\n   @IsNumber()\r\n@@ -9,15 +9,15 @@\n \r\n   @IsNumber()\r\n   total_amount: number;\r\n \r\n-  @IsDateString()\r\n-booking_date: string;\r\n+  @IsDate()\r\n+  booking_date: Date;\r\n \r\n   @IsNumber()\r\n   user: number;\r\n   \r\n   @IsNumber()\r\n   concert: number;\r\n \r\n- \r\n-}\r\n+  payment: CreatePaymentDto; // <-- nested DTO\r\n+}\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1755954202300,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,7 +1,5 @@\n-import { IsString, IsNumber,IsDate ,IsDateString} from 'class-validator';\r\n-import { CreatePaymentDto } from 'src/modules/payment/dto/create-payment.dto';\r\n-export class CreateBookingDto {\r\n+export class CreateBookingDto extends CreatePaymentDto {\r\n   @IsNumber()\r\n   ticket_quantity: number;\r\n \r\n   @IsNumber()\r\n@@ -17,7 +15,5 @@\n   user: number;\r\n   \r\n   @IsNumber()\r\n   concert: number;\r\n-\r\n-  payment: CreatePaymentDto; // <-- nested DTO\r\n }\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1755954207751,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,4 +1,6 @@\n+import { IsString, IsNumber,IsDate ,IsDateString} from 'class-validator';\r\n+import { CreatePaymentDto } from 'src/modules/payment/dto/create-payment.dto';\r\n export class CreateBookingDto extends CreatePaymentDto {\r\n   @IsNumber()\r\n   ticket_quantity: number;\r\n \r\n"
+                },
+                {
+                    "date": 1755954337867,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,7 +1,9 @@\n-import { IsString, IsNumber,IsDate ,IsDateString} from 'class-validator';\r\n+import { IsNumber, IsDateString, ValidateNested } from 'class-validator';\r\n+import { Type } from 'class-transformer';\r\n import { CreatePaymentDto } from 'src/modules/payment/dto/create-payment.dto';\r\n-export class CreateBookingDto extends CreatePaymentDto {\r\n+\r\n+export class CreateBookingDto {\r\n   @IsNumber()\r\n   ticket_quantity: number;\r\n \r\n   @IsNumber()\r\n@@ -9,13 +11,17 @@\n \r\n   @IsNumber()\r\n   total_amount: number;\r\n \r\n-  @IsDate()\r\n-  booking_date: Date;\r\n+  @IsDateString()\r\n+  booking_date: string; // ISO string from JSON\r\n \r\n   @IsNumber()\r\n   user: number;\r\n   \r\n   @IsNumber()\r\n\\ No newline at end of file\n   concert: number;\r\n-}\n+\r\n+  @ValidateNested()\r\n+  @Type(() => CreatePaymentDto)\r\n+  payment: CreatePaymentDto;\r\n+}\r\n"
+                },
+                {
+                    "date": 1755955612938,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -20,8 +20,8 @@\n   \r\n   @IsNumber()\r\n   concert: number;\r\n \r\n-  @ValidateNested()\r\n-  @Type(() => CreatePaymentDto)\r\n+   @ValidateNested()\r\n+  @Type(() => CreatePaymentDto)   // 👈 tells class-transformer how to parse JSON into CreatePaymentDto\r\n\\ No newline at end of file\n   payment: CreatePaymentDto;\r\n-}\n+}\r\n"
+                },
+                {
+                    "date": 1755959716166,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -11,11 +11,8 @@\n \r\n   @IsNumber()\r\n   total_amount: number;\r\n \r\n-  @IsDateString()\r\n-  booking_date: string; // ISO string from JSON\r\n-\r\n   @IsNumber()\r\n   user: number;\r\n   \r\n   @IsNumber()\r\n@@ -23,5 +20,5 @@\n \r\n    @ValidateNested()\r\n   @Type(() => CreatePaymentDto)   // 👈 tells class-transformer how to parse JSON into CreatePaymentDto\r\n   payment: CreatePaymentDto;\r\n-}\n\\ No newline at end of file\n+}\r\n"
+                },
+                {
+                    "date": 1756133969168,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -9,11 +9,8 @@\n   @IsNumber()\r\n   unit_price: number;\r\n \r\n   @IsNumber()\r\n-  total_amount: number;\r\n-\r\n-  @IsNumber()\r\n   user: number;\r\n   \r\n   @IsNumber()\r\n   concert: number;\r\n"
+                },
+                {
+                    "date": 1756136116453,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -7,11 +7,8 @@\n   ticket_quantity: number;\r\n \r\n   @IsNumber()\r\n   unit_price: number;\r\n-\r\n-  @IsNumber()\r\n-  user: number;\r\n   \r\n   @IsNumber()\r\n   concert: number;\r\n \r\n"
+                },
+                {
+                    "date": 1756301965229,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -11,8 +11,5 @@\n   \r\n   @IsNumber()\r\n   concert: number;\r\n \r\n-   @ValidateNested()\r\n-  @Type(() => CreatePaymentDto)   // 👈 tells class-transformer how to parse JSON into CreatePaymentDto\r\n-  payment: CreatePaymentDto;\r\n }\r\n"
+                },
+                {
+                    "date": 1756302157400,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -4,11 +4,8 @@\n \r\n export class CreateBookingDto {\r\n   @IsNumber()\r\n   ticket_quantity: number;\r\n-\r\n-  @IsNumber()\r\n-  unit_price: number;\r\n   \r\n   @IsNumber()\r\n   concert: number;\r\n \r\n"
+                }
+            ],
+            "date": 1755934990322,
+            "name": "Commit-0",
+            "content": "export class CreateBookingDto {\r\n\r\n    \r\n}\r\n"
+        }
+    ]
+}
