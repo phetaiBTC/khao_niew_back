@@ -1,0 +1,34 @@
+{
+    "sourceFile": "src/modules/booking-details/entities/bookingDetails.entity.ts",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 4,
+            "patches": [
+                {
+                    "date": 1756738367020,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1756740227051,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -6,8 +6,15 @@\n   OneToOne\r\n } from 'typeorm';\r\n import { Booking } from '../../booking/entities/booking.entity';\r\n import { CheckIn } from 'src/modules/check_in/entities/check_in.entity';\r\n+\r\n+export enum PaymentStatus {\r\n+  PENDING = 'pending',\r\n+  SUCCESS = 'success',\r\n+  FAILED = 'failed',\r\n+  REFUNDED = 'refunded',\r\n+}\r\n @Entity('bookingdetail')\r\n export class BookingDetail {\r\n   @PrimaryGeneratedColumn()\r\n   id: number;\r\n"
+                },
+                {
+                    "date": 1756740235236,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -12,8 +12,9 @@\n   PENDING = 'pending',\r\n   SUCCESS = 'success',\r\n   FAILED = 'failed',\r\n   REFUNDED = 'refunded',\r\n+  \r\n }\r\n @Entity('bookingdetail')\r\n export class BookingDetail {\r\n   @PrimaryGeneratedColumn()\r\n"
+                },
+                {
+                    "date": 1756740248290,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -12,9 +12,9 @@\n   PENDING = 'pending',\r\n   SUCCESS = 'success',\r\n   FAILED = 'failed',\r\n   REFUNDED = 'refunded',\r\n-  CHECKUB\r\n+  CHECKU\r\n }\r\n @Entity('bookingdetail')\r\n export class BookingDetail {\r\n   @PrimaryGeneratedColumn()\r\n"
+                },
+                {
+                    "date": 1756740320859,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -8,12 +8,9 @@\n import { Booking } from '../../booking/entities/booking.entity';\r\n import { CheckIn } from 'src/modules/check_in/entities/check_in.entity';\r\n \r\n export enum PaymentStatus {\r\n-  PENDING = 'pending',\r\n-  SUCCESS = 'success',\r\n-  FAILED = 'failed',\r\n-  REFUNDED = 'refunded',\r\n+\r\n   CHECKED_IN = 'checked_in',\r\n   NOT_CHECKED_IN = 'not_checked_in',\r\n }\r\n @Entity('bookingdetail')\r\n"
+                }
+            ],
+            "date": 1756738367020,
+            "name": "Commit-0",
+            "content": "import {\r\n  Entity,\r\n  PrimaryGeneratedColumn,\r\n  Column,\r\n  ManyToOne,\r\n  OneToOne\r\n} from 'typeorm';\r\nimport { Booking } from '../../booking/entities/booking.entity';\r\nimport { CheckIn } from 'src/modules/check_in/entities/check_in.entity';\r\n@Entity('bookingdetail')\r\nexport class BookingDetail {\r\n  @PrimaryGeneratedColumn()\r\n  id: number;\r\n\r\n  @ManyToOne(() => Booking, (booking) => booking.details)\r\n  booking: Booking;\r\n\r\n   @OneToOne(() => CheckIn, (checkin) => checkin.booking_details)\r\n  check_in: CheckIn;\r\n\r\n  @Column({ type: 'boolean', default: false })\r\n  status: boolean;\r\n}\r\n"
+        }
+    ]
+}

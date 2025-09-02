@@ -1,0 +1,58 @@
+{
+    "sourceFile": "src/modules/booking/dto/update-booking.dto.ts",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 10,
+            "patches": [
+                {
+                    "date": 1756818568965,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1756818612795,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,7 +1,10 @@\n import { PartialType } from '@nestjs/mapped-types';\r\n import { CreateBookingDto } from './create-booking.dto';\r\n \r\n export class UpdateBookingDto extends PartialType(CreateBookingDto) {\r\n-\r\n-    \r\n+ @IsOptional()\r\n+    @IsEnum(EnumRole)\r\n+    readonly role?: EnumRole;\r\n+    paymentStatus?: string; // e.g. 'pending', 'success'\r\n+  detailsStatus?: string;\r\n }\r\n"
+                },
+                {
+                    "date": 1756818619274,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -4,7 +4,11 @@\n export class UpdateBookingDto extends PartialType(CreateBookingDto) {\r\n  @IsOptional()\r\n     @IsEnum(EnumRole)\r\n     readonly role?: EnumRole;\r\n+\r\n+     @IsOptional()\r\n+        @IsEnum(EnumRole)\r\n+        readonly role?: EnumRole;\r\n     paymentStatus?: string; // e.g. 'pending', 'success'\r\n   detailsStatus?: string;\r\n }\r\n"
+                },
+                {
+                    "date": 1756818625593,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,6 +1,7 @@\n import { PartialType } from '@nestjs/mapped-types';\r\n import { CreateBookingDto } from './create-booking.dto';\r\n+import { IsEnum, IsOptional } from 'class-validator';\r\n \r\n export class UpdateBookingDto extends PartialType(CreateBookingDto) {\r\n  @IsOptional()\r\n     @IsEnum(EnumRole)\r\n"
+                },
+                {
+                    "date": 1756818644967,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -3,9 +3,9 @@\n import { IsEnum, IsOptional } from 'class-validator';\r\n \r\n export class UpdateBookingDto extends PartialType(CreateBookingDto) {\r\n  @IsOptional()\r\n-    @IsEnum(EnumRole)\r\n+    @IsEnum(PaymentStatus)\r\n     readonly role?: EnumRole;\r\n \r\n      @IsOptional()\r\n         @IsEnum(EnumRole)\r\n"
+                },
+                {
+                    "date": 1756818651723,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,12 +1,13 @@\n import { PartialType } from '@nestjs/mapped-types';\r\n import { CreateBookingDto } from './create-booking.dto';\r\n import { IsEnum, IsOptional } from 'class-validator';\r\n+import { PaymentStatus } from 'src/modules/payment/entities/payment.entity';\r\n \r\n export class UpdateBookingDto extends PartialType(CreateBookingDto) {\r\n  @IsOptional()\r\n     @IsEnum(PaymentStatus)\r\n-    readonly role?: EnumRole;\r\n+    readonly paymentStatus?: PaymentStatus;\r\n \r\n      @IsOptional()\r\n         @IsEnum(EnumRole)\r\n         readonly role?: EnumRole;\r\n"
+                },
+                {
+                    "date": 1756818661981,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -10,7 +10,7 @@\n \r\n      @IsOptional()\r\n         @IsEnum(EnumRole)\r\n         readonly role?: EnumRole;\r\n-    paymentStatus?: string; // e.g. 'pending', 'success'\r\n+ \r\n   detailsStatus?: string;\r\n }\r\n"
+                },
+                {
+                    "date": 1756818675031,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -8,9 +8,9 @@\n     @IsEnum(PaymentStatus)\r\n     readonly paymentStatus?: PaymentStatus;\r\n \r\n      @IsOptional()\r\n-        @IsEnum(EnumRole)\r\n+        @IsEnum(DetailsStatus)\r\n         readonly role?: EnumRole;\r\n  \r\n   detailsStatus?: string;\r\n }\r\n"
+                },
+                {
+                    "date": 1756818682064,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,16 +1,15 @@\n import { PartialType } from '@nestjs/mapped-types';\r\n import { CreateBookingDto } from './create-booking.dto';\r\n import { IsEnum, IsOptional } from 'class-validator';\r\n import { PaymentStatus } from 'src/modules/payment/entities/payment.entity';\r\n+import { DetailsStatus } from 'src/modules/booking-details/entities/bookingDetails.entity';\r\n \r\n export class UpdateBookingDto extends PartialType(CreateBookingDto) {\r\n- @IsOptional()\r\n-    @IsEnum(PaymentStatus)\r\n-    readonly paymentStatus?: PaymentStatus;\r\n+  @IsOptional()\r\n+  @IsEnum(PaymentStatus)\r\n+  readonly paymentStatus?: PaymentStatus;\r\n \r\n-     @IsOptional()\r\n-        @IsEnum(DetailsStatus)\r\n-        readonly role?: EnumRole;\r\n- \r\n-  detailsStatus?: string;\r\n+  @IsOptional()\r\n+  @IsEnum(DetailsStatus)\r\n+  readonly detailsStatus?: DetailsStatus;\r\n }\r\n"
+                },
+                {
+                    "date": 1756819155146,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -4,8 +4,12 @@\n import { PaymentStatus } from 'src/modules/payment/entities/payment.entity';\r\n import { DetailsStatus } from 'src/modules/booking-details/entities/bookingDetails.entity';\r\n \r\n export class UpdateBookingDto extends PartialType(CreateBookingDto) {\r\n+\r\n+    @IsOptional()\r\n+        @IsNumber()\r\n+        readonly companyId: number;\r\n   @IsOptional()\r\n   @IsEnum(PaymentStatus)\r\n   readonly paymentStatus?: PaymentStatus;\r\n \r\n"
+                },
+                {
+                    "date": 1756819165641,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,15 +1,16 @@\n import { PartialType } from '@nestjs/mapped-types';\r\n import { CreateBookingDto } from './create-booking.dto';\r\n-import { IsEnum, IsOptional } from 'class-validator';\r\n+import { IsEnum, IsNumber, IsOptional } from 'class-validator';\r\n import { PaymentStatus } from 'src/modules/payment/entities/payment.entity';\r\n import { DetailsStatus } from 'src/modules/booking-details/entities/bookingDetails.entity';\r\n \r\n export class UpdateBookingDto extends PartialType(CreateBookingDto) {\r\n \r\n     @IsOptional()\r\n         @IsNumber()\r\n-        readonly companyId: number;\r\n+        readonly detailsId: number;\r\n+\r\n   @IsOptional()\r\n   @IsEnum(PaymentStatus)\r\n   readonly paymentStatus?: PaymentStatus;\r\n \r\n"
+                }
+            ],
+            "date": 1756818568965,
+            "name": "Commit-0",
+            "content": "import { PartialType } from '@nestjs/mapped-types';\r\nimport { CreateBookingDto } from './create-booking.dto';\r\n\r\nexport class UpdateBookingDto extends PartialType(CreateBookingDto) {\r\n\r\n    \r\n}\r\n"
+        }
+    ]
+}
