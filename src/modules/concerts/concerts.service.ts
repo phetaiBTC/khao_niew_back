@@ -80,10 +80,7 @@ export class ConcertsService {
     qb.leftJoinAndSelect('concert.venue', 'venue');
     qb.leftJoinAndSelect('concert.entertainments', 'entertainments');
     
-    if (query.order_by) {
-      const direction = query.order_by === 'ASC' ? 'ASC' : 'DESC';
-      qb.orderBy('concert.createdAt', direction);
-    }
+    qb.orderBy('concert.createdAt', query.order_by ? query.order_by : 'DESC');
 
     if (query.search) {
       qb.where('concert.date LIKE :search', {

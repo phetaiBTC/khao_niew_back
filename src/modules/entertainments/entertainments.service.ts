@@ -16,7 +16,7 @@ export class EntertainmentsService {
     @InjectRepository(Entertainment) private entRepo: Repository<Entertainment>,
     @InjectRepository(Image) private imageRepo: Repository<Image>,
     @InjectRepository(Concert) private concertRepo: Repository<Concert>,
-  ) {}
+  ) { }
 
   async create(dto: CreateEntertainmentDto) {
     const ent = this.entRepo.create({
@@ -44,10 +44,7 @@ export class EntertainmentsService {
   async findAll(query: PaginateDto): Promise<Pagination<Entertainment>> {
     const qb = this.entRepo.createQueryBuilder('entertainment');
 
-    if (query.order_by) {
-      const direction = query.order_by === OrderBy.ASC ? OrderBy.ASC : OrderBy.DESC;
-      qb.orderBy('entertainment.createdAt', direction);
-    }
+    qb.orderBy('entertainment.createdAt', query.order_by ? query.order_by : 'DESC');
 
     if (query.search) {
       qb.where('entertainment.title LIKE :search', {
