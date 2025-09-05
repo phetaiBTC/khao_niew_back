@@ -46,6 +46,7 @@ export class CompaniesService {
         search: `%${query.search}%`,
       });
     }
+    qb.orderBy('company.createdAt', query.order_by ? query.order_by : 'DESC');
     return await paginateUtil(qb, query);
   }
 

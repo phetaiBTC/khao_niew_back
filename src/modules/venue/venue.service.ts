@@ -38,18 +38,12 @@ export class VenueService {
     const qb = this.venueRepo.createQueryBuilder('venue');
     qb.leftJoinAndSelect('venue.images', 'images');
     qb.leftJoinAndSelect('venue.concerts', 'concerts');
-
-    if (query.order_by) {
-      const direction =
-        query.order_by === OrderBy.ASC ? OrderBy.ASC : OrderBy.DESC;
-      qb.orderBy('venue.createdAt', direction);
-    }
-
     if (query.search) {
       qb.where('venue.name LIKE :search', {
         search: `%${query.search}%`,
       });
     }
+    qb.orderBy('venue.createdAt', query.order_by ? query.order_by : 'DESC');
 
     return paginateUtil(qb, query);
   }
