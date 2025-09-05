@@ -5,18 +5,19 @@ import { UpdateConcertDto } from './dto/update-concert.dto';
 import { PaginateDto } from 'src/common/dto/paginate.dto';
 import { Concert } from './entities/concert.entity';
 import { Pagination } from 'src/common/interface/pagination.interface';
-
+import { Roles } from 'src/common/decorator/role.decorator';
+import { EnumRole } from '../users/entities/user.entity';
 @Controller('concerts')
 export class ConcertsController {
-  constructor(private readonly concertService: ConcertsService) {}
+  constructor(private readonly concertService: ConcertsService) { }
 
   @Post()
   create(@Body() dto: CreateConcertDto) {
     return this.concertService.create(dto);
   }
-
+  @Roles(EnumRole.ADMIN, EnumRole.COMPANY)
   @Get()
-  findAll(@Query() query:PaginateDto) :Promise<Pagination<Concert>> {
+  findAll(@Query() query: PaginateDto): Promise<Pagination<Concert>> {
     return this.concertService.findAll(query);
   }
 
