@@ -21,10 +21,10 @@ export class Venue extends ShardEntity {
   @Column()
   address: string;
 
-  @Column('decimal')
+  @Column()
   latitude: number;
 
-  @Column('decimal')
+  @Column()
   longitude: number;
 
   @ManyToMany(() => Image, (image) => image.venues)
