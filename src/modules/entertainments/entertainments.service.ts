@@ -43,7 +43,7 @@ export class EntertainmentsService {
 
   async findAll(query: PaginateDto): Promise<Pagination<Entertainment>> {
     const qb = this.entRepo.createQueryBuilder('entertainment');
-
+    qb.leftJoinAndSelect('entertainment.images', 'images');
     qb.orderBy('entertainment.createdAt', query.order_by ? query.order_by : 'DESC');
 
     if (query.search) {
