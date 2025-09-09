@@ -20,6 +20,7 @@ export class ConcertsController {
   findAll(@Query() query: PaginateDto): Promise<Pagination<Concert>> {
     return this.concertService.findAll(query);
   }
+  @Roles(EnumRole.ADMIN, EnumRole.COMPANY)
 
   @Get(':id')
   findOne(@Param('id') id: string) {
