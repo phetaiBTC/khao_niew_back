@@ -14,7 +14,8 @@ import { timeToNumber } from 'src/common/utils/timeToNumber';
 import { PaginateDto } from 'src/common/dto/paginate.dto';
 import { paginateUtil } from 'src/common/utils/paginate.util';
 import { Pagination } from 'src/common/interface/pagination.interface';
-
+import { Booking } from '../booking/entities/booking.entity';
+import { mapConcert } from './mapper/concerts.mapper';
 @Injectable()
 export class ConcertsService {
   constructor(
@@ -22,8 +23,8 @@ export class ConcertsService {
     @InjectRepository(Venue) private venueRepo: Repository<Venue>,
     @InjectRepository(Entertainment)
     private entertainmentRepo: Repository<Entertainment>,
+    @InjectRepository(Booking) private bookingRepo: Repository<Booking>,
   ) {}
-
 
   async create(dto: CreateConcertDto) {
     const venue = await this.venueRepo.findOne({ where: { id: dto.venueId } });
@@ -75,36 +76,50 @@ export class ConcertsService {
     return this.concertRepo.save(concert);
   }
 
-  async findAll( query: PaginateDto ): Promise<Pagination<Concert>> {
+  async findAll(query: PaginateDto) {
     const qb = this.concertRepo.createQueryBuilder('concert');
     qb.leftJoinAndSelect('concert.venue', 'venue');
     qb.leftJoinAndSelect('concert.entertainments', 'entertainments');
-    
-    if (query.order_by) {
-      const direction = query.order_by === 'ASC' ? 'ASC' : 'DESC';
-      qb.orderBy('concert.createdAt', direction);
-    }
+    qb.leftJoinAndSelect('entertainments.images', 'images');
+    qb.leftJoinAndSelect('concert.bookings', 'bookings');
 
     if (query.search) {
-      qb.where('concert.date LIKE :search', {
-        search: `%${query.search}%`,
-      });
+      qb.where('concert.date LIKE :search', { search: `%${query.search}%` });
     }
 
-    return await paginateUtil(qb, query);
+    const result = await paginateUtil(qb, query);
+
+    const formattedData = result.data.map((concert) => {
+      const total_ticket =
+        concert.bookings?.reduce((sum, b) => sum + b.ticket_quantity, 0) || 0;
+      return mapConcert(concert, total_ticket);
+    });
+    return { ...result, data: formattedData };
   }
 
   async findOne(id: number) {
-    const concert = await this.concertRepo.findOne({
-      where: { id },
-      relations: ['venue', 'entertainments'],
-    });
+    const concert = await this.concertRepo
+      .createQueryBuilder('concert')
+      .leftJoinAndSelect('concert.venue', 'venue')
+      .leftJoinAndSelect('concert.entertainments', 'entertainments')
+      .leftJoinAndSelect('entertainments.images', 'images')
+      .leftJoinAndSelect('concert.bookings', 'bookings')
+      .where('concert.id = :id', { id })
+      .getOne();
+
     if (!concert) throw new NotFoundException('Concert not found');
-    return concert;
+
+    const total_ticket =
+      concert.bookings?.reduce((sum, b) => sum + b.ticket_quantity, 0) || 0;
+
+    return mapConcert(concert, total_ticket);
   }
 
   async update(id: number, dto: UpdateConcertDto) {
-    const concert = await this.findOne(id);
+    const concert = await this.concertRepo.findOne({
+      where: { id },
+      relations: ['entertainments', 'venue'],
+    });
     if (!concert) throw new NotFoundException('Concert not found');
 
     const start = timeToNumber(dto.startTime ?? '');
@@ -150,7 +165,7 @@ export class ConcertsService {
   }
 
   async remove(id: number) {
-    const concert = await this.findOne(id);
-    return this.concertRepo.remove(concert);
+    const concerts = await this.concertRepo.findBy({ id });
+    return this.concertRepo.remove(concerts);
   }
 }

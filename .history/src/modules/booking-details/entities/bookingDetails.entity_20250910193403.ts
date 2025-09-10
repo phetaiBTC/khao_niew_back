@@ -7,7 +7,6 @@ import {
 } from 'typeorm';
 import { Booking } from '../../booking/entities/booking.entity';
 import { CheckIn } from 'src/modules/check_in/entities/check_in.entity';
-import { ShardEntity } from 'src/common/entity/BaseEntity';
 
 export enum DetailsStatus {
   CHECKED_IN = 'checked_in',

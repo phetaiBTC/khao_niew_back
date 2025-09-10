@@ -38,11 +38,13 @@ export class UsersService {
 
   async findAll(query: PaginateDto) {
     const qb = this.usersRepository.createQueryBuilder('user');
+    qb.leftJoinAndSelect('user.companies', 'companies');
     if (query.search) {
       qb.where('user.username LIKE :search OR user.email LIKE :search', {
         search: `%${query.search}%`,
       });
     }
+
     return paginateUtil(qb, query);
   }
 

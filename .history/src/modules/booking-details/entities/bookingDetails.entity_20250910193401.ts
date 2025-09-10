@@ -7,12 +7,15 @@ import {
 } from 'typeorm';
 import { Booking } from '../../booking/entities/booking.entity';
 import { CheckIn } from 'src/modules/check_in/entities/check_in.entity';
-import { ShardEntity } from 'src/common/entity/BaseEntity';
+<<<<<<< HEAD
 
 export enum DetailsStatus {
   CHECKED_IN = 'checked_in',
   NOT_CHECKED_IN = 'not_checked_in',
 }
+=======
+import { ShardEntity } from 'src/common/entity/BaseEntity';
+>>>>>>> master
 @Entity('bookingdetail')
 export class BookingDetail extends ShardEntity {
   @PrimaryGeneratedColumn()

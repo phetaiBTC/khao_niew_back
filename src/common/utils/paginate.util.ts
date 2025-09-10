@@ -1,5 +1,5 @@
 import { ObjectLiteral, SelectQueryBuilder } from 'typeorm';
-import { PaginateDto, PaginateDtoType } from '../dto/paginate.dto';
+import { OrderBy, PaginateDto, PaginateDtoType } from '../dto/paginate.dto';
 import { Pagination } from '../interface/pagination.interface';
 
 export async function paginateUtil<T extends ObjectLiteral>(
@@ -8,8 +8,8 @@ export async function paginateUtil<T extends ObjectLiteral>(
 ): Promise<Pagination<T>> {
   const page = options.page && options.page > 0 ? options.page : 1;
   const per_page = options.per_page && options.per_page > 0 ? options.per_page : 10;
+  qb.orderBy(`${qb.alias}.createdAt`, options.order_by ? options.order_by : OrderBy.DESC);
 
-  // ✅ ถ้า type = ALL → ดึงข้อมูลทั้งหมด ไม่แบ่งหน้า
   if (options.type === PaginateDtoType.ALL) {
     const data = await qb.getMany();
     return {
