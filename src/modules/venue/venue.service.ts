@@ -10,6 +10,7 @@ import { In } from 'typeorm';
 import { OrderBy, PaginateDto } from 'src/common/dto/paginate.dto';
 import { paginateUtil } from 'src/common/utils/paginate.util';
 import { Pagination } from 'src/common/interface/pagination.interface';
+import { mapVenue } from './mapper/venue.mapper';
 
 @Injectable()
 export class VenueService {
@@ -24,17 +25,21 @@ export class VenueService {
   async create(dto: CreateVenueDto) {
     const venue = this.venueRepo.create(dto);
 
+    if (await this.venueRepo.findOne({ where: { name: dto.name } })) {
+      throw new NotFoundException('Venue name already exists');
+    }
+
     if (dto.imageIds && dto.imageIds.length > 0) {
       const images = await this.imageRepo.find({
         where: { id: In(dto.imageIds) },
       });
       venue.images = images;
     }
-
-    return this.venueRepo.save(venue);
+    const result = this.venueRepo.save(venue);
+    return result;
   }
 
-  findAll(query: PaginateDto) :Promise<Pagination<Venue>> {
+  async findAll(query: PaginateDto): Promise<Pagination<Venue>> {
     const qb = this.venueRepo.createQueryBuilder('venue');
     qb.leftJoinAndSelect('venue.images', 'images');
     qb.leftJoinAndSelect('venue.concerts', 'concerts');
@@ -45,16 +50,23 @@ export class VenueService {
     }
     qb.orderBy('venue.createdAt', query.order_by ? query.order_by : 'DESC');
 
-    return paginateUtil(qb, query);
+    const result = await paginateUtil(qb, query);
+
+    const formatedData = result.data.map((venue) => mapVenue(venue));
+
+    return {
+      ...result,
+      data: formatedData,
+    };
   }
 
-  async findOne(id: number) {
+  async findOne(id: number) : Promise<Venue> {
     const venue = await this.venueRepo.findOne({
       where: { id },
       relations: ['images', 'concerts'],
     });
     if (!venue) throw new NotFoundException('Venue not found');
-    return venue;
+    return mapVenue(venue);
   }
 
   async update(id: number, dto: UpdateVenueDto) {

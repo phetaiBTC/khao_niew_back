@@ -17,7 +17,7 @@ export class ConcertsController {
   }
   @Roles(EnumRole.ADMIN, EnumRole.COMPANY)
   @Get()
-  findAll(@Query() query: PaginateDto): Promise<Pagination<Concert>> {
+  findAll(@Query() query: PaginateDto) {
     return this.concertService.findAll(query);
   }
   @Roles(EnumRole.ADMIN, EnumRole.COMPANY)
@@ -32,8 +32,8 @@ export class ConcertsController {
     return this.concertService.update(+id, dto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.concertService.remove(+id);
-  }
+  // @Delete(':id')
+  // remove(@Param('id') id: string) {
+  //   return this.concertService.remove(+id);
+  // }
 }

@@ -8,6 +8,7 @@ import { DetailsScan } from '../details_scan/entities/details_scan.entity';
 import { Repository, DataSource } from 'typeorm';
 import { TRANSACTION_MANAGER_SERVICE } from 'src/common/constants/inject-key';
 import type { ITransactionManager } from 'src/common/transaction/transaction.interface';
+import { PaymentStatus } from '../payment/entities/payment.entity';
 @Injectable()
 export class CheckInService {
   constructor(
@@ -63,7 +64,7 @@ export class CheckInService {
           // Update booking detail status
           bookingDetail.status = true;
           await manager.save(BookingDetail, bookingDetail);
-
+          
           // Get the company ID
           const companyId = bookingDetail.booking.user.companies.id;
 

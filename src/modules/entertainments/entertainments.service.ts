@@ -9,6 +9,7 @@ import { UpdateEntertainmentDto } from './dto/update-entertainment.dto';
 import { OrderBy, PaginateDto } from 'src/common/dto/paginate.dto';
 import { Pagination } from 'src/common/interface/pagination.interface';
 import { paginateUtil } from 'src/common/utils/paginate.util';
+import { mapEntertainment } from './mapper/entertainments.mapper';
 
 @Injectable()
 export class EntertainmentsService {
@@ -16,7 +17,7 @@ export class EntertainmentsService {
     @InjectRepository(Entertainment) private entRepo: Repository<Entertainment>,
     @InjectRepository(Image) private imageRepo: Repository<Image>,
     @InjectRepository(Concert) private concertRepo: Repository<Concert>,
-  ) { }
+  ) {}
 
   async create(dto: CreateEntertainmentDto) {
     const ent = this.entRepo.create({
@@ -34,7 +35,8 @@ export class EntertainmentsService {
       const concerts = await this.concertRepo.findBy({
         id: In(dto.concertIds),
       });
-      if (concerts.length == 0) throw new NotFoundException('concerts not found');
+      if (concerts.length == 0)
+        throw new NotFoundException('concerts not found');
       ent.concerts = concerts;
     }
 
@@ -44,23 +46,30 @@ export class EntertainmentsService {
   async findAll(query: PaginateDto): Promise<Pagination<Entertainment>> {
     const qb = this.entRepo.createQueryBuilder('entertainment');
     qb.leftJoinAndSelect('entertainment.images', 'images');
-    qb.orderBy('entertainment.createdAt', query.order_by ? query.order_by : 'DESC');
 
     if (query.search) {
       qb.where('entertainment.title LIKE :search', {
         search: `%${query.search}%`,
       });
     }
-    return paginateUtil(qb, query);
+    const result = await paginateUtil(qb, query);
+    const formatedData = await result.data.map((ent) => mapEntertainment(ent));
+
+    return {
+      ...result,
+      data: formatedData,
+    };
   }
 
-  async findOne(id: number) {
+  async findOne(id: number): Promise<Entertainment> {
     const ent = await this.entRepo.findOne({
       where: { id },
       relations: ['images', 'concerts'],
     });
     if (!ent) throw new NotFoundException('Entertainment not found');
-    return ent;
+
+    const mappedEnt = await mapEntertainment(ent);
+    return mappedEnt;
   }
 
   async update(id: number, dto: UpdateEntertainmentDto) {

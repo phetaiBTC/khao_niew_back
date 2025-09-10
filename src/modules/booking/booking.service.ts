@@ -132,9 +132,6 @@ export class BookingService {
       queryBuilder.andWhere('payment.status = :status', { status });
     }
 
-    // Add ordering
-    queryBuilder.orderBy('booking.booking_date', 'DESC');
-
     // Use paginateUtil for pagination
     return paginateUtil(queryBuilder, query);
   }

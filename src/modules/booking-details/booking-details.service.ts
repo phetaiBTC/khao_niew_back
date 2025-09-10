@@ -31,12 +31,6 @@ export class BookingDetailsService {
         });
       }
 
-      // Add ordering by booking date desc
-      qb.orderBy('booking.booking_date', 'DESC');
-
-      // Debug log the generated query
-      console.log('Generated SQL:', qb.getSql());
-
       return await paginateUtil(qb, query);
     } catch (error) {
       console.error('Error in getBookingDetails service:', error);
