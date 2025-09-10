@@ -44,7 +44,7 @@ export class UsersService {
         search: `%${query.search}%`,
       });
     }
-    qb.orderBy('user.createdAt', query.order_by ? query.order_by : 'DESC');
+
     return paginateUtil(qb, query);
   }
 

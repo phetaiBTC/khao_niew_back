@@ -26,7 +26,7 @@ export class VenueController {
   }
 
   @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: number) {
+  findOne(@Param('id', ParseIntPipe) id: number) : Promise<Venue> {
     return this.venueService.findOne(id);
   }
 

@@ -29,7 +29,6 @@ export class Booking extends ShardEntity {
   @Column({ type: 'float' })
   total_amount: number;
 
-
   @CreateDateColumn()
   booking_date: Date;
 

@@ -8,8 +8,8 @@ export async function paginateUtil<T extends ObjectLiteral>(
 ): Promise<Pagination<T>> {
   const page = options.page && options.page > 0 ? options.page : 1;
   const per_page = options.per_page && options.per_page > 0 ? options.per_page : 10;
-  // if(!options.order_by) qb.orderBy('createdAt', OrderBy.DESC);
-  // ✅ ถ้า type = ALL → ดึงข้อมูลทั้งหมด ไม่แบ่งหน้า
+  qb.orderBy(`${qb.alias}.createdAt`, options.order_by ? options.order_by : OrderBy.DESC);
+
   if (options.type === PaginateDtoType.ALL) {
     const data = await qb.getMany();
     return {

@@ -21,7 +21,7 @@ export class EntertainmentsController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id') id: string) : Promise<Entertainment> {
     return this.entService.findOne(+id);
   }
 

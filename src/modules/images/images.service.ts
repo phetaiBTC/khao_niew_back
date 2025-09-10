@@ -7,8 +7,12 @@ import { Venue } from '../venue/entities/venue.entity';
 import { Entertainment } from '../entertainments/entities/entertainment.entity';
 import { CreateImageDto } from './dto/create-image.dto';
 import { UpdateImageDto } from './dto/update-image.dto';
-import { fileExists, removeFile } from 'src/common/interceptors/upload-image.interceptor';
+import {
+  fileExists,
+  removeFile,
+} from 'src/common/interceptors/upload-image.interceptor';
 import { join } from 'path';
+import { mapImage } from './mapper/images.mapper';
 
 @Injectable()
 export class ImageService {
@@ -41,8 +45,11 @@ export class ImageService {
     return this.imageRepo.save(images); // save หลาย record ได้
   }
 
-  findAll() {
-    return this.imageRepo.find({ relations: ['venues', 'entertainments'] });
+  async findAll(): Promise<Image[]> {
+    const images = await this.imageRepo.find({
+      relations: ['venues', 'entertainments'],
+    });
+    return images.map((img) => mapImage(img));
   }
 
   async findOne(id: number) {
@@ -51,7 +58,7 @@ export class ImageService {
       relations: ['venues', 'entertainments'],
     });
     if (!image) throw new NotFoundException('Image not found');
-    return image;
+    return mapImage(image);
   }
 
   async update(id: number, dto: UpdateImageDto, url: string) {
@@ -74,18 +81,17 @@ export class ImageService {
     return this.imageRepo.save(image);
   }
 
+  async remove(id: number) {
+    const image = await this.findOne(id);
+    if (!image) throw new Error('Image not found');
+    const filePath = join(process.cwd(), image.url.replace(/^\//, ''));
 
-async remove(id: number) {
-  const image = await this.findOne(id);
-  if (!image) throw new Error('Image not found');
-  const filePath = join(process.cwd(), image.url.replace(/^\//, ''));
+    if (await fileExists(filePath)) {
+      await removeFile(filePath);
+    }
 
-  if (await fileExists(filePath)) {
-    await removeFile(filePath);
+    await this.imageRepo.remove(image);
+
+    return { message: 'Image removed successfully' };
   }
-
-  await this.imageRepo.remove(image);
-
-  return { message: 'Image removed successfully' };
-}
 }
