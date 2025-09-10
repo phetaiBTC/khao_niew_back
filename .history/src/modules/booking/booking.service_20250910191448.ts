@@ -114,8 +114,8 @@ export class BookingService {
     }
   }
 
-  async findAll(query: BookingPaginateDto ,userId?: string) {
-    const { status , companyId ,order_by} = query;
+  async findAll(query: BookingPaginateDto) {
+    const { status , companyId} = query;
 
     const queryBuilder = this.bookingRepository
       .createQueryBuilder('booking')
@@ -129,18 +129,12 @@ export class BookingService {
     if (status) {
       queryBuilder.andWhere('payment.status = :status', { status });
     }
-    if (companyId) {
-      queryBuilder.andWhere('companies.id = :companyId', { companyId });
-    }
-    if (userId) {
-      queryBuilder.andWhere('user.id = :userId', { userId });
-    }
 
-    // // Add ordering
-    // queryBuilder.orderBy('booking.booking_date', order_by || 'DESC');
+    // Add ordering
+    queryBuilder.orderBy('booking.booking_date', 'DESC');
 
     // Use paginateUtil for pagination
-    return paginateUtil(queryBuilder, query );
+    return paginateUtil(queryBuilder, query);
   }
 
   async findOne(id: number) {

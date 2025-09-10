@@ -19,7 +19,7 @@ export class BookingController {
 
   @Get( '/all-bookings')
   findAll(@Query() query:BookingPaginateDto ,@AuthProfile('id') userId: string) {
-    return this.bookingService.findAll(query, userId);
+    return this.bookingService.findAll(query);
   }
 
   @Get('/get-one/:id')

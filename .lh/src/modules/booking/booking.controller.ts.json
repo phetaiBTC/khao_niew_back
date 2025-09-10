@@ -1,0 +1,22 @@
+{
+    "sourceFile": "src/modules/booking/booking.controller.ts",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 1,
+            "patches": [
+                {
+                    "date": 1757506703292,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1757506710054,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -17,9 +17,9 @@\n     return this.bookingService.create(createBookingDto, userId);\r\n   }\r\n \r\n   @Get( '/all-bookings')\r\n-  findAll(@Query() query:BookingPaginateDto .) {\r\n+  findAll(@Query() query:BookingPaginateDto ,@AuthProfile('id') userId: string) {\r\n     return this.bookingService.findAll(query);\r\n   }\r\n \r\n   @Get('/get-one/:id')\r\n"
+                }
+            ],
+            "date": 1757506703292,
+            "name": "Commit-0",
+            "content": "import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query } from '@nestjs/common';\r\nimport { BookingService } from './booking.service';\r\nimport { CreateBookingDto } from './dto/create-booking.dto';\r\nimport { UpdateBookingDto } from './dto/update-booking.dto';\r\nimport { JwtAuthGuard } from 'src/guards/auth.guard';\r\nimport { AuthProfile } from 'src/common/decorator/user.decorator';\r\nimport { PaginateDto } from 'src/common/dto/paginate.dto';\r\nimport { BookingPaginateDto } from './dto/booking-paginate.dto';\r\n\r\n@Controller('booking')\r\n@UseGuards(JwtAuthGuard)\r\nexport class BookingController {\r\n  constructor(private readonly bookingService: BookingService) {}\r\n\r\n  @Post('/create')\r\n  create(@Body() createBookingDto: CreateBookingDto, @AuthProfile('id') userId: string) {\r\n    return this.bookingService.create(createBookingDto, userId);\r\n  }\r\n\r\n  @Get( '/all-bookings')\r\n  findAll(@Query() query:BookingPaginateDto .) {\r\n    return this.bookingService.findAll(query);\r\n  }\r\n\r\n  @Get('/get-one/:id')\r\n  findOne(@Param('id') id: number) {\r\n    return this.bookingService.findOne(+id);\r\n  }  \r\n\r\n@Patch('update-booking/:id')\r\nasync update(@Param('id') id: number, @Body() updateBookingDto: UpdateBookingDto) {\r\n  try {\r\n    return await this.bookingService.update(+id, updateBookingDto);\r\n  } catch (error) {\r\n    console.error('Update error:', error);\r\n    throw error;\r\n  }\r\n}\r\n  @Delete('delete-booking/:id')\r\n  delete(@Param('id') id: number) {\r\n    return this.bookingService.delete(id);\r\n  }\r\n\r\n\r\n}\r\n"
+        }
+    ]
+}

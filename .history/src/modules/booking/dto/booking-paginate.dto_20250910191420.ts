@@ -10,6 +10,5 @@ export class BookingPaginateDto extends PartialType(PaginateDto) {
         @IsEnum(PaymentStatus)
         status?: PaymentStatus;
         
-        @IsOptional()
         companyId?: number;
 }

@@ -136,11 +136,11 @@ export class BookingService {
       queryBuilder.andWhere('user.id = :userId', { userId });
     }
 
-    // // Add ordering
-    // queryBuilder.orderBy('booking.booking_date', order_by || 'DESC');
+    // Add ordering
+    queryBuilder.orderBy('booking.booking_date', order_by || 'DESC');
 
     // Use paginateUtil for pagination
-    return paginateUtil(queryBuilder, query );
+    return paginateUtil(queryBuilder, query);
   }
 
   async findOne(id: number) {
