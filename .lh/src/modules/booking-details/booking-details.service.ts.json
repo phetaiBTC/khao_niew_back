@@ -1,0 +1,58 @@
+{
+    "sourceFile": "src/modules/booking-details/booking-details.service.ts",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 10,
+            "patches": [
+                {
+                    "date": 1757509574856,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1757509591679,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -11,9 +11,9 @@\n   constructor(\r\n     @InjectRepository(BookingDetail)\r\n     private readonly bookingDetailRepository: Repository<BookingDetail>,\r\n   ) {}\r\n-  async getBookingDetails(query: PaginateDto ,) {\r\n+  async getBookingDetails(query: PaginateDto , userId: string) {\r\n     try {\r\n       console.log('Received query:', query); // Debug log\r\n \r\n       const qb = this.bookingDetailRepository\r\n@@ -21,9 +21,9 @@\n         .leftJoinAndSelect('bookingDetail.booking', 'booking')\r\n         .leftJoinAndSelect('booking.concert', 'concert')\r\n         .leftJoinAndSelect('booking.user', 'user')\r\n         .leftJoinAndSelect('booking.payment', 'payment');\r\n-\r\n+      \r\n       // Search by concert ID if provided\r\n       if (query.search) {\r\n         console.log('Searching for concert ID:', query.search); // Debug log\r\n         qb.andWhere('concert.id = :concertId', {\r\n"
+                },
+                {
+                    "date": 1757509598666,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -22,8 +22,9 @@\n         .leftJoinAndSelect('booking.concert', 'concert')\r\n         .leftJoinAndSelect('booking.user', 'user')\r\n         .leftJoinAndSelect('booking.payment', 'payment');\r\n       \r\n+        \r\n       // Search by concert ID if provided\r\n       if (query.search) {\r\n         console.log('Searching for concert ID:', query.search); // Debug log\r\n         qb.andWhere('concert.id = :concertId', {\r\n"
+                },
+                {
+                    "date": 1757509604648,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -22,9 +22,9 @@\n         .leftJoinAndSelect('booking.concert', 'concert')\r\n         .leftJoinAndSelect('booking.user', 'user')\r\n         .leftJoinAndSelect('booking.payment', 'payment');\r\n       \r\n-        \r\n+        QueryResul\r\n       // Search by concert ID if provided\r\n       if (query.search) {\r\n         console.log('Searching for concert ID:', query.search); // Debug log\r\n         qb.andWhere('concert.id = :concertId', {\r\n"
+                },
+                {
+                    "date": 1757509623954,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -22,9 +22,9 @@\n         .leftJoinAndSelect('booking.concert', 'concert')\r\n         .leftJoinAndSelect('booking.user', 'user')\r\n         .leftJoinAndSelect('booking.payment', 'payment');\r\n       \r\n-        QueryResul\r\n+       \r\n       // Search by concert ID if provided\r\n       if (query.search) {\r\n         console.log('Searching for concert ID:', query.search); // Debug log\r\n         qb.andWhere('concert.id = :concertId', {\r\n"
+                },
+                {
+                    "date": 1757509658942,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -28,9 +28,9 @@\n       if (query.search) {\r\n         console.log('Searching for concert ID:', query.search); // Debug log\r\n         qb.andWhere('concert.id = :concertId', {\r\n           concertId: parseInt(query.search, 10),\r\n-        });\r\n+        },);\r\n       }\r\n \r\n       return await paginateUtil(qb, query);\r\n     } catch (error) {\r\n"
+                },
+                {
+                    "date": 1757509664274,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -28,9 +28,10 @@\n       if (query.search) {\r\n         console.log('Searching for concert ID:', query.search); // Debug log\r\n         qb.andWhere('concert.id = :concertId', {\r\n           concertId: parseInt(query.search, 10),\r\n-        },);\r\n+        });\r\n+        \r\n       }\r\n \r\n       return await paginateUtil(qb, query);\r\n     } catch (error) {\r\n"
+                },
+                {
+                    "date": 1757509671361,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -29,9 +29,9 @@\n         console.log('Searching for concert ID:', query.search); // Debug log\r\n         qb.andWhere('concert.id = :concertId', {\r\n           concertId: parseInt(query.search, 10),\r\n         });\r\n-        \r\n+        qb.and\r\n       }\r\n \r\n       return await paginateUtil(qb, query);\r\n     } catch (error) {\r\n"
+                },
+                {
+                    "date": 1757509678452,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -29,9 +29,9 @@\n         console.log('Searching for concert ID:', query.search); // Debug log\r\n         qb.andWhere('concert.id = :concertId', {\r\n           concertId: parseInt(query.search, 10),\r\n         });\r\n-        qb.and\r\n+        qb.andW\r\n       }\r\n \r\n       return await paginateUtil(qb, query);\r\n     } catch (error) {\r\n"
+                },
+                {
+                    "date": 1757509683848,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -29,9 +29,9 @@\n         console.log('Searching for concert ID:', query.search); // Debug log\r\n         qb.andWhere('concert.id = :concertId', {\r\n           concertId: parseInt(query.search, 10),\r\n         });\r\n-        qb.andW\r\n+        qb.andWhere('user.id = :userId', { userId });\r\n       }\r\n \r\n       return await paginateUtil(qb, query);\r\n     } catch (error) {\r\n"
+                },
+                {
+                    "date": 1757511905670,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -29,9 +29,9 @@\n         console.log('Searching for concert ID:', query.search); // Debug log\r\n         qb.andWhere('concert.id = :concertId', {\r\n           concertId: parseInt(query.search, 10),\r\n         });\r\n-        qb.andWhere('user.id = :userId', { userId });\r\n+        \r\n       }\r\n \r\n       return await paginateUtil(qb, query);\r\n     } catch (error) {\r\n"
+                }
+            ],
+            "date": 1757509574856,
+            "name": "Commit-0",
+            "content": "import { Injectable, NotFoundException } from '@nestjs/common';\r\nimport { InjectRepository } from '@nestjs/typeorm';\r\nimport { Repository } from 'typeorm';\r\nimport { BookingDetail } from './entities/bookingDetails.entity';\r\nimport * as crypto from 'crypto';\r\nimport { PaginateDto } from 'src/common/dto/paginate.dto';\r\nimport { paginateUtil } from 'src/common/utils/paginate.util';\r\n\r\n@Injectable()\r\nexport class BookingDetailsService {\r\n  constructor(\r\n    @InjectRepository(BookingDetail)\r\n    private readonly bookingDetailRepository: Repository<BookingDetail>,\r\n  ) {}\r\n  async getBookingDetails(query: PaginateDto ,) {\r\n    try {\r\n      console.log('Received query:', query); // Debug log\r\n\r\n      const qb = this.bookingDetailRepository\r\n        .createQueryBuilder('bookingDetail')\r\n        .leftJoinAndSelect('bookingDetail.booking', 'booking')\r\n        .leftJoinAndSelect('booking.concert', 'concert')\r\n        .leftJoinAndSelect('booking.user', 'user')\r\n        .leftJoinAndSelect('booking.payment', 'payment');\r\n\r\n      // Search by concert ID if provided\r\n      if (query.search) {\r\n        console.log('Searching for concert ID:', query.search); // Debug log\r\n        qb.andWhere('concert.id = :concertId', {\r\n          concertId: parseInt(query.search, 10),\r\n        });\r\n      }\r\n\r\n      return await paginateUtil(qb, query);\r\n    } catch (error) {\r\n      console.error('Error in getBookingDetails service:', error);\r\n      throw error;\r\n    }\r\n  }\r\n}\r\n"
+        }
+    ]
+}

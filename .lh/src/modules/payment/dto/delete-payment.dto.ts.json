@@ -1,0 +1,42 @@
+{
+    "sourceFile": "src/modules/payment/dto/delete-payment.dto.ts",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 6,
+            "patches": [
+                {
+                    "date": 1757514754547,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1757514761892,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -6,10 +6,10 @@\n   IsDateString,\r\n } from 'class-validator';\r\n import { PaymentStatus } from '../entities/payment.entity';\r\n \r\n-export class CreatePaymentDto {\r\n+export class DeletePaymentDto {\r\n   \r\n \r\n     @IsOptional()\r\n-    status: PaymentStatus;\r\n+    id: PaymentStatus;\r\n }\r\n"
+                },
+                {
+                    "date": 1757514768755,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -9,7 +9,7 @@\n \r\n export class DeletePaymentDto {\r\n   \r\n \r\n-    @IsOptional()\r\n-    id: PaymentStatus;\r\n+    @   this.id()\r\n+    id: number;\r\n }\r\n"
+                },
+                {
+                    "date": 1757514774987,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -9,7 +9,7 @@\n \r\n export class DeletePaymentDto {\r\n   \r\n \r\n-    @   this.id()\r\n+    @IsNumber()\r\n     id: number;\r\n }\r\n"
+                },
+                {
+                    "date": 1757514824595,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -4,12 +4,10 @@\n   IsNumber,\r\n   IsEnum,\r\n   IsDateString,\r\n } from 'class-validator';\r\n-import { PaymentStatus } from '../entities/payment.entity';\r\n \r\n+\r\n export class DeletePaymentDto {\r\n-  \r\n-\r\n     @IsNumber()\r\n     id: number;\r\n }\r\n"
+                },
+                {
+                    "date": 1757514830842,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,10 +1,6 @@\n import {\r\n-  IsString,\r\n-  IsOptional,\r\n   IsNumber,\r\n-  IsEnum,\r\n-  IsDateString,\r\n } from 'class-validator';\r\n \r\n \r\n export class DeletePaymentDto {\r\n"
+                },
+                {
+                    "date": 1757517386047,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,9 +1,1 @@\n-import {\r\n-  IsNumber,\r\n-} from 'class-validator';\r\n \r\n-\r\n-export class DeletePaymentDto {\r\n-    @IsNumber()\r\n-    id: number;\r\n-}\r\n"
+                }
+            ],
+            "date": 1757514754547,
+            "name": "Commit-0",
+            "content": "import {\r\n  IsString,\r\n  IsOptional,\r\n  IsNumber,\r\n  IsEnum,\r\n  IsDateString,\r\n} from 'class-validator';\r\nimport { PaymentStatus } from '../entities/payment.entity';\r\n\r\nexport class CreatePaymentDto {\r\n  \r\n\r\n    @IsOptional()\r\n    status: PaymentStatus;\r\n}\r\n"
+        }
+    ]
+}
