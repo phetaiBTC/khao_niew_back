@@ -1,0 +1,18 @@
+{
+    "sourceFile": "src/modules/payment/dto/create-payment.dto.ts",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 0,
+            "patches": [
+                {
+                    "date": 1757517376301,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                }
+            ],
+            "date": 1757517376301,
+            "name": "Commit-0",
+            "content": "import {\r\n  IsString,\r\n  IsOptional,\r\n  IsNumber,\r\n  IsEnum,\r\n  IsDateString,\r\n} from 'class-validator';\r\n\r\nexport class CreatePaymentDto {\r\n  @IsNumber()\r\n  amount: number;\r\n}\r\n"
+        }
+    ]
+}

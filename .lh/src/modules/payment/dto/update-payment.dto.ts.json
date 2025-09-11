@@ -1,0 +1,70 @@
+{
+    "sourceFile": "src/modules/payment/dto/update-payment.dto.ts",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 13,
+            "patches": [
+                {
+                    "date": 1757514644261,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1757514703435,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -5,8 +5,9 @@\n   IsEnum,\r\n   IsDateString,\r\n } from 'class-validator';\r\n import { PaymentStatus } from '../entities/payment.entity';\r\n+\r\n export class CreatePaymentDto {\r\n   @IsNumber()\r\n   amount: number;\r\n }\r\n"
+                },
+                {
+                    "date": 1757514712282,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -7,7 +7,8 @@\n } from 'class-validator';\r\n import { PaymentStatus } from '../entities/payment.entity';\r\n \r\n export class CreatePaymentDto {\r\n-  @IsNumber()\r\n-  amount: number;\r\n+  \r\n+\r\n+    \r\n }\r\n"
+                },
+                {
+                    "date": 1757514718341,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -9,6 +9,6 @@\n \r\n export class CreatePaymentDto {\r\n   \r\n \r\n-    \r\n+    @IsOptional\r\n }\r\n"
+                },
+                {
+                    "date": 1757514725541,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -9,6 +9,7 @@\n \r\n export class CreatePaymentDto {\r\n   \r\n \r\n-    @IsOptional\r\n+    @IsOptional()\r\n+    pay\r\n }\r\n"
+                },
+                {
+                    "date": 1757514732636,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -10,6 +10,6 @@\n export class CreatePaymentDto {\r\n   \r\n \r\n     @IsOptional()\r\n-    pay\r\n+    status: PaymentStatus\r\n }\r\n"
+                },
+                {
+                    "date": 1757514747435,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -6,10 +6,10 @@\n   IsDateString,\r\n } from 'class-validator';\r\n import { PaymentStatus } from '../entities/payment.entity';\r\n \r\n-export class CreatePaymentDto {\r\n+export class UpdatePaymentDto {\r\n   \r\n \r\n     @IsOptional()\r\n-    status: PaymentStatus\r\n+    status: PaymentStatus;\r\n }\r\n"
+                },
+                {
+                    "date": 1757514838073,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -10,6 +10,7 @@\n export class UpdatePaymentDto {\r\n   \r\n \r\n     @IsOptional()\r\n+    @\r\n     status: PaymentStatus;\r\n }\r\n"
+                },
+                {
+                    "date": 1757514843420,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -10,7 +10,8 @@\n export class UpdatePaymentDto {\r\n   \r\n \r\n     @IsOptional()\r\n-    @\r\n+    @IsEnum(PaymentStatus)\r\n+    \r\n     status: PaymentStatus;\r\n }\r\n"
+                },
+                {
+                    "date": 1757514849245,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -10,8 +10,7 @@\n export class UpdatePaymentDto {\r\n   \r\n \r\n     @IsOptional()\r\n-    @IsEnum(PaymentStatus)\r\n-    \r\n+    @IsEnum(PaymentStatus)    \r\n     status: PaymentStatus;\r\n }\r\n"
+                },
+                {
+                    "date": 1757514881538,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -8,9 +8,9 @@\n import { PaymentStatus } from '../entities/payment.entity';\r\n \r\n export class UpdatePaymentDto {\r\n   \r\n-\r\n+ \r\n     @IsOptional()\r\n     @IsEnum(PaymentStatus)    \r\n     status: PaymentStatus;\r\n }\r\n"
+                },
+                {
+                    "date": 1757514889694,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -8,9 +8,10 @@\n import { PaymentStatus } from '../entities/payment.entity';\r\n \r\n export class UpdatePaymentDto {\r\n   \r\n- \r\n+      @IsNumber()\r\n+    id: number;\r\n     @IsOptional()\r\n     @IsEnum(PaymentStatus)    \r\n     status: PaymentStatus;\r\n }\r\n"
+                },
+                {
+                    "date": 1757514901849,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -8,9 +8,9 @@\n import { PaymentStatus } from '../entities/payment.entity';\r\n \r\n export class UpdatePaymentDto {\r\n   \r\n-      @IsNumber()\r\n+    @IsNumber()\r\n     id: number;\r\n     @IsOptional()\r\n     @IsEnum(PaymentStatus)    \r\n     status: PaymentStatus;\r\n"
+                },
+                {
+                    "date": 1757515626027,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -8,10 +8,9 @@\n import { PaymentStatus } from '../entities/payment.entity';\r\n \r\n export class UpdatePaymentDto {\r\n   \r\n-    @IsNumber()\r\n-    id: number;\r\n+\r\n     @IsOptional()\r\n     @IsEnum(PaymentStatus)    \r\n     status: PaymentStatus;\r\n }\r\n"
+                }
+            ],
+            "date": 1757514644261,
+            "name": "Commit-0",
+            "content": "import {\r\n  IsString,\r\n  IsOptional,\r\n  IsNumber,\r\n  IsEnum,\r\n  IsDateString,\r\n} from 'class-validator';\r\nimport { PaymentStatus } from '../entities/payment.entity';\r\nexport class CreatePaymentDto {\r\n  @IsNumber()\r\n  amount: number;\r\n}\r\n"
+        }
+    ]
+}

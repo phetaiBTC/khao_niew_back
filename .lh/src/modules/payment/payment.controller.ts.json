@@ -1,0 +1,118 @@
+{
+    "sourceFile": "src/modules/payment/payment.controller.ts",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 25,
+            "patches": [
+                {
+                    "date": 1757514918966,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1757514924946,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,6 +1,9 @@\n import { Controller } from '@nestjs/common';\r\n \r\n @Controller('payment')\r\n export class PaymentController {\r\n+    constructor() {}\r\n+\r\n+\r\n     \r\n }\r\n"
+                },
+                {
+                    "date": 1757514985567,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,9 +1,21 @@\n-import { Controller } from '@nestjs/common';\r\n+import { Controller, Patch, Param, Body, Delete } from '@nestjs/common';\r\n+import { PaymentService } from './payment.service';\r\n+import { PaymentStatus } from './entities/payment.entity';\r\n \r\n @Controller('payment')\r\n export class PaymentController {\r\n-    constructor() {}\r\n+    constructor(private readonly paymentService: PaymentService) {}\r\n \r\n+    @Patch(':id/status')\r\n+    async updateStatus(\r\n+        @Param('id') id: number,\r\n+        @Body('status') status: PaymentStatus\r\n+    ) {\r\n+        return this.paymentService.updateStatus(id, status);\r\n+    }\r\n \r\n-    \r\n+    @Delete(':id')\r\n+    async delete(@Param('id') id: number) {\r\n+        return this.paymentService.delete(id);\r\n+    }\r\n }\r\n"
+                },
+                {
+                    "date": 1757515125530,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -6,11 +6,9 @@\n export class PaymentController {\r\n     constructor(private readonly paymentService: PaymentService) {}\r\n \r\n     @Patch(':id/status')\r\n-    async updateStatus(\r\n-        @Param('id') id: number,\r\n-        @Body('status') status: PaymentStatus\r\n+    async updateStatus( @Param('id') id: number,  @Body('status') status: PaymentStatus\r\n     ) {\r\n         return this.paymentService.updateStatus(id, status);\r\n     }\r\n \r\n"
+                },
+                {
+                    "date": 1757515227586,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -6,9 +6,9 @@\n export class PaymentController {\r\n     constructor(private readonly paymentService: PaymentService) {}\r\n \r\n     @Patch(':id/status')\r\n-    async updateStatus( @Param('id') id: number,  @Body('status') status: PaymentStatus\r\n+    async updateStatus( \r\n     ) {\r\n         return this.paymentService.updateStatus(id, status);\r\n     }\r\n \r\n"
+                },
+                {
+                    "date": 1757515233742,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -6,9 +6,9 @@\n export class PaymentController {\r\n     constructor(private readonly paymentService: PaymentService) {}\r\n \r\n     @Patch(':id/status')\r\n-    async updateStatus( \r\n+    async updateStatus( @\r\n     ) {\r\n         return this.paymentService.updateStatus(id, status);\r\n     }\r\n \r\n"
+                },
+                {
+                    "date": 1757515238944,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -6,9 +6,9 @@\n export class PaymentController {\r\n     constructor(private readonly paymentService: PaymentService) {}\r\n \r\n     @Patch(':id/status')\r\n-    async updateStatus( @\r\n+    async updateStatus( @Body()\r\n     ) {\r\n         return this.paymentService.updateStatus(id, status);\r\n     }\r\n \r\n"
+                },
+                {
+                    "date": 1757515244725,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -6,9 +6,9 @@\n export class PaymentController {\r\n     constructor(private readonly paymentService: PaymentService) {}\r\n \r\n     @Patch(':id/status')\r\n-    async updateStatus( @Body()\r\n+    async updateStatus( @Body() b\r\n     ) {\r\n         return this.paymentService.updateStatus(id, status);\r\n     }\r\n \r\n"
+                },
+                {
+                    "date": 1757515251969,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -6,9 +6,9 @@\n export class PaymentController {\r\n     constructor(private readonly paymentService: PaymentService) {}\r\n \r\n     @Patch(':id/status')\r\n-    async updateStatus( @Body() b\r\n+    async updateStatus( @Body() body :\r\n     ) {\r\n         return this.paymentService.updateStatus(id, status);\r\n     }\r\n \r\n"
+                },
+                {
+                    "date": 1757515258002,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -6,9 +6,9 @@\n export class PaymentController {\r\n     constructor(private readonly paymentService: PaymentService) {}\r\n \r\n     @Patch(':id/status')\r\n-    async updateStatus( @Body() body :\r\n+    async updateStatus( @Body() body : Up\r\n     ) {\r\n         return this.paymentService.updateStatus(id, status);\r\n     }\r\n \r\n"
+                },
+                {
+                    "date": 1757515273046,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -6,9 +6,9 @@\n export class PaymentController {\r\n     constructor(private readonly paymentService: PaymentService) {}\r\n \r\n     @Patch(':id/status')\r\n-    async updateStatus( @Body() body : Up\r\n+    async updateStatus( @Body() body : UpdatePaymentDto\r\n     ) {\r\n         return this.paymentService.updateStatus(id, status);\r\n     }\r\n \r\n"
+                },
+                {
+                    "date": 1757515283365,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,16 +1,17 @@\n import { Controller, Patch, Param, Body, Delete } from '@nestjs/common';\r\n import { PaymentService } from './payment.service';\r\n import { PaymentStatus } from './entities/payment.entity';\r\n+import { UpdatePaymentDto } from './dto/update-payment.dto';\r\n \r\n @Controller('payment')\r\n export class PaymentController {\r\n     constructor(private readonly paymentService: PaymentService) {}\r\n \r\n     @Patch(':id/status')\r\n     async updateStatus( @Body() body : UpdatePaymentDto\r\n     ) {\r\n-        return this.paymentService.updateStatus(id, status);\r\n+        return this.paymentService.updateStatus(body.id, body.status);\r\n     }\r\n \r\n     @Delete(':id')\r\n     async delete(@Param('id') id: number) {\r\n"
+                },
+                {
+                    "date": 1757515310864,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -9,9 +9,9 @@\n \r\n     @Patch(':id/status')\r\n     async updateStatus( @Body() body : UpdatePaymentDto\r\n     ) {\r\n-        return this.paymentService.updateStatus(body.id, body.status);\r\n+        return this.paymentService.updateStatus(body);\r\n     }\r\n \r\n     @Delete(':id')\r\n     async delete(@Param('id') id: number) {\r\n"
+                },
+                {
+                    "date": 1757515508006,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -13,8 +13,8 @@\n         return this.paymentService.updateStatus(body);\r\n     }\r\n \r\n     @Delete(':id')\r\n-    async delete(@Param('id') id: number) {\r\n+    async delete(@Param('id') id: d) {\r\n         return this.paymentService.delete(id);\r\n     }\r\n }\r\n"
+                },
+                {
+                    "date": 1757515523508,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,8 +1,9 @@\n import { Controller, Patch, Param, Body, Delete } from '@nestjs/common';\r\n import { PaymentService } from './payment.service';\r\n import { PaymentStatus } from './entities/payment.entity';\r\n import { UpdatePaymentDto } from './dto/update-payment.dto';\r\n+import { DeletePaymentDto } from './dto/delete-payment.dto';\r\n \r\n @Controller('payment')\r\n export class PaymentController {\r\n     constructor(private readonly paymentService: PaymentService) {}\r\n@@ -13,8 +14,8 @@\n         return this.paymentService.updateStatus(body);\r\n     }\r\n \r\n     @Delete(':id')\r\n-    async delete(@Param('id') id: d) {\r\n-        return this.paymentService.delete(id);\r\n+    async delete(@Param('id') id: DeletePaymentDto) {\r\n+        return this.paymentService.delete(id.id);\r\n     }\r\n }\r\n"
+                },
+                {
+                    "date": 1757515536442,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -14,8 +14,8 @@\n         return this.paymentService.updateStatus(body);\r\n     }\r\n \r\n     @Delete(':id')\r\n-    async delete(@Param('id') id: DeletePaymentDto) {\r\n+    async delete(@Param('id') id: number) {\r\n         return this.paymentService.delete(id.id);\r\n     }\r\n }\r\n"
+                },
+                {
+                    "date": 1757515541962,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -15,7 +15,7 @@\n     }\r\n \r\n     @Delete(':id')\r\n     async delete(@Param('id') id: number) {\r\n-        return this.paymentService.delete(id.id);\r\n+        return this.paymentService.delete(id);\r\n     }\r\n }\r\n"
+                },
+                {
+                    "date": 1757515609004,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -8,9 +8,9 @@\n export class PaymentController {\r\n     constructor(private readonly paymentService: PaymentService) {}\r\n \r\n     @Patch(':id/status')\r\n-    async updateStatus( @Body() body : UpdatePaymentDto\r\n+    async updateStatus(@Param('id') @Body() body : UpdatePaymentDto\r\n     ) {\r\n         return this.paymentService.updateStatus(body);\r\n     }\r\n \r\n"
+                },
+                {
+                    "date": 1757515615845,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -8,9 +8,9 @@\n export class PaymentController {\r\n     constructor(private readonly paymentService: PaymentService) {}\r\n \r\n     @Patch(':id/status')\r\n-    async updateStatus(@Param('id') @Body() body : UpdatePaymentDto\r\n+    async updateStatus(@Param('id') id: number, @Body() body : UpdatePaymentDto\r\n     ) {\r\n         return this.paymentService.updateStatus(body);\r\n     }\r\n \r\n"
+                },
+                {
+                    "date": 1757515635939,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -10,9 +10,9 @@\n \r\n     @Patch(':id/status')\r\n     async updateStatus(@Param('id') id: number, @Body() body : UpdatePaymentDto\r\n     ) {\r\n-        return this.paymentService.updateStatus(body);\r\n+        return this.paymentService.updateStatus({ id, body });\r\n     }\r\n \r\n     @Delete(':id')\r\n     async delete(@Param('id') id: number) {\r\n"
+                },
+                {
+                    "date": 1757515727151,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -10,9 +10,9 @@\n \r\n     @Patch(':id/status')\r\n     async updateStatus(@Param('id') id: number, @Body() body : UpdatePaymentDto\r\n     ) {\r\n-        return this.paymentService.updateStatus({ id, body });\r\n+        return this.paymentService.updateStatus({ });\r\n     }\r\n \r\n     @Delete(':id')\r\n     async delete(@Param('id') id: number) {\r\n"
+                },
+                {
+                    "date": 1757515997612,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -7,12 +7,12 @@\n @Controller('payment')\r\n export class PaymentController {\r\n     constructor(private readonly paymentService: PaymentService) {}\r\n \r\n-    @Patch(':id/status')\r\n+    @Patch(':id/')\r\n     async updateStatus(@Param('id') id: number, @Body() body : UpdatePaymentDto\r\n     ) {\r\n-        return this.paymentService.updateStatus({ });\r\n+        return this.paymentService.updateStatus( id, body);\r\n     }\r\n \r\n     @Delete(':id')\r\n     async delete(@Param('id') id: number) {\r\n"
+                },
+                {
+                    "date": 1757516003083,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -7,9 +7,9 @@\n @Controller('payment')\r\n export class PaymentController {\r\n     constructor(private readonly paymentService: PaymentService) {}\r\n \r\n-    @Patch(':id/')\r\n+    @Patch('status/:id')\r\n     async updateStatus(@Param('id') id: number, @Body() body : UpdatePaymentDto\r\n     ) {\r\n         return this.paymentService.updateStatus( id, body);\r\n     }\r\n"
+                },
+                {
+                    "date": 1757516268510,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -13,9 +13,9 @@\n     ) {\r\n         return this.paymentService.updateStatus( id, body);\r\n     }\r\n \r\n-    @Delete(':id')\r\n+    @Delete('payment:id')\r\n     async delete(@Param('id') id: number) {\r\n         return this.paymentService.delete(id);\r\n     }\r\n }\r\n"
+                },
+                {
+                    "date": 1757516273742,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -13,9 +13,9 @@\n     ) {\r\n         return this.paymentService.updateStatus( id, body);\r\n     }\r\n \r\n-    @Delete('payment:id')\r\n+    @Delete('payment-delete/:id')\r\n     async delete(@Param('id') id: number) {\r\n         return this.paymentService.delete(id);\r\n     }\r\n }\r\n"
+                },
+                {
+                    "date": 1757517360706,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,9 +1,8 @@\n import { Controller, Patch, Param, Body, Delete } from '@nestjs/common';\r\n import { PaymentService } from './payment.service';\r\n import { PaymentStatus } from './entities/payment.entity';\r\n import { UpdatePaymentDto } from './dto/update-payment.dto';\r\n-import { DeletePaymentDto } from './dto/delete-payment.dto';\r\n \r\n @Controller('payment')\r\n export class PaymentController {\r\n     constructor(private readonly paymentService: PaymentService) {}\r\n"
+                }
+            ],
+            "date": 1757514918966,
+            "name": "Commit-0",
+            "content": "import { Controller } from '@nestjs/common';\r\n\r\n@Controller('payment')\r\nexport class PaymentController {\r\n    \r\n}\r\n"
+        }
+    ]
+}

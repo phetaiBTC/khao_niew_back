@@ -1,0 +1,38 @@
+{
+    "sourceFile": "src/modules/payment/payment.module.ts",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 5,
+            "patches": [
+                {
+                    "date": 1757514985546,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1757515021797,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -8,8 +8,10 @@\n \r\n \r\n @Module({\r\n   imports: [TypeOrmModule.forFeature([Payment, Booking, BookingDetail])],\r\n-  providers: [PaymentService],\r\n+  providers: [PaymentService, \r\n+    \r\n+  ],\r\n   controllers: [PaymentController]\r\n })\r\n export class PaymentModule {}\r\n"
+                },
+                {
+                    "date": 1757515036367,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -7,11 +7,15 @@\n import { BookingDetail } from '../booking-details/entities/bookingDetails.entity';\r\n \r\n \r\n @Module({\r\n-  imports: [TypeOrmModule.forFeature([Payment, Booking, BookingDetail])],\r\n+  imports: [TypeOrmModule.forFeature([Payment, Booking, BookingDetail,])],\r\n   providers: [PaymentService, \r\n-    \r\n+     ,\r\n+            {\r\n+                provide: TRANSACTION_MANAGER_SERVICE,\r\n+                useClass: TransactionManagerService,\r\n+            },\r\n   ],\r\n   controllers: [PaymentController]\r\n })\r\n export class PaymentModule {}\r\n"
+                },
+                {
+                    "date": 1757515065398,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -7,9 +7,9 @@\n import { BookingDetail } from '../booking-details/entities/bookingDetails.entity';\r\n \r\n \r\n @Module({\r\n-  imports: [TypeOrmModule.forFeature([Payment, Booking, BookingDetail,])],\r\n+  imports: [TypeOrmModule.forFeature([Payment, Booking, BookingDetail,TransactionModule])],\r\n   providers: [PaymentService, \r\n      ,\r\n             {\r\n                 provide: TRANSACTION_MANAGER_SERVICE,\r\n"
+                },
+                {
+                    "date": 1757515072119,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -4,8 +4,9 @@\n import { TypeOrmModule } from '@nestjs/typeorm';\r\n import { Payment } from './entities/payment.entity';\r\n import { Booking } from '../booking/entities/booking.entity';\r\n import { BookingDetail } from '../booking-details/entities/bookingDetails.entity';\r\n+import { TransactionModule } from 'src/common/transaction/transaction.module';\r\n \r\n \r\n @Module({\r\n   imports: [TypeOrmModule.forFeature([Payment, Booking, BookingDetail,TransactionModule])],\r\n"
+                },
+                {
+                    "date": 1757515081531,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -5,14 +5,15 @@\n import { Payment } from './entities/payment.entity';\r\n import { Booking } from '../booking/entities/booking.entity';\r\n import { BookingDetail } from '../booking-details/entities/bookingDetails.entity';\r\n import { TransactionModule } from 'src/common/transaction/transaction.module';\r\n+import { TRANSACTION_MANAGER_SERVICE } from 'src/common/constants/inject-key';\r\n+import { TransactionManagerService } from 'src/common/transaction/transaction.service';\r\n \r\n \r\n @Module({\r\n   imports: [TypeOrmModule.forFeature([Payment, Booking, BookingDetail,TransactionModule])],\r\n-  providers: [PaymentService, \r\n-     ,\r\n+  providers: [PaymentService,\r\n             {\r\n                 provide: TRANSACTION_MANAGER_SERVICE,\r\n                 useClass: TransactionManagerService,\r\n             },\r\n"
+                }
+            ],
+            "date": 1757514985546,
+            "name": "Commit-0",
+            "content": "import { Module } from '@nestjs/common';\r\nimport { PaymentService } from './payment.service';\r\nimport { PaymentController } from './payment.controller';\r\nimport { TypeOrmModule } from '@nestjs/typeorm';\r\nimport { Payment } from './entities/payment.entity';\r\nimport { Booking } from '../booking/entities/booking.entity';\r\nimport { BookingDetail } from '../booking-details/entities/bookingDetails.entity';\r\n\r\n\r\n@Module({\r\n  imports: [TypeOrmModule.forFeature([Payment, Booking, BookingDetail])],\r\n  providers: [PaymentService],\r\n  controllers: [PaymentController]\r\n})\r\nexport class PaymentModule {}\r\n"
+        }
+    ]
+}

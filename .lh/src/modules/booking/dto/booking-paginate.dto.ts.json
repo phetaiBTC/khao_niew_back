@@ -1,0 +1,30 @@
+{
+    "sourceFile": "src/modules/booking/dto/booking-paginate.dto.ts",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 3,
+            "patches": [
+                {
+                    "date": 1757506445985,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1757506455619,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -8,6 +8,6 @@\n     \r\n         @IsOptional()\r\n         @IsEnum(PaymentStatus)\r\n         status?: PaymentStatus;\r\n-        \r\n+        companyId\r\n }\r\n"
+                },
+                {
+                    "date": 1757506461611,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -8,6 +8,7 @@\n     \r\n         @IsOptional()\r\n         @IsEnum(PaymentStatus)\r\n         status?: PaymentStatus;\r\n-        companyId\r\n+        @IsOptional()\r\n+        companyId?: number;\r\n }\r\n"
+                },
+                {
+                    "date": 1757506472009,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -8,7 +8,8 @@\n     \r\n         @IsOptional()\r\n         @IsEnum(PaymentStatus)\r\n         status?: PaymentStatus;\r\n+        \r\n         @IsOptional()\r\n         companyId?: number;\r\n }\r\n"
+                }
+            ],
+            "date": 1757506445985,
+            "name": "Commit-0",
+            "content": "import { PartialType } from '@nestjs/mapped-types';\r\nimport { IsEnum, IsOptional } from 'class-validator';\r\nimport { PaginateDto } from 'src/common/dto/paginate.dto';\r\nimport { PaymentStatus } from 'src/modules/payment/entities/payment.entity';\r\n\r\nexport class BookingPaginateDto extends PartialType(PaginateDto) {\r\n\r\n    \r\n        @IsOptional()\r\n        @IsEnum(PaymentStatus)\r\n        status?: PaymentStatus;\r\n        \r\n}\r\n"
+        }
+    ]
+}
