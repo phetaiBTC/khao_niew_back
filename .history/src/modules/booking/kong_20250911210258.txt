@@ -1,0 +1,27 @@
+ if (updateBookingDto.image && booking.payment) {
+            // Extract filename from image URL
+            const newImageUrl = updateBookingDto.image;
+            const newImageFilename = newImageUrl.split('uploads/images/')[1] || newImageUrl;
+            const oldImageUrl = booking.payment.image;
+            const oldImageFilename = oldImageUrl ? (oldImageUrl.split('uploads/images/')[1] || oldImageUrl) : '';
+            const imageDir = path.join(__dirname, '../../../uploads/images/');
+            const oldImagePath = path.join(imageDir, oldImageFilename);
+
+            // If old and new image are the same, return message
+            if (oldImageFilename === newImageFilename) {
+              throw new Error('this image already use now');
+            }
+
+            // Remove old image if exists
+            if (oldImageFilename && fs.existsSync(oldImagePath)) {
+              fs.unlinkSync(oldImagePath);
+            }
+
+            // Update payment image in DB (save only filename)
+            await manager
+              .createQueryBuilder()
+              .update(Payment)
+              .set({ image: newImageFilename })
+              .where('id = :id', { id: booking.payment.id })
+              .execute();
+          }

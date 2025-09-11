@@ -10,14 +10,10 @@ import { TRANSACTION_MANAGER_SERVICE } from 'src/common/constants/inject-key';
 import type { ITransactionManager } from 'src/common/transaction/transaction.interface';
 import { BookingDetail } from '../booking-details/entities/bookingDetails.entity';
 import { PaginateDto } from 'src/common/dto/paginate.dto';
-import { BadRequestException } from '@nestjs/common';
 import { paginateUtil } from 'src/common/utils/paginate.util';
 import { BookingPaginateDto } from './dto/booking-paginate.dto';
 import { User } from '../users/entities/user.entity';
 import { EnumRole } from '../users/entities/user.entity';
-import * as fs from 'fs';
-import * as path from 'path';
-import { fileExists, removeFile } from '../../common/interceptors/upload-image.interceptor';
 @Injectable()
 export class BookingService {
   constructor(
@@ -78,7 +74,7 @@ export class BookingService {
           // Create payment
           const payment = manager.create(Payment, {
             amount: createBookingDto.ticket_quantity,
-            image: createBookingDto.image,
+            
           });
           const savedPayment = await manager.save(Payment, payment);
 
@@ -90,7 +86,7 @@ export class BookingService {
             ticket_quantity: Number(createBookingDto.ticket_quantity),
             unit_price: Number(concert.price),
             total_amount: Number(totalAmount),
-
+            
             user: { id: Number(userId) },
             concert: { id: Number(createBookingDto.concert) },
             payment: savedPayment,
@@ -238,23 +234,6 @@ export class BookingService {
           }
           // Update payment image if provided
           if (updateBookingDto.image && booking.payment) {
-            // Use only the filename for deletion
-            const newImageFilename = path.basename(updateBookingDto.image || '');
-            const oldImageFilename = path.basename(booking.payment.image || '');
-            const imageDir = path.join(__dirname, '../../../uploads/images/');
-            const oldImagePath = path.join(imageDir, oldImageFilename);
-
-            // If old and new image are the same (by filename), return message
-            if (oldImageFilename === newImageFilename) {
-                throw new BadRequestException('this image already use now');
-            }
-
-            // Remove old image if exists using utility
-            if (oldImageFilename && await fileExists(oldImagePath)) {
-              await removeFile(oldImagePath);
-            }
-
-            // Update payment image in DB (save full URL, not just filename)
             await manager
               .createQueryBuilder()
               .update(Payment)
@@ -262,7 +241,6 @@ export class BookingService {
               .where('id = :id', { id: booking.payment.id })
               .execute();
           }
-
           // 5a. Fetch current booking details
           const currentDetails = await manager.find(BookingDetail, {
             where: { booking: { id } },
@@ -277,6 +255,15 @@ export class BookingService {
               .execute();
           }
 
+          // Update booking details status if provided
+          if (updateBookingDto.detailsId && updateBookingDto.detailsStatus) {
+            await manager
+              .createQueryBuilder()
+              .update(BookingDetail)
+              .set({ status: updateBookingDto.detailsStatus })
+              .where('id = :id', { id: updateBookingDto.detailsId })
+              .execute();
+          }
           // 5b. Add or remove details to match new ticket quantity
           if (newTicketQuantity > currentDetails.length) {
             // Add missing details

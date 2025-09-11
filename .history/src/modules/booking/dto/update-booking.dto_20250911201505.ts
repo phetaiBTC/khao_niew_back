@@ -15,7 +15,7 @@ export class UpdateBookingDto extends PartialType(CreateBookingDto) {
    
   @IsOptional()
   @IsString()
-  readonly image?: string;
+  readonlyimage?: string;
 
   @IsOptional()
   @IsEnum(DetailsStatus)

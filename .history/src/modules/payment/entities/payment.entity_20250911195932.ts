@@ -30,9 +30,8 @@ export class Payment extends ShardEntity {
   @CreateDateColumn({ type: 'timestamp' })
   payment_date: Date;
 
-  @Column()
+  @Column({ type: 'string' })
   image: string;
-  
   @Column({ type: 'enum', enum: PaymentStatus , default: PaymentStatus.PENDING })
   status: PaymentStatus;
 }

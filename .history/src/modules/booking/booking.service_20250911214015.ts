@@ -246,7 +246,7 @@ export class BookingService {
 
             // If old and new image are the same (by filename), return message
             if (oldImageFilename === newImageFilename) {
-                throw new BadRequestException('this image already use now');
+              throw new Error('this image already use now');
             }
 
             // Remove old image if exists using utility

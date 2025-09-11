@@ -3,7 +3,7 @@
     "activeCommit": 0,
     "commits": [
         {
-            "activePatchIndex": 10,
+            "activePatchIndex": 19,
             "patches": [
                 {
                     "date": 1756818568965,
@@ -48,6 +48,42 @@
                 {
                     "date": 1756819165641,
                     "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,15 +1,16 @@\n import { PartialType } from '@nestjs/mapped-types';\r\n import { CreateBookingDto } from './create-booking.dto';\r\n-import { IsEnum, IsOptional } from 'class-validator';\r\n+import { IsEnum, IsNumber, IsOptional } from 'class-validator';\r\n import { PaymentStatus } from 'src/modules/payment/entities/payment.entity';\r\n import { DetailsStatus } from 'src/modules/booking-details/entities/bookingDetails.entity';\r\n \r\n export class UpdateBookingDto extends PartialType(CreateBookingDto) {\r\n \r\n     @IsOptional()\r\n         @IsNumber()\r\n-        readonly companyId: number;\r\n+        readonly detailsId: number;\r\n+\r\n   @IsOptional()\r\n   @IsEnum(PaymentStatus)\r\n   readonly paymentStatus?: PaymentStatus;\r\n \r\n"
+                },
+                {
+                    "date": 1757596418826,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -4,17 +4,16 @@\n import { PaymentStatus } from 'src/modules/payment/entities/payment.entity';\r\n import { DetailsStatus } from 'src/modules/booking-details/entities/bookingDetails.entity';\r\n \r\n export class UpdateBookingDto extends PartialType(CreateBookingDto) {\r\n+  @IsOptional()\r\n+  @IsNumber()\r\n+  readonly detailsId: number;\r\n \r\n-    @IsOptional()\r\n-        @IsNumber()\r\n-        readonly detailsId: number;\r\n-\r\n   @IsOptional()\r\n   @IsEnum(PaymentStatus)\r\n   readonly paymentStatus?: PaymentStatus;\r\n-\r\n+  \r\n   @IsOptional()\r\n   @IsEnum(DetailsStatus)\r\n   readonly detailsStatus?: DetailsStatus;\r\n }\r\n"
+                },
+                {
+                    "date": 1757596425299,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -11,9 +11,11 @@\n \r\n   @IsOptional()\r\n   @IsEnum(PaymentStatus)\r\n   readonly paymentStatus?: PaymentStatus;\r\n-  \r\n+   \r\n+  @\r\n+\r\n   @IsOptional()\r\n   @IsEnum(DetailsStatus)\r\n   readonly detailsStatus?: DetailsStatus;\r\n }\r\n"
+                },
+                {
+                    "date": 1757596430697,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -12,9 +12,11 @@\n   @IsOptional()\r\n   @IsEnum(PaymentStatus)\r\n   readonly paymentStatus?: PaymentStatus;\r\n    \r\n-  @\r\n+  @IsOptional()\r\n+  @IsNumber()\r\n+  readonly paymentId: number;\r\n \r\n   @IsOptional()\r\n   @IsEnum(DetailsStatus)\r\n   readonly detailsStatus?: DetailsStatus;\r\n"
+                },
+                {
+                    "date": 1757596440264,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -13,9 +13,9 @@\n   @IsEnum(PaymentStatus)\r\n   readonly paymentStatus?: PaymentStatus;\r\n    \r\n   @IsOptional()\r\n-  @IsNumber()\r\n+  @IS()\r\n   readonly paymentId: number;\r\n \r\n   @IsOptional()\r\n   @IsEnum(DetailsStatus)\r\n"
+                },
+                {
+                    "date": 1757596480924,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -13,10 +13,10 @@\n   @IsEnum(PaymentStatus)\r\n   readonly paymentStatus?: PaymentStatus;\r\n    \r\n   @IsOptional()\r\n-  @IS()\r\n-  readonly paymentId: number;\r\n+  @IsString()\r\n+    image: string;\r\n \r\n   @IsOptional()\r\n   @IsEnum(DetailsStatus)\r\n   readonly detailsStatus?: DetailsStatus;\r\n"
+                },
+                {
+                    "date": 1757596490973,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,7 +1,7 @@\n import { PartialType } from '@nestjs/mapped-types';\r\n import { CreateBookingDto } from './create-booking.dto';\r\n-import { IsEnum, IsNumber, IsOptional } from 'class-validator';\r\n+import { IsEnum, IsNumber, IsOptional, IsString } from 'class-validator';\r\n import { PaymentStatus } from 'src/modules/payment/entities/payment.entity';\r\n import { DetailsStatus } from 'src/modules/booking-details/entities/bookingDetails.entity';\r\n \r\n export class UpdateBookingDto extends PartialType(CreateBookingDto) {\r\n@@ -13,10 +13,9 @@\n   @IsEnum(PaymentStatus)\r\n   readonly paymentStatus?: PaymentStatus;\r\n    \r\n   @IsOptional()\r\n-  @IsString()\r\n-    image: string;\r\n+  @IsString()image: string;\r\n \r\n   @IsOptional()\r\n   @IsEnum(DetailsStatus)\r\n   readonly detailsStatus?: DetailsStatus;\r\n"
+                },
+                {
+                    "date": 1757596498470,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -13,9 +13,10 @@\n   @IsEnum(PaymentStatus)\r\n   readonly paymentStatus?: PaymentStatus;\r\n    \r\n   @IsOptional()\r\n-  @IsString()image: string;\r\n+  @IsString()\r\n+  readonlyimage: string;\r\n \r\n   @IsOptional()\r\n   @IsEnum(DetailsStatus)\r\n   readonly detailsStatus?: DetailsStatus;\r\n"
+                },
+                {
+                    "date": 1757596505093,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -14,9 +14,9 @@\n   readonly paymentStatus?: PaymentStatus;\r\n    \r\n   @IsOptional()\r\n   @IsString()\r\n-  readonlyimage: string;\r\n+  readonlyimage?: string;\r\n \r\n   @IsOptional()\r\n   @IsEnum(DetailsStatus)\r\n   readonly detailsStatus?: DetailsStatus;\r\n"
+                },
+                {
+                    "date": 1757596512292,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -14,9 +14,9 @@\n   readonly paymentStatus?: PaymentStatus;\r\n    \r\n   @IsOptional()\r\n   @IsString()\r\n-  readonlyimage?: string;\r\n+  readonly image?: string;\r\n \r\n   @IsOptional()\r\n   @IsEnum(DetailsStatus)\r\n   readonly detailsStatus?: DetailsStatus;\r\n"
                 }
             ],
             "date": 1756818568965,

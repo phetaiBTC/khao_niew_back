@@ -8,5 +8,5 @@ export class CreateBookingDto {
   @IsNumber()
   concert: number;
   @IsString()
-  image: string;
+  payment_method: string;
 }

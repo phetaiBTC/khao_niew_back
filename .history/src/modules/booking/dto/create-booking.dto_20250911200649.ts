@@ -7,6 +7,5 @@ export class CreateBookingDto {
   ticket_quantity: number;
   @IsNumber()
   concert: number;
-  @IsString()
-  image: string;
+  @IsString
 }

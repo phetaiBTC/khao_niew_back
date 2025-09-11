@@ -10,14 +10,10 @@ import { TRANSACTION_MANAGER_SERVICE } from 'src/common/constants/inject-key';
 import type { ITransactionManager } from 'src/common/transaction/transaction.interface';
 import { BookingDetail } from '../booking-details/entities/bookingDetails.entity';
 import { PaginateDto } from 'src/common/dto/paginate.dto';
-import { BadRequestException } from '@nestjs/common';
 import { paginateUtil } from 'src/common/utils/paginate.util';
 import { BookingPaginateDto } from './dto/booking-paginate.dto';
 import { User } from '../users/entities/user.entity';
 import { EnumRole } from '../users/entities/user.entity';
-import * as fs from 'fs';
-import * as path from 'path';
-import { fileExists, removeFile } from '../../common/interceptors/upload-image.interceptor';
 @Injectable()
 export class BookingService {
   constructor(
@@ -44,7 +40,7 @@ export class BookingService {
           `Concert with id ${createBookingDto.concert} does not exist`,
         );
       }
-
+      
       // 2. Sum up all ticket_quantity already booked for this concert
       const { sum } = await this.bookingRepository
         .createQueryBuilder('booking')
@@ -78,7 +74,6 @@ export class BookingService {
           // Create payment
           const payment = manager.create(Payment, {
             amount: createBookingDto.ticket_quantity,
-            image: createBookingDto.image,
           });
           const savedPayment = await manager.save(Payment, payment);
 
@@ -90,7 +85,7 @@ export class BookingService {
             ticket_quantity: Number(createBookingDto.ticket_quantity),
             unit_price: Number(concert.price),
             total_amount: Number(totalAmount),
-
+            image: createBookingDto.image,
             user: { id: Number(userId) },
             concert: { id: Number(createBookingDto.concert) },
             payment: savedPayment,
@@ -140,7 +135,7 @@ export class BookingService {
     if (companyId) {
       queryBuilder.andWhere('companies.id = :companyId', { companyId });
     }
-    if (checkRole?.role === EnumRole.COMPANY) {
+   if (checkRole?.role === EnumRole.COMPANY) {
       queryBuilder.andWhere('user.id = :userId', { userId });
     }
 
@@ -224,6 +219,7 @@ export class BookingService {
           await manager.update(Booking, id, {
             ticket_quantity: newTicketQuantity,
             total_amount: totalAmount,
+            image: updateBookingDto.image || booking.image,
             ...(updateBookingDto.concert ? { concert: { id: concertId } } : {}),
           });
 
@@ -233,32 +229,6 @@ export class BookingService {
               .createQueryBuilder()
               .update(Payment)
               .set({ amount: newTicketQuantity })
-              .where('id = :id', { id: booking.payment.id })
-              .execute();
-          }
-          // Update payment image if provided
-          if (updateBookingDto.image && booking.payment) {
-            // Use only the filename for deletion
-            const newImageFilename = path.basename(updateBookingDto.image || '');
-            const oldImageFilename = path.basename(booking.payment.image || '');
-            const imageDir = path.join(__dirname, '../../../uploads/images/');
-            const oldImagePath = path.join(imageDir, oldImageFilename);
-
-            // If old and new image are the same (by filename), return message
-            if (oldImageFilename === newImageFilename) {
-                throw new BadRequestException('this image already use now');
-            }
-
-            // Remove old image if exists using utility
-            if (oldImageFilename && await fileExists(oldImagePath)) {
-              await removeFile(oldImagePath);
-            }
-
-            // Update payment image in DB (save full URL, not just filename)
-            await manager
-              .createQueryBuilder()
-              .update(Payment)
-              .set({ image: updateBookingDto.image })
               .where('id = :id', { id: booking.payment.id })
               .execute();
           }
@@ -277,6 +247,15 @@ export class BookingService {
               .execute();
           }
 
+          // Update booking details status if provided
+          if (updateBookingDto.detailsId && updateBookingDto.detailsStatus) {
+            await manager
+              .createQueryBuilder()
+              .update(BookingDetail)
+              .set({ status: updateBookingDto.detailsStatus })
+              .where('id = :id', { id: updateBookingDto.detailsId })
+              .execute();
+          }
           // 5b. Add or remove details to match new ticket quantity
           if (newTicketQuantity > currentDetails.length) {
             // Add missing details
@@ -305,60 +284,58 @@ export class BookingService {
     }
   }
 
-  async delete(id: number) {
-    return this.transactionManagerService.runInTransaction(
-      this.dataSource,
-      async (manager) => {
-        // Find the booking with all its relations
-        const booking = await manager.findOne(Booking, {
-          where: { id },
-          relations: ['details', 'payment'],
-        });
+async delete(id: number) {
+  return this.transactionManagerService.runInTransaction(
+    this.dataSource,
+    async (manager) => {
+      // Find the booking with all its relations
+      const booking = await manager.findOne(Booking, {
+        where: { id },
+        relations: ['details', 'payment'],
+      });
 
-        if (!booking) {
-          throw new NotFoundException(`Booking with ID ${id} not found`);
-        }
+      if (!booking) {
+        throw new NotFoundException(`Booking with ID ${id} not found`);
+      }
 
-        // Remove check_in linked to each detail
-        if (booking.details && booking.details.length > 0) {
-          for (const detail of booking.details) {
-            // Make sure detail is loaded with id
-            if (detail.id) {
-              const checkIn = await manager.findOne('CheckIn', {
-                where: { booking_details: { id: detail.id } },
-              });
-              if (checkIn) {
-                await manager.remove('CheckIn', checkIn);
-              }
+      // Remove check_in linked to each detail
+      if (booking.details && booking.details.length > 0) {
+        for (const detail of booking.details) {
+          // Make sure detail is loaded with id
+          if (detail.id) {
+            const checkIn = await manager.findOne('CheckIn', { where: { booking_details: { id: detail.id } } });
+            if (checkIn) {
+              await manager.remove('CheckIn', checkIn);
             }
           }
-          // Remove all details in one call
-          await manager.remove(BookingDetail, booking.details);
         }
+        // Remove all details in one call
+        await manager.remove(BookingDetail, booking.details);
+      }
 
-        // Store payment reference
-        const payment = booking.payment;
+      // Store payment reference
+      const payment = booking.payment;
 
-        // Remove the payment reference using QueryBuilder
-        await manager
-          .createQueryBuilder()
-          .update(Booking)
-          .set({ payment: null })
-          .where('id = :id', { id: booking.id })
-          .execute();
+      // Remove the payment reference using QueryBuilder
+      await manager
+        .createQueryBuilder()
+        .update(Booking)
+        .set({ payment: null })
+        .where('id = :id', { id: booking.id })
+        .execute();
 
-        // Now delete the booking
-        await manager.remove(Booking, booking);
+      // Now delete the booking
+      await manager.remove(Booking, booking);
 
-        // Finally delete the payment if it exists
-        if (payment) {
-          await manager.remove(Payment, payment);
-        }
+      // Finally delete the payment if it exists
+      if (payment) {
+        await manager.remove(Payment, payment);
+      }
 
-        return {
-          message: `Booking with ID ${id} and all related data has been deleted`,
-        };
-      },
-    );
-  }
+      return {
+        message: `Booking with ID ${id} and all related data has been deleted`,
+      };
+    },
+  );
+}
 }

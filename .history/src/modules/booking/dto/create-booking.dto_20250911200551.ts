@@ -1,4 +1,4 @@
-import { IsNumber, IsDateString, ValidateNested, IsString } from 'class-validator';
+import { IsNumber, IsDateString, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
 import { CreatePaymentDto } from 'src/modules/payment/dto/create-payment.dto';
 
@@ -7,6 +7,5 @@ export class CreateBookingDto {
   ticket_quantity: number;
   @IsNumber()
   concert: number;
-  @IsString()
-  image: string;
+  
 }

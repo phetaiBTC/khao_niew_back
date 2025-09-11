@@ -1,0 +1,38 @@
+{
+    "sourceFile": "src/modules/booking/dto/create-booking.dto.ts",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 5,
+            "patches": [
+                {
+                    "date": 1757595951818,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1757595962359,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -6,6 +6,6 @@\n   @IsNumber()\r\n   ticket_quantity: number;\r\n   @IsNumber()\r\n   concert: number;\r\n-  \r\n+  @\r\n }\r\n"
+                },
+                {
+                    "date": 1757595967490,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -6,6 +6,6 @@\n   @IsNumber()\r\n   ticket_quantity: number;\r\n   @IsNumber()\r\n   concert: number;\r\n-  @\r\n+  @Is\r\n }\r\n"
+                },
+                {
+                    "date": 1757596007339,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -6,6 +6,6 @@\n   @IsNumber()\r\n   ticket_quantity: number;\r\n   @IsNumber()\r\n   concert: number;\r\n-  @Is\r\n+  @IsS\r\n }\r\n"
+                },
+                {
+                    "date": 1757596012773,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,11 +1,12 @@\n-import { IsNumber, IsDateString, ValidateNested } from 'class-validator';\r\n+import { IsNumber, IsDateString, ValidateNested, IsString } from 'class-validator';\r\n import { Type } from 'class-transformer';\r\n import { CreatePaymentDto } from 'src/modules/payment/dto/create-payment.dto';\r\n \r\n export class CreateBookingDto {\r\n   @IsNumber()\r\n   ticket_quantity: number;\r\n   @IsNumber()\r\n   concert: number;\r\n-  @IsS\r\n+  @IsString()\r\n+  payment_method: string;\r\n }\r\n"
+                },
+                {
+                    "date": 1757596019888,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -7,6 +7,6 @@\n   ticket_quantity: number;\r\n   @IsNumber()\r\n   concert: number;\r\n   @IsString()\r\n-  payment_method: string;\r\n+  image: string;\r\n }\r\n"
+                }
+            ],
+            "date": 1757595951818,
+            "name": "Commit-0",
+            "content": "import { IsNumber, IsDateString, ValidateNested } from 'class-validator';\r\nimport { Type } from 'class-transformer';\r\nimport { CreatePaymentDto } from 'src/modules/payment/dto/create-payment.dto';\r\n\r\nexport class CreateBookingDto {\r\n  @IsNumber()\r\n  ticket_quantity: number;\r\n  @IsNumber()\r\n  concert: number;\r\n  \r\n}\r\n"
+        }
+    ]
+}

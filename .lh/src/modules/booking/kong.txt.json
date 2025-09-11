@@ -1,0 +1,18 @@
+{
+    "sourceFile": "src/modules/booking/kong.txt",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 0,
+            "patches": [
+                {
+                    "date": 1757599378689,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                }
+            ],
+            "date": 1757599378689,
+            "name": "Commit-0",
+            "content": " if (updateBookingDto.image && booking.payment) {\r\n            // Extract filename from image URL\r\n            const newImageUrl = updateBookingDto.image;\r\n            const newImageFilename = newImageUrl.split('uploads/images/')[1] || newImageUrl;\r\n            const oldImageUrl = booking.payment.image;\r\n            const oldImageFilename = oldImageUrl ? (oldImageUrl.split('uploads/images/')[1] || oldImageUrl) : '';\r\n            const imageDir = path.join(__dirname, '../../../uploads/images/');\r\n            const oldImagePath = path.join(imageDir, oldImageFilename);\r\n\r\n            // If old and new image are the same, return message\r\n            if (oldImageFilename === newImageFilename) {\r\n              throw new Error('this image already use now');\r\n            }\r\n\r\n            // Remove old image if exists\r\n            if (oldImageFilename && fs.existsSync(oldImagePath)) {\r\n              fs.unlinkSync(oldImagePath);\r\n            }\r\n\r\n            // Update payment image in DB (save only filename)\r\n            await manager\r\n              .createQueryBuilder()\r\n              .update(Payment)\r\n              .set({ image: newImageFilename })\r\n              .where('id = :id', { id: booking.payment.id })\r\n              .execute();\r\n          }"
+        }
+    ]
+}

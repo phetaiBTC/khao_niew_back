@@ -10,7 +10,6 @@ import { TRANSACTION_MANAGER_SERVICE } from 'src/common/constants/inject-key';
 import type { ITransactionManager } from 'src/common/transaction/transaction.interface';
 import { BookingDetail } from '../booking-details/entities/bookingDetails.entity';
 import { PaginateDto } from 'src/common/dto/paginate.dto';
-import { BadRequestException } from '@nestjs/common';
 import { paginateUtil } from 'src/common/utils/paginate.util';
 import { BookingPaginateDto } from './dto/booking-paginate.dto';
 import { User } from '../users/entities/user.entity';
@@ -238,15 +237,17 @@ export class BookingService {
           }
           // Update payment image if provided
           if (updateBookingDto.image && booking.payment) {
-            // Use only the filename for deletion
-            const newImageFilename = path.basename(updateBookingDto.image || '');
-            const oldImageFilename = path.basename(booking.payment.image || '');
+            // Extract filename from image URL
+            const newImageUrl = updateBookingDto.image;
+        //  const newImageFilename = path.basename(updateBookingDto.image || '');
+            const oldImageUrl = booking.payment.image;
+            // const oldImageFilename = path.basename(booking.payment.image || '');
             const imageDir = path.join(__dirname, '../../../uploads/images/');
-            const oldImagePath = path.join(imageDir, oldImageFilename);
+            const oldImagePath = path.join(imageDir, oldImageUrl);
 
-            // If old and new image are the same (by filename), return message
+            // If old and new image are the same, return message
             if (oldImageFilename === newImageFilename) {
-                throw new BadRequestException('this image already use now');
+              throw new Error('this image already use now');
             }
 
             // Remove old image if exists using utility
@@ -254,11 +255,11 @@ export class BookingService {
               await removeFile(oldImagePath);
             }
 
-            // Update payment image in DB (save full URL, not just filename)
+            // Update payment image in DB (save only filename)
             await manager
               .createQueryBuilder()
               .update(Payment)
-              .set({ image: updateBookingDto.image })
+              .set({ image: newImageFilename })
               .where('id = :id', { id: booking.payment.id })
               .execute();
           }

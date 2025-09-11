@@ -1,6 +1,6 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { CreateBookingDto } from './create-booking.dto';
-import { IsEnum, IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsEnum, IsNumber, IsOptional } from 'class-validator';
 import { PaymentStatus } from 'src/modules/payment/entities/payment.entity';
 import { DetailsStatus } from 'src/modules/booking-details/entities/bookingDetails.entity';
 
@@ -14,8 +14,8 @@ export class UpdateBookingDto extends PartialType(CreateBookingDto) {
   readonly paymentStatus?: PaymentStatus;
    
   @IsOptional()
-  @IsString()
-  readonly image?: string;
+  @Is()
+  readonly paymentId: number;
 
   @IsOptional()
   @IsEnum(DetailsStatus)

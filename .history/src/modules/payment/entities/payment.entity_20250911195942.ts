@@ -32,7 +32,6 @@ export class Payment extends ShardEntity {
 
   @Column()
   image: string;
-  
   @Column({ type: 'enum', enum: PaymentStatus , default: PaymentStatus.PENDING })
   status: PaymentStatus;
 }
