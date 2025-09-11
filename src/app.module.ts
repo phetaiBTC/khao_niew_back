@@ -20,6 +20,7 @@ import { SeederModule } from './database/seeds/seeder.module';
 import { PaymentModule } from './modules/payment/payment.module';
 import { TransactionModule } from './common/transaction/transaction.module';
 import { BookingDetailsModule } from './modules/booking-details/booking-details.module';
+import { ReportsModule } from './modules/reports/reports.module';
 
 @Module({
   imports: [
@@ -46,7 +47,8 @@ import { BookingDetailsModule } from './modules/booking-details/booking-details.
     AuthModule,
     SeederModule,
     PaymentModule,
-    BookingDetailsModule
+    BookingDetailsModule,
+    ReportsModule
   ],
   providers: [
     {
