@@ -223,6 +223,7 @@ export class ReportsService {
       .addGroupBy('concert.price')
       .addGroupBy('month')
       .orderBy('month', 'ASC')
+      .addOrderBy('concert.date', 'DESC')
       .getRawMany();
 
     // สร้าง structure 1-12 เดือน
