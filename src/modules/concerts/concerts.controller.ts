@@ -32,8 +32,8 @@ export class ConcertsController {
     return this.concertService.update(+id, dto);
   }
 
-  // @Delete(':id')
-  // remove(@Param('id') id: string) {
-  //   return this.concertService.remove(+id);
-  // }
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.concertService.remove(+id);
+  }
 }

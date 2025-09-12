@@ -9,6 +9,7 @@ import { Concert } from '../concerts/entities/concert.entity';
 import { Venue } from '../venue/entities/venue.entity';
 import { CheckIn } from '../check_in/entities/check_in.entity';
 import * as ExcelJS from 'exceljs';
+import { dayjsUtil } from 'src/common/utils/dayjs.util';
 @Injectable()
 export class ReportsService {
   constructor(
@@ -239,7 +240,7 @@ export class ReportsService {
       const monthData = result
         .filter((r) => Number(r.month) === m)
         .map((r) => ({
-          concert: r.concert,
+          concert: dayjsUtil(r.concert),
           total_bookings: Number(r.total_bookings),
           total_people: Number(r.total_people),
           unit_price: Number(r.unit_price),
@@ -378,6 +379,7 @@ export class ReportsService {
     const headerRow = worksheet.addRow([
       'ປີ',
       'ເດືອນ',
+      'ວັນທີຈັດຄອນເສີດ',
       'ຈຳນວນການຈອງ',
       'ຈຳນວນຄົນຈອງ',
       'ລາຄາຕໍ່ຄົນ',
@@ -396,6 +398,7 @@ export class ReportsService {
     worksheet.columns = [
       { width: 12 }, // ປີ
       { width: 15 }, // ເດືອນ
+      { width: 18 }, // ເດືອນທີຈັດຄອນເສີດ
       { width: 18 }, // ຈຳນວນການຈອງ
       { width: 18 }, // ຈຳນວນຄົນຈອງ
       { width: 18 }, // ລາຄາຕໍ່ຄົນ
@@ -440,6 +443,7 @@ export class ReportsService {
           const row = worksheet.addRow([
             detailIndex === 0 ? year : '', // แสดง year เฉพาะ row แรก
             detailIndex === 0 ? month : '', // แสดง month เฉพาะ row แรก
+            d.concert,
             d.total_bookings,
             d.total_people,
             d.unit_price,
