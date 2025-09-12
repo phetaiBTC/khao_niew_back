@@ -6,27 +6,26 @@ import {
   OneToOne,
   JoinColumn,
   CreateDateColumn,
-  OneToMany
+  OneToMany,
 } from 'typeorm';
 import { ShardEntity } from 'src/common/entity/BaseEntity';
 import { CheckIn } from 'src/modules/check_in/entities/check_in.entity';
 import { Company } from 'src/modules/companies/entities/company.entity';
 @Entity('details_scan')
 export class DetailsScan extends ShardEntity {
-    @PrimaryGeneratedColumn()
-    id: number;
+  @PrimaryGeneratedColumn()
+  id: number;
 
-    @Column({ type: 'float' })
-    amount: number;
+  @Column({ type: 'float' })
+  amount: number;
 
-    @OneToOne(() => Company , { cascade: true })
-    @JoinColumn({ name: 'company_id' })
-    company: Company;
+  @OneToOne(() => Company, { cascade: true })
+  @JoinColumn({ name: 'company_id' })
+  company: Company;
 
- 
-@OneToMany(() => CheckIn, (checkIn) => checkIn.detailsScan)
-checkIns: CheckIn[];
+  @OneToMany(() => CheckIn, (checkIn) => checkIn.detailsScan)
+  checkIns: CheckIn[];
 
-  @Column("simple-array", { nullable: true })
-checkInIds: number[];
+  @Column('simple-array', { nullable: true })
+  checkInIds: number[];
 }

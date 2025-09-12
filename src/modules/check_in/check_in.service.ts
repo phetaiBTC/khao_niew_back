@@ -1,4 +1,9 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateCheckInDto } from './dto/create-check_in.dto';
 import { UpdateCheckInDto } from './dto/update-check_in.dto';
 import { InjectRepository, InjectDataSource } from '@nestjs/typeorm';
@@ -12,6 +17,7 @@ import { Repository, DataSource } from 'typeorm';
 import { TRANSACTION_MANAGER_SERVICE } from 'src/common/constants/inject-key';
 import type { ITransactionManager } from 'src/common/transaction/transaction.interface';
 import { PaymentStatus } from '../payment/entities/payment.entity';
+import { Booking } from '../booking/entities/booking.entity';
 @Injectable()
 export class CheckInService {
   constructor(
@@ -26,116 +32,31 @@ export class CheckInService {
     private detailsScanRepository: Repository<DetailsScan>,
   ) {}
   async create(createCheckInDto: CreateCheckInDto) {
-  
     return this.transactionManager.runInTransaction(
       this.dataSource,
       async (manager) => {
         try {
-          // Find booking detail with check-in relation
           const bookingDetail = await manager.findOne(BookingDetail, {
             where: { id: createCheckInDto.booking_details },
-            relations: [
-              'check_in',
-              'booking.payment',
-              'booking',
-              'booking.details',
-              'booking.concert',
-              'booking.user',
-              'booking.user.companies',
-            ],
+            relations: ['booking', 'booking.payment'],
           });
-
+          console.log('Booking Detail:', bookingDetail);
           if (!bookingDetail) {
-            throw new NotFoundException(
-              `BookingDetail with id ${createCheckInDto.booking_details} not found`,
-            );
+            throw new NotFoundException('Booking Detail not found');
           }
           if (bookingDetail.booking.payment.status !== PaymentStatus.SUCCESS) {
-            throw new NotFoundException(
-              `Payment for BookingDetail with id ${createCheckInDto.booking_details} is not successful`,
+            throw new BadRequestException(
+              'Cannot check-in: Payment not completed',
             );
           }
-          // console.log('Found BookingDetail:', bookingDetail.status);
-          if (bookingDetail.status === DetailsStatus.CHECKED_IN) {
-            throw new NotFoundException(`You have already been checked in`);
-          }
-          if (bookingDetail.check_in) {
-            bookingDetail;
-            throw new NotFoundException(
-              `BookingDetail with id ${createCheckInDto.booking_details} has already been checked in`,
-            );
-          }
-          // Create check-in record
-          console.log(bookingDetail);
-          const checkIn = manager.create(CheckIn, {
-            booking_details: bookingDetail,
+          await manager.update(BookingDetail, bookingDetail.id, {
+            status: DetailsStatus.CHECKED_IN,
           });
-          const savedCheckIn = await manager.save(CheckIn, checkIn);
-          console.log('Saved CheckIn:', savedCheckIn);
-          //update status
-            await this.bookingDetailRepository.update(
-            createCheckInDto.booking_details,
-            { status: DetailsStatus.CHECKED_IN },
-          );
-
-          // Reload the updated booking detail
-          const updatedBookingDetail = await manager.findOne(BookingDetail, {
-            where: { id: bookingDetail.id },
-            relations: [
-              'check_in',
-              'booking.payment',
-              'booking',
-              'booking.details',
-              'booking.concert',
-              'booking.user',
-              'booking.user.companies',
-            ],
-          });
-
-          // Get the company ID
-          const companyId = bookingDetail.booking.user.companies.id;
-
-          // Find existing detail scan for this company
-          let detailsScan = await manager.findOne(DetailsScan, {
-            where: { company: { id: companyId } },
-            relations: ['company'],
-          });
-
-          if (detailsScan) {
-            // Update amount
-            detailsScan.amount += 1;
-
-            // Append new check-in ID to array
-            detailsScan.checkInIds = [
-              ...(detailsScan.checkInIds || []),
-              savedCheckIn.id,
-            ];
-
-            savedCheckIn.detailsScan = detailsScan;
-            await manager.save(CheckIn, savedCheckIn);
-            await manager.save(DetailsScan, detailsScan);
-          } else {
-            // Create new details scan
-            detailsScan = manager.create(DetailsScan, {
-              amount: 1,
-              company: { id: companyId },
-              checkInIds: [savedCheckIn.id], // init with new check-in ID
-            });
-            detailsScan = await manager.save(DetailsScan, detailsScan);
-
-            savedCheckIn.detailsScan = detailsScan;
-            await manager.save(CheckIn, savedCheckIn);
-          }
-          const savedDetailsScan = detailsScan;
-
-         return {
-  message: 'Check-in completed successfully',
-  bookingDetail: updatedBookingDetail,
-  detailsScan: savedDetailsScan,
-};
+          
+          return { message: 'Check-in successful' };
         } catch (error) {
           console.error('Error in check-in transaction:', error);
-          throw error; // Transaction will automatically rollback
+          throw error; // rollback อัตโนมัติ
         }
       },
     );

@@ -3,7 +3,7 @@ import {
   PrimaryGeneratedColumn,
   Column,
   ManyToOne,
-  OneToOne
+  OneToOne,
 } from 'typeorm';
 import { Booking } from '../../booking/entities/booking.entity';
 import { CheckIn } from 'src/modules/check_in/entities/check_in.entity';
@@ -21,9 +21,15 @@ export class BookingDetail extends ShardEntity {
   @ManyToOne(() => Booking, (booking) => booking.details)
   booking: Booking;
 
-   @OneToOne(() => CheckIn, (checkin) => checkin.booking_details)
+  @OneToOne(() => CheckIn, (checkin) => checkin.booking_details)
   check_in: CheckIn;
 
-    @Column({ type: 'enum', enum: DetailsStatus , default: DetailsStatus.NOT_CHECKED_IN })
-    status: DetailsStatus;
+  @Column({
+    type: 'enum',
+    enum: DetailsStatus,
+    default: DetailsStatus.NOT_CHECKED_IN,
+  })
+  status: DetailsStatus;
+
+  
 }

@@ -6,22 +6,22 @@ import {
   OneToOne,
   JoinColumn,
   CreateDateColumn,
-  OneToMany
+  OneToMany,
 } from 'typeorm';
 import { BookingDetail } from 'src/modules/booking-details/entities/bookingDetails.entity';
 import { ShardEntity } from 'src/common/entity/BaseEntity';
-import {DetailsScan} from 'src/modules/details_scan/entities/details_scan.entity'
+import { DetailsScan } from 'src/modules/details_scan/entities/details_scan.entity';
 @Entity('check_in')
 export class CheckIn extends ShardEntity {
-    @PrimaryGeneratedColumn()
-    id: number;
-    @OneToOne(() => BookingDetail, { cascade: true })
-      @JoinColumn()
-    booking_details: BookingDetail;
+  @PrimaryGeneratedColumn()
+  id: number;
+  @OneToOne(() => BookingDetail, { cascade: true })
+  @JoinColumn()
+  booking_details: BookingDetail;
 
-    @CreateDateColumn()
-    date_scan:  Date;
+  @CreateDateColumn()
+  date_scan: Date;
 
-   @ManyToOne(() => DetailsScan, (detailsScan) => detailsScan.checkIns)
-detailsScan: DetailsScan;
-    }
+  @ManyToOne(() => DetailsScan, (detailsScan) => detailsScan.checkIns)
+  detailsScan: DetailsScan;
+}
