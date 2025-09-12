@@ -291,7 +291,7 @@ async generateToExcel(year: number) {
         fgColor: { argb: colors.headerBg },
       },
       font: {
-        name: 'Segoe UI',
+        name: 'Phetsarath OT',
         size: 12,
         bold: true,
         color: { argb: colors.headerText },
@@ -310,7 +310,7 @@ async generateToExcel(year: number) {
 
     const dataStyle = {
       font: {
-        name: 'Segoe UI',
+        name: 'Phetsarath OT',
         size: 11,
       },
       alignment: {
@@ -349,7 +349,7 @@ async generateToExcel(year: number) {
     titleCell.value = `ລາຍງານການຈອງຄອນເສີດປະຈຳປີ ${year}`;
     titleCell.style = {
       font: {
-        name: 'Segoe UI',
+        name: 'Phetsarath OT',
         size: 18,
         bold: true,
         color: { argb: colors.primary },
@@ -501,7 +501,7 @@ async generateToExcel(year: number) {
           fgColor: { argb: colors.accent },
         },
         font: {
-          name: 'Segoe UI',
+          name: 'Phetsarath OT',
           size: 12,
           bold: true,
           color: { argb: '000000' },
