@@ -218,7 +218,7 @@ export class ReportsService {
       .where('YEAR(booking.booking_date) = :year', { year })
       .andWhere('payment.status = :status', { status: 'success' })
       .groupBy('concert.id')
-      .groupBy('concert.price')
+      .addGroupBy('concert.price')
       .addGroupBy('month')
       .orderBy('month', 'ASC')
       .getRawMany();
