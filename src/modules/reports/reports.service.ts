@@ -202,19 +202,18 @@ export class ReportsService {
     // ดึงข้อมูลจำนวน booking และ revenue ต่อ concert ต่อเดือน
     const result = await this.bookingRepo
       .createQueryBuilder('booking')
-      .leftJoin('booking.concert', 'concert')
-      .leftJoin('booking.user', 'user')
-      .leftJoin('user.companies', 'companies')
-      .leftJoin('booking.payment', 'payment')
-      .addSelect('MONTH(booking.booking_date)', 'month')
+      .select('MONTH(booking.booking_date)', 'month')
       .addSelect('COUNT(booking.id)', 'total_bookings')
       .addSelect(
         'SUM(booking.unit_price * booking.ticket_quantity)',
         'total_revenue',
       )
-
       .addSelect('SUM(booking.ticket_quantity)', 'total_people')
       .addSelect('concert.price', 'unit_price')
+      .leftJoin('booking.concert', 'concert')
+      .leftJoin('booking.user', 'user')
+      .leftJoin('user.companies', 'companies')
+      .leftJoin('booking.payment', 'payment')
       .where('YEAR(booking.booking_date) = :year', { year })
       .andWhere('payment.status = :status', { status: 'success' })
       .groupBy('concert.id')
