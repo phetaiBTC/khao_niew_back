@@ -258,7 +258,7 @@ export class ReportsService {
     return report;
   }
 
-  async generateToExcel(year: number) {
+async generateToExcel(year: number) {
     const report = await this.getMonthlyConcertReport(year);
 
     const workbook = new ExcelJS.Workbook();
@@ -343,7 +343,7 @@ export class ReportsService {
     };
 
     // เพิ่ม title
-    worksheet.mergeCells('A1:F3');
+    worksheet.mergeCells('A1:G3');
     const titleCell = worksheet.getCell('A1');
     titleCell.value = `ລາຍງານການຈອງຄອນເສີດປະຈຳປີ ${year}`;
     titleCell.style = {
@@ -354,19 +354,19 @@ export class ReportsService {
         color: { argb: colors.primary },
       },
       alignment: {
-        horizontal: 'center',
-        vertical: 'middle',
+        horizontal: 'center' as const,
+        vertical: 'middle' as const,
       },
       fill: {
-        type: 'pattern',
-        pattern: 'solid',
+        type: 'pattern' as const,
+        pattern: 'solid' as const,
         fgColor: { argb: 'F8F9FA' },
       },
       border: {
-        top: { style: 'thick', color: { argb: colors.primary } },
-        left: { style: 'thick', color: { argb: colors.primary } },
-        bottom: { style: 'thick', color: { argb: colors.primary } },
-        right: { style: 'thick', color: { argb: colors.primary } },
+        top: { style: 'thick' as const, color: { argb: colors.primary } },
+        left: { style: 'thick' as const, color: { argb: colors.primary } },
+        bottom: { style: 'thick' as const, color: { argb: colors.primary } },
+        right: { style: 'thick' as const, color: { argb: colors.primary } },
       },
     };
 
@@ -399,7 +399,7 @@ export class ReportsService {
     worksheet.columns = [
       { width: 12 }, // ປີ
       { width: 15 }, // ເດືອນ
-      { width: 18 }, // ເດືອນທີຈັດຄອນເສີດ
+      { width: 18 }, // ວັນທີຈັດຄອນເສີດ
       { width: 18 }, // ຈຳນວນການຈອງ
       { width: 18 }, // ຈຳນວນຄົນຈອງ
       { width: 18 }, // ລາຄາຕໍ່ຄົນ
@@ -428,11 +428,11 @@ export class ReportsService {
 
       if (details.length === 0) {
         // ถ้าไม่มี concert ในเดือนนั้น
-        const row = worksheet.addRow([year, month, 0, 0, 0, 0]);
+        const row = worksheet.addRow([year, month, 0, 0, 0, 0, 0]);
         row.eachCell((cell, colNumber) => {
-          if (colNumber === 1 || colNumber === 2) {
+          if (colNumber === 1 || colNumber === 2 || colNumber === 3) {
             cell.style = dataStyle;
-          } else if (colNumber === 5 || colNumber === 6) {
+          } else if (colNumber === 6 || colNumber === 7) {
             cell.style = currencyStyle;
           } else {
             cell.style = numberStyle;
@@ -452,9 +452,9 @@ export class ReportsService {
           ]);
 
           row.eachCell((cell, colNumber) => {
-            if (colNumber === 1 || colNumber === 2) {
+            if (colNumber === 1 || colNumber === 2 || colNumber === 3) {
               cell.style = dataStyle;
-            } else if (colNumber === 5 || colNumber === 6) {
+            } else if (colNumber === 6 || colNumber === 7) {
               cell.style = currencyStyle;
             } else {
               cell.style = numberStyle;
@@ -484,6 +484,7 @@ export class ReportsService {
     const summaryRow = worksheet.addRow([
       'ລວມທັງໝົດ',
       '',
+      '',
       totalBookings,
       totalPeople,
       '',
@@ -494,8 +495,8 @@ export class ReportsService {
       cell.style = {
         ...headerStyle,
         fill: {
-          type: 'pattern',
-          pattern: 'solid',
+          type: 'pattern' as const,
+          pattern: 'solid' as const,
           fgColor: { argb: colors.accent },
         },
         font: {
@@ -506,9 +507,9 @@ export class ReportsService {
         },
       };
 
-      if (colNumber === 3 || colNumber === 4) {
+      if (colNumber === 4 || colNumber === 5) {
         cell.numFmt = '#,##0';
-      } else if (colNumber === 6) {
+      } else if (colNumber === 7) {
         cell.numFmt = '#,##0" ກິບ"';
       }
     });
@@ -516,7 +517,7 @@ export class ReportsService {
     summaryRow.height = 25;
 
     // Merge cells สำหรับ summary
-    worksheet.mergeCells(`A${summaryRow.number}:B${summaryRow.number}`);
+    worksheet.mergeCells(`A${summaryRow.number}:C${summaryRow.number}`);
 
     // เพิ่ม Charts
     if (monthlyData.length > 0) {
@@ -578,9 +579,9 @@ export class ReportsService {
     // Freeze panes
     worksheet.views = [
       {
-        // state: 'frozen', // เปิด freeze
+        // state: 'frozen',
         // xSplit: 0, // จำนวน column ที่ freeze
-        // ySplit: 5, // จำนวน row ที่ freeze (header ของคุณอยู่ row 5)
+        // ySplit: 5, // จำนวน row ที่ freeze (header row 5)
         showGridLines: false,
         zoomScale: 90,
         showRowColHeaders: false,
