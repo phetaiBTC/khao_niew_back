@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Between, Repository } from 'typeorm';
 import { User } from '../users/entities/user.entity';
 import { Company } from '../companies/entities/company.entity';
 import { Booking } from '../booking/entities/booking.entity';
@@ -10,6 +10,7 @@ import { Venue } from '../venue/entities/venue.entity';
 import { CheckIn } from '../check_in/entities/check_in.entity';
 import * as ExcelJS from 'exceljs';
 import { dayjsUtil } from 'src/common/utils/dayjs.util';
+import { PayloadDto } from '../auth/dto/auth.dto';
 @Injectable()
 export class ReportsService {
   constructor(
@@ -589,5 +590,23 @@ export class ReportsService {
     // Export เป็น buffer
     const buffer = await workbook.xlsx.writeBuffer();
     return buffer;
+  }
+
+  async getbookingReportByDate(user: PayloadDto, start: string, end: string) {
+    const startDate = new Date(start);
+    const endDate = new Date(end);
+
+    const company_exists = await this.companyRepo.findOne({
+      where: { id: user.company },
+    });
+    if (!company_exists) throw new NotFoundException('Company not found');
+
+    const totalBookings = await this.bookingRepo.count({
+      where: {
+        user: { companies: { id: user.company } },
+        createdAt: Between(startDate, endDate),
+      },
+    });
+    return { campany: company_exists.name, total_bookings: totalBookings || 0 };
   }
 }

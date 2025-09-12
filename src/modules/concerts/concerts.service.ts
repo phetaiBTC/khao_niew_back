@@ -56,6 +56,25 @@ export class ConcertsService {
       throw new BadRequestException('Date must be today or in the future');
     }
 
+    const concert_exists = await this.concertRepo
+      .createQueryBuilder('concert')
+      .where('concert.date = :date', { date: dto.date })
+      .andWhere('concert.venueId = :venueId', { venueId: dto.venueId })
+      .andWhere(
+        'concert.startTime < :endTime AND concert.endTime > :startTime',
+        {
+          startTime: dto.startTime,
+          endTime: dto.endTime,
+        },
+      )
+      .getOne();
+
+    if (concert_exists) {
+      throw new BadRequestException(
+        'A concert is already scheduled at this venue during the specified time',
+      );
+    }
+
     const concert = this.concertRepo.create({
       startTime: dto.startTime,
       endTime: dto.endTime,

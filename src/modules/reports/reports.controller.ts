@@ -1,5 +1,7 @@
 import { Controller, Get, Param, Query, Res } from '@nestjs/common';
 import { ReportsService } from './reports.service';
+import { AuthProfile } from 'src/common/decorator/user.decorator';
+import { PayloadDto } from '../auth/dto/auth.dto';
 
 @Controller('reports')
 export class ReportsController {
@@ -82,5 +84,14 @@ export class ReportsController {
     });
 
     res.end(buffer);
+  }
+
+  @Get('booking-report-company')
+  getbookingReport(
+    @AuthProfile() user: PayloadDto,
+    @Query('start') start: string, // e.g. 2025-05-03
+    @Query('end') end: string, // e.g. 2025-06-01
+  ) {
+    return this.reportsService.getbookingReportByDate(user, start, end);
   }
 }
