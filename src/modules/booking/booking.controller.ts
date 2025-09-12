@@ -9,6 +9,7 @@ import { BookingPaginateDto } from './dto/booking-paginate.dto';
 import { Roles } from 'src/common/decorator/role.decorator';
 import { EnumRole } from '../users/entities/user.entity';
 
+
 @Controller('booking')
 @UseGuards(JwtAuthGuard)
 export class BookingController {
@@ -25,6 +26,7 @@ export class BookingController {
   }
 
   @Get('/get-one/:id')
+  @Roles(EnumRole.ADMIN, EnumRole.COMPANY)
   findOne(@Param('id') id: number) {
     return this.bookingService.findOne(+id);
   }

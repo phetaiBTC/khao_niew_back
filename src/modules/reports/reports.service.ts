@@ -208,6 +208,7 @@ export class ReportsService {
         'SUM(booking.unit_price * booking.ticket_quantity)',
         'total_revenue',
       )
+      .addSelect('concert.date', 'concert')
       .addSelect('SUM(booking.ticket_quantity)', 'total_people')
       .addSelect('concert.price', 'unit_price')
       .leftJoin('booking.concert', 'concert')
