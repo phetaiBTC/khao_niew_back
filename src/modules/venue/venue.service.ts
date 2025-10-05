@@ -87,4 +87,6 @@ export class VenueService {
     const venue = await this.findOne(id);
     return this.venueRepo.remove(venue);
   }
+
+  
 }

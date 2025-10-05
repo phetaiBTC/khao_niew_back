@@ -44,6 +44,4 @@ export class BookingController {
   delete(@Param('id') id: number) {
     return this.bookingService.delete(id);
   }
-
-
 }

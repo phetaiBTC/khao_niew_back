@@ -51,7 +51,6 @@ export class BookingService {
         .getRawOne();
 
       const currentBooked = Number(sum) || 0;
-      console.log('Current booked tickets:', currentBooked);
       // 3. Check if adding this booking would exceed the limit
       const totalAfterBooking =
         currentBooked + createBookingDto.ticket_quantity;
@@ -282,7 +281,7 @@ export class BookingService {
     }
   }
 
-async delete(id: number) {
+  async delete(id: number) {
   return this.transactionManagerService.runInTransaction(
     this.dataSource,
     async (manager) => {

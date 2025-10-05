@@ -7,12 +7,10 @@ import {
 import { CreateCheckInDto } from './dto/create-check_in.dto';
 import { UpdateCheckInDto } from './dto/update-check_in.dto';
 import { InjectRepository, InjectDataSource } from '@nestjs/typeorm';
-import { CheckIn } from './entities/check_in.entity';
 import {
   BookingDetail,
   DetailsStatus,
 } from '../booking-details/entities/bookingDetails.entity';
-import { DetailsScan } from '../details_scan/entities/details_scan.entity';
 import { Repository, DataSource } from 'typeorm';
 import { TRANSACTION_MANAGER_SERVICE } from 'src/common/constants/inject-key';
 import type { ITransactionManager } from 'src/common/transaction/transaction.interface';
@@ -24,12 +22,6 @@ export class CheckInService {
     @InjectDataSource() private readonly dataSource: DataSource,
     @Inject(TRANSACTION_MANAGER_SERVICE)
     private readonly transactionManager: ITransactionManager,
-    @InjectRepository(CheckIn)
-    private checkInRepository: Repository<CheckIn>,
-    @InjectRepository(BookingDetail)
-    private bookingDetailRepository: Repository<BookingDetail>,
-    @InjectRepository(DetailsScan)
-    private detailsScanRepository: Repository<DetailsScan>,
   ) {}
   async create(createCheckInDto: CreateCheckInDto) {
     return this.transactionManager.runInTransaction(
@@ -40,7 +32,6 @@ export class CheckInService {
             where: { id: createCheckInDto.booking_details },
             relations: ['booking', 'booking.payment'],
           });
-          console.log('Booking Detail:', bookingDetail);
           if (!bookingDetail) {
             throw new NotFoundException('Booking Detail not found');
           }
@@ -56,25 +47,10 @@ export class CheckInService {
           return { message: 'Check-in successful' };
         } catch (error) {
           console.error('Error in check-in transaction:', error);
-          throw error; // rollback อัตโนมัติ
+          throw error;
         }
       },
     );
   }
 
-  findAll() {
-    return `This action returns all checkIn`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} checkIn`;
-  }
-
-  update(id: number, updateCheckInDto: UpdateCheckInDto) {
-    return `This action updates a #${id} checkIn`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} checkIn`;
-  }
 }

@@ -6,7 +6,6 @@ import {
   OneToOne,
 } from 'typeorm';
 import { Booking } from '../../booking/entities/booking.entity';
-import { CheckIn } from 'src/modules/check_in/entities/check_in.entity';
 import { ShardEntity } from 'src/common/entity/BaseEntity';
 
 export enum DetailsStatus {
@@ -20,10 +19,7 @@ export class BookingDetail extends ShardEntity {
 
   @ManyToOne(() => Booking, (booking) => booking.details)
   booking: Booking;
-
-  @OneToOne(() => CheckIn, (checkin) => checkin.booking_details)
-  check_in: CheckIn;
-
+  
   @Column({
     type: 'enum',
     enum: DetailsStatus,

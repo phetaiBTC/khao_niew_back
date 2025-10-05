@@ -8,7 +8,6 @@ import { Booking } from '../booking/entities/booking.entity';
 import { Payment } from '../payment/entities/payment.entity';
 import { Concert } from '../concerts/entities/concert.entity';
 import { Venue } from '../venue/entities/venue.entity';
-import { CheckIn } from '../check_in/entities/check_in.entity';
 
 // Entities
 @Module({
@@ -20,7 +19,6 @@ import { CheckIn } from '../check_in/entities/check_in.entity';
       Payment,
       Concert,
       Venue,
-      CheckIn,
     ]),
   ],
   providers: [ReportsService],

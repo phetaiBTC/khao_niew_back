@@ -36,4 +36,9 @@ export class ConcertsController {
   remove(@Param('id') id: string) {
     return this.concertService.remove(+id);
   }
+
+  @Get(':id/profile')
+  concertsProfile(@Param('id') id: string) {
+    return this.concertService.concertsProfile(+id);
+  }
 }

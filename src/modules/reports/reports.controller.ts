@@ -32,10 +32,6 @@ export class ReportsController {
     return this.reportsService.getBookingsByVenue();
   }
 
-  @Get('checkins')
-  getCheckInCount() {
-    return this.reportsService.getCheckInCount();
-  }
 
   @Get('sales-daily')
   getSalesDaily(@Query('year') year: number, @Query('month') month: number) {
@@ -55,14 +51,6 @@ export class ReportsController {
   @Get('bookings-by-company')
   getBookingsByCompany() {
     return this.reportsService.getBookingsByCompany();
-  }
-
-  @Get('all-reports')
-  getAllReports(@Query('year') year: number, @Query('month') month: number) {
-    return this.reportsService.getDashboardReport(
-      year || new Date().getFullYear(),
-      month || new Date().getMonth() + 1,
-    );
   }
 
   @Get('report-revenue')
@@ -93,5 +81,10 @@ export class ReportsController {
     @Query('end') end: string, // e.g. 2025-06-01
   ) {
     return this.reportsService.getbookingReportByDate(user, start, end);
+  }
+
+  @Get('/revenue-by-company')
+  getRevenueByCompany(@Query('id') id: number, @AuthProfile() user: PayloadDto) {
+    return this.reportsService.getCompaniesProfileReport(id, user);
   }
 }

@@ -9,7 +9,6 @@ import { VenueModule } from './modules/venue/venue.module';
 import { ImagesModule } from './modules/images/images.module';
 import { CheckInModule } from './modules/check_in/check_in.module';
 import { BookingModule } from './modules/booking/booking.module';
-import { DetailsScanModule } from './modules/details_scan/details_scan.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './guards/auth.guard';
@@ -43,7 +42,6 @@ import { ReportsModule } from './modules/reports/reports.module';
     ImagesModule,
     CheckInModule,
     BookingModule,
-    DetailsScanModule,
     AuthModule,
     SeederModule,
     PaymentModule,

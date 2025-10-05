@@ -14,7 +14,6 @@ export class BookingDetailsService {
   ) {}
   async getBookingDetails(query: PaginateDto ) {
     try {
-      console.log('Received query:', query); // Debug log
 
       const qb = this.bookingDetailRepository
         .createQueryBuilder('bookingDetail')
@@ -22,9 +21,6 @@ export class BookingDetailsService {
         .leftJoinAndSelect('booking.concert', 'concert')
         .leftJoinAndSelect('booking.user', 'user')
         .leftJoinAndSelect('booking.payment', 'payment');
-      
-       
-      // Search by concert ID if provided
       if (query.search) {
         console.log('Searching for concert ID:', query.search); // Debug log
         qb.andWhere('concert.id = :concertId', {

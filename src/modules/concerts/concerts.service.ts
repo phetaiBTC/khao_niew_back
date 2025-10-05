@@ -187,4 +187,102 @@ export class ConcertsService {
     const concerts = await this.concertRepo.findBy({ id });
     return this.concertRepo.remove(concerts);
   }
+
+async concertsProfile(concertId: number) {
+  // ดึงข้อมูล concert แบบเต็มเสมอ
+  const concert = await this.concertRepo
+    .createQueryBuilder('concert')
+    .leftJoinAndSelect('concert.venue', 'venue')
+    .leftJoinAndSelect('concert.entertainments', 'entertainments')
+    .leftJoinAndSelect('entertainments.images', 'images')
+    .where('concert.id = :id', { id: concertId })
+    .getOne();
+
+  if (!concert) return null; // ถ้า concert ไม่มีจริง ๆ
+
+  // ดึงข้อมูลสรุป booking/company (อาจจะไม่มี)
+  const result = await this.concertRepo
+    .createQueryBuilder('concert')
+    .leftJoin('concert.bookings', 'booking')
+    .leftJoin('booking.user', 'user')
+    .leftJoin('user.companies', 'companies')
+    .leftJoin('booking.payment', 'payment')
+    .leftJoin('concert.venue', 'venue')
+    .addSelect('concert.id', 'concert_id')
+    .addSelect('venue.id', 'venue_id')
+    .addSelect('venue.name', 'venue_name')
+    .addSelect('companies.id', 'company_id')
+    .addSelect('companies.name', 'company_name')
+    .addSelect('COUNT(booking.id)', 'total_bookings')
+    .addSelect('SUM(booking.ticket_quantity)', 'total_people')
+    .addSelect('COUNT(DISTINCT companies.id)', 'total_companies')
+    .addSelect('SUM(booking.unit_price * booking.ticket_quantity)', 'total_revenue')
+    .where('concert.id = :concertId', { concertId })
+    // .andWhere('payment.status = :status', { status: 'success' })
+    .andWhere('companies.id IS NOT NULL')
+    .groupBy('concert.id')
+    .addGroupBy('companies.id')
+    .addGroupBy('venue.id')
+    .orderBy('total_revenue', 'DESC')
+    .getRawMany();
+
+  // เตรียมข้อมูล concert
+  const concertInfo = {
+    id: concert.id,
+    date: concert.date,
+    price: Number(concert.price),
+    limit: Number(concert.limit),
+    status: concert.status,
+    startTime: concert.startTime,
+    endTime: concert.endTime,
+    entertainments: concert.entertainments,
+    venue: concert.venue
+      ? {
+          id: concert.venue.id,
+          name: concert.venue.name,
+          address: concert.venue.address,
+          latitude: concert.venue.latitude,
+          longitude: concert.venue.longitude,
+        }
+      : null,
+  };
+
+  // ถ้าไม่มี bookings/company ให้ return โปรไฟล์เฉย ๆ
+  if (result.length === 0) {
+    return {
+      concert: concertInfo,
+      companies: [],
+      total_companies: 0,
+      summary: {
+        total_companies: 0,
+        total_revenue: 0,
+      },
+    };
+  }
+
+  // ถ้ามี booking/company
+  const totalRevenue = result.reduce(
+    (sum, r) => sum + Number(r.total_revenue || 0),
+    0,
+  );
+
+  const companies = result.map((r) => ({
+    id: r.company_id,
+    name: r.company_name,
+    total_bookings: Number(r.total_bookings || 0),
+    total_people: Number(r.total_people || 0),
+    total_revenue: Number(r.total_revenue || 0),
+  }));
+
+  return {
+    concert: concertInfo,
+    companies,
+    summary: {
+      total_companies: companies.length,
+      total_revenue: totalRevenue,
+    },
+  };
+}
+
+
 }

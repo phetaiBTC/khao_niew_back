@@ -1,13 +1,12 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Between, Repository } from 'typeorm';
-import { User } from '../users/entities/user.entity';
+import { EnumRole, User } from '../users/entities/user.entity';
 import { Company } from '../companies/entities/company.entity';
 import { Booking } from '../booking/entities/booking.entity';
 import { Payment } from '../payment/entities/payment.entity';
 import { Concert } from '../concerts/entities/concert.entity';
 import { Venue } from '../venue/entities/venue.entity';
-import { CheckIn } from '../check_in/entities/check_in.entity';
 import * as ExcelJS from 'exceljs';
 import { dayjsUtil } from 'src/common/utils/dayjs.util';
 import { PayloadDto } from '../auth/dto/auth.dto';
@@ -24,8 +23,6 @@ export class ReportsService {
     @InjectRepository(Concert)
     private readonly concertRepo: Repository<Concert>,
     @InjectRepository(Venue) private readonly venueRepo: Repository<Venue>,
-    @InjectRepository(CheckIn)
-    private readonly checkinRepo: Repository<CheckIn>,
   ) {}
 
   async getUsersByRole() {
@@ -71,10 +68,6 @@ export class ReportsService {
       .getRawMany();
   }
 
-  async getCheckInCount() {
-    return { total_checkins: await this.checkinRepo.count() };
-  }
-
   async getSalesDaily(year: number, month: number) {
     return this.paymentRepo
       .createQueryBuilder('payment')
@@ -112,93 +105,93 @@ export class ReportsService {
       .getRawMany();
   }
 
-  async getDashboardReport(year: number, month: number) {
-    // Users by role
-    const usersByRole = await this.userRepo
-      .createQueryBuilder('user')
-      .select('user.role', 'role')
-      .addSelect('COUNT(user.id)', 'count')
-      .groupBy('user.role')
-      .getRawMany();
+  // async getDashboardReport(year: number, month: number) {
+  //   // Users by role
+  //   const usersByRole = await this.userRepo
+  //     .createQueryBuilder('user')
+  //     .select('user.role', 'role')
+  //     .addSelect('COUNT(user.id)', 'count')
+  //     .groupBy('user.role')
+  //     .getRawMany();
 
-    // Companies count
-    const totalCompanies = await this.companyRepo.count();
+  //   // Companies count
+  //   const totalCompanies = await this.companyRepo.count();
 
-    // Total revenue
-    const revenueResult = await this.paymentRepo
-      .createQueryBuilder('payment')
-      .select('SUM(payment.amount)', 'total')
-      .where('payment.status = :status', { status: 'success' })
-      .getRawOne();
-    const totalRevenue = Number(revenueResult.total) || 0;
+  //   // Total revenue
+  //   const revenueResult = await this.paymentRepo
+  //     .createQueryBuilder('payment')
+  //     .select('SUM(payment.amount)', 'total')
+  //     .where('payment.status = :status', { status: 'success' })
+  //     .getRawOne();
+  //   const totalRevenue = Number(revenueResult.total) || 0;
 
-    // Bookings per concert
-    const bookingsByConcert = await this.bookingRepo
-      .createQueryBuilder('booking')
-      .leftJoin('booking.concert', 'concert')
-      .addSelect('COUNT(booking.id)', 'total_bookings')
-      .groupBy('concert.id')
-      .getRawMany();
+  //   // Bookings per concert
+  //   const bookingsByConcert = await this.bookingRepo
+  //     .createQueryBuilder('booking')
+  //     .leftJoin('booking.concert', 'concert')
+  //     .addSelect('COUNT(booking.id)', 'total_bookings')
+  //     .groupBy('concert.id')
+  //     .getRawMany();
 
-    // Bookings per venue
-    const bookingsByVenue = await this.bookingRepo
-      .createQueryBuilder('booking')
-      .leftJoin('booking.concert', 'concert')
-      .leftJoin('concert.venue', 'venue')
-      .select('venue.name', 'venue')
-      .addSelect('COUNT(booking.id)', 'total_bookings')
-      .groupBy('venue.id')
-      .getRawMany();
+  //   // Bookings per venue
+  //   const bookingsByVenue = await this.bookingRepo
+  //     .createQueryBuilder('booking')
+  //     .leftJoin('booking.concert', 'concert')
+  //     .leftJoin('concert.venue', 'venue')
+  //     .select('venue.name', 'venue')
+  //     .addSelect('COUNT(booking.id)', 'total_bookings')
+  //     .groupBy('venue.id')
+  //     .getRawMany();
 
-    // Total check-ins
-    const totalCheckIns = await this.checkinRepo.count();
+  //   // Total check-ins
+  //   const totalCheckIns = await this.checkinRepo.count();
 
-    // Sales daily
-    const salesDaily = await this.paymentRepo
-      .createQueryBuilder('payment')
-      .select('DATE(payment.payment_date)', 'date')
-      .addSelect('SUM(payment.amount)', 'revenue')
-      .where('payment.status = :status', { status: 'success' })
-      .andWhere('YEAR(payment.payment_date) = :year', { year })
-      .andWhere('MONTH(payment.payment_date) = :month', { month })
-      .groupBy('date')
-      .orderBy('date', 'ASC')
-      .getRawMany();
+  //   // Sales daily
+  //   const salesDaily = await this.paymentRepo
+  //     .createQueryBuilder('payment')
+  //     .select('DATE(payment.payment_date)', 'date')
+  //     .addSelect('SUM(payment.amount)', 'revenue')
+  //     .where('payment.status = :status', { status: 'success' })
+  //     .andWhere('YEAR(payment.payment_date) = :year', { year })
+  //     .andWhere('MONTH(payment.payment_date) = :month', { month })
+  //     .groupBy('date')
+  //     .orderBy('date', 'ASC')
+  //     .getRawMany();
 
-    // Sales monthly
-    const salesMonthly = await this.paymentRepo
-      .createQueryBuilder('payment')
-      .select("DATE_FORMAT(payment.payment_date, '%Y-%m')", 'month')
-      .addSelect('SUM(payment.amount)', 'revenue')
-      .where('payment.status = :status', { status: 'success' })
-      .andWhere('YEAR(payment.payment_date) = :year', { year })
-      .groupBy('month')
-      .orderBy('month', 'ASC')
-      .getRawMany();
+  //   // Sales monthly
+  //   const salesMonthly = await this.paymentRepo
+  //     .createQueryBuilder('payment')
+  //     .select("DATE_FORMAT(payment.payment_date, '%Y-%m')", 'month')
+  //     .addSelect('SUM(payment.amount)', 'revenue')
+  //     .where('payment.status = :status', { status: 'success' })
+  //     .andWhere('YEAR(payment.payment_date) = :year', { year })
+  //     .groupBy('month')
+  //     .orderBy('month', 'ASC')
+  //     .getRawMany();
 
-    // Bookings per company
-    const bookingsByCompany = await this.bookingRepo
-      .createQueryBuilder('booking')
-      .leftJoin('booking.user', 'user')
-      .leftJoin('user.companies', 'companies')
-      .select('companies.name', 'companies')
-      .addSelect('COUNT(booking.id)', 'total_bookings')
-      .groupBy('companies.id')
-      .orderBy('total_bookings', 'DESC')
-      .getRawMany();
+  //   // Bookings per company
+  //   const bookingsByCompany = await this.bookingRepo
+  //     .createQueryBuilder('booking')
+  //     .leftJoin('booking.user', 'user')
+  //     .leftJoin('user.companies', 'companies')
+  //     .select('companies.name', 'companies')
+  //     .addSelect('COUNT(booking.id)', 'total_bookings')
+  //     .groupBy('companies.id')
+  //     .orderBy('total_bookings', 'DESC')
+  //     .getRawMany();
 
-    return {
-      usersByRole,
-      totalCompanies,
-      totalRevenue,
-      bookingsByConcert,
-      bookingsByVenue,
-      totalCheckIns,
-      salesDaily,
-      salesMonthly,
-      bookingsByCompany,
-    };
-  }
+  //   return {
+  //     usersByRole,
+  //     totalCompanies,
+  //     totalRevenue,
+  //     bookingsByConcert,
+  //     bookingsByVenue,
+  //     totalCheckIns,
+  //     salesDaily,
+  //     salesMonthly,
+  //     bookingsByCompany,
+  //   };
+  // }
 
   async getMonthlyConcertReport(year: number) {
     // ดึงข้อมูลจำนวน booking และ revenue ต่อ concert ต่อเดือน
@@ -212,16 +205,24 @@ export class ReportsService {
       )
       .addSelect('concert.date', 'concert')
       .addSelect('SUM(booking.ticket_quantity)', 'total_people')
+      .addSelect('user.id', 'user_id')
+      .addSelect('user.username', 'user_name')
+      .addSelect('companies.id', 'company_id')
+      .addSelect('companies.name', 'company_name')
       .addSelect('concert.price', 'unit_price')
       .leftJoin('booking.concert', 'concert')
       .leftJoin('booking.user', 'user')
+
       .leftJoin('user.companies', 'companies')
       .leftJoin('booking.payment', 'payment')
+
       .where('YEAR(booking.booking_date) = :year', { year })
       .andWhere('payment.status = :status', { status: 'success' })
       .groupBy('concert.id')
       .addGroupBy('concert.price')
       .addGroupBy('month')
+      .addGroupBy('user.id')
+      .addGroupBy('companies.id')
       .orderBy('month', 'ASC')
       .addOrderBy('concert.date', 'DESC')
       .getRawMany();
@@ -231,18 +232,37 @@ export class ReportsService {
       year: number;
       month: number;
       details: {
-        concert: any;
+        date: string;
+
+        user: {
+          id: number;
+          name: string;
+        };
+        company: {
+          id: number;
+          name: string;
+        };
         total_people: number;
         total_bookings: number;
         unit_price: number;
         total_revenue: number;
       }[];
     }[] = [];
+
     for (let m = 1; m <= 12; m++) {
       const monthData = result
         .filter((r) => Number(r.month) === m)
         .map((r) => ({
-          concert: dayjsUtil(r.concert),
+          date: dayjsUtil(r.concert),
+
+          user: {
+            id: r.user_id,
+            name: r.user_name,
+          },
+          company: {
+            id: r.company_id,
+            name: r.company_name,
+          },
           total_bookings: Number(r.total_bookings),
           total_people: Number(r.total_people),
           unit_price: Number(r.unit_price),
@@ -259,7 +279,7 @@ export class ReportsService {
     return report;
   }
 
-async generateToExcel(year: number) {
+  async generateToExcel(year: number) {
     const report = await this.getMonthlyConcertReport(year);
 
     const workbook = new ExcelJS.Workbook();
@@ -382,6 +402,8 @@ async generateToExcel(year: number) {
       'ປີ',
       'ເດືອນ',
       'ວັນທີຈັດຄອນເສີດ',
+      'ບໍລິສັດທີ່ຈອງ',
+      'ຄົນທີ່ຈອງ',
       'ຈຳນວນການຈອງ',
       'ຈຳນວນຄົນຈອງ',
       'ລາຄາຕໍ່ຄົນ',
@@ -401,6 +423,8 @@ async generateToExcel(year: number) {
       { width: 12 }, // ປີ
       { width: 15 }, // ເດືອນ
       { width: 18 }, // ວັນທີຈັດຄອນເສີດ
+      { width: 30 }, // ບໍລິສັດທີ່ຈອງ
+      { width: 25 }, // ຄົນທີ່ຈອງ
       { width: 18 }, // ຈຳນວນການຈອງ
       { width: 18 }, // ຈຳນວນຄົນຈອງ
       { width: 18 }, // ລາຄາຕໍ່ຄົນ
@@ -429,11 +453,11 @@ async generateToExcel(year: number) {
 
       if (details.length === 0) {
         // ถ้าไม่มี concert ในเดือนนั้น
-        const row = worksheet.addRow([year, month, 0, 0, 0, 0, 0]);
+        const row = worksheet.addRow([year, month, 0, 0, 0, 0, 0, 0, 0]);
         row.eachCell((cell, colNumber) => {
           if (colNumber === 1 || colNumber === 2 || colNumber === 3) {
             cell.style = dataStyle;
-          } else if (colNumber === 6 || colNumber === 7) {
+          } else if (colNumber === 8 || colNumber === 9) {
             cell.style = currencyStyle;
           } else {
             cell.style = numberStyle;
@@ -445,7 +469,9 @@ async generateToExcel(year: number) {
           const row = worksheet.addRow([
             detailIndex === 0 ? year : '', // แสดง year เฉพาะ row แรก
             detailIndex === 0 ? month : '', // แสดง month เฉพาะ row แรก
-            d.concert,
+            d.date,
+            d.company?.name || 'ບໍ່ມີບໍລິສັດ',
+            d.user?.name || 'ບໍ່ມີຜູ້ຈອງ',
             d.total_bookings,
             d.total_people,
             d.unit_price,
@@ -453,9 +479,15 @@ async generateToExcel(year: number) {
           ]);
 
           row.eachCell((cell, colNumber) => {
-            if (colNumber === 1 || colNumber === 2 || colNumber === 3) {
+            if (
+              colNumber === 1 ||
+              colNumber === 2 ||
+              colNumber === 3 ||
+              colNumber === 4 ||
+              colNumber === 5
+            ) {
               cell.style = dataStyle;
-            } else if (colNumber === 6 || colNumber === 7) {
+            } else if (colNumber === 8 || colNumber === 9) {
               cell.style = currencyStyle;
             } else {
               cell.style = numberStyle;
@@ -486,6 +518,8 @@ async generateToExcel(year: number) {
       'ລວມທັງໝົດ',
       '',
       '',
+      '',
+      '',
       totalBookings,
       totalPeople,
       '',
@@ -508,9 +542,9 @@ async generateToExcel(year: number) {
         },
       };
 
-      if (colNumber === 4 || colNumber === 5) {
+      if (colNumber === 6 || colNumber === 7) {
         cell.numFmt = '#,##0';
-      } else if (colNumber === 7) {
+      } else if (colNumber === 9) {
         cell.numFmt = '#,##0" ກິບ"';
       }
     });
@@ -610,5 +644,50 @@ async generateToExcel(year: number) {
       },
     });
     return { campany: company_exists.name, total_bookings: totalBookings || 0 };
+  }
+
+  async getCompaniesProfileReport(id: number, user: PayloadDto) {
+    const query = this.bookingRepo
+      .createQueryBuilder('booking')
+      .leftJoin('booking.user', 'user')
+      .leftJoin('user.companies', 'companies')
+      .leftJoin('booking.payment', 'payment')
+      .leftJoin('booking.concert', 'concert')
+      .addSelect('companies.id', 'company_id')
+      .addSelect('companies.name', 'company_name')
+      .addSelect('COUNT(DISTINCT user.id)', 'total_users')
+      .addSelect('COUNT(booking.id)', 'total_bookings')
+      .addSelect(
+        'SUM(booking.unit_price * booking.ticket_quantity)',
+        'total_revenue',
+      )
+      .addSelect('SUM(booking.ticket_quantity)', 'total_people')
+      .andWhere('payment.status = :status', { status: 'success' })
+      .andWhere('companies.id IS NOT NULL')
+      .groupBy('companies.id')
+      .orderBy('total_revenue', 'DESC');
+ 
+    const companyIdFilter = user.role === EnumRole.ADMIN
+      ? { companyId: id }
+      : user.role === EnumRole.COMPANY && user.company
+      ? { companyId: user.company }
+      : {};
+
+    query.andWhere('companies.id = :companyId', companyIdFilter);
+
+    const result = await query.getRawMany();
+
+    const data = result.map((r) => ({
+      company: {
+        id: r.company_id,
+        name: r.company_name,
+      },
+      total_users: Number(r.total_users),
+      total_bookings: Number(r.total_bookings),
+      total_people: Number(r.total_people),
+      total_revenue: Number(r.total_revenue),
+    }));
+
+    return { ...data };
   }
 }
