@@ -85,7 +85,10 @@ export class BookingService {
             unit_price: Number(concert.price),
             total_amount: Number(totalAmount),
             user: { id: Number(userId) },
-            concert: { id: Number(createBookingDto.concert) },
+            concert: { id: Number(createBookingDto.concert),
+            phone_number: createBookingDto.phone_number,
+            email: createBookingDto.email
+             },
             payment: savedPayment,
           });
 

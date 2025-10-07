@@ -31,6 +31,15 @@ export class Booking extends ShardEntity {
 
   @CreateDateColumn()
   booking_date: Date;
+  
+  @Column({ type: 'int', nullable: true })
+  phone_number: number;
+
+  @Column({ type: 'varchar', nullable: true })
+  email: string;
+
+  @Column({ type: 'int', nullable: true })
+  companyId: number;
 
   @ManyToOne(() => User, (user) => user.bookings)
   user: User;

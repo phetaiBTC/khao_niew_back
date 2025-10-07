@@ -8,13 +8,14 @@ import { PaginateDto } from 'src/common/dto/paginate.dto';
 import { BookingPaginateDto } from './dto/booking-paginate.dto';
 import { Roles } from 'src/common/decorator/role.decorator';
 import { EnumRole } from '../users/entities/user.entity';
+import { Public } from 'src/common/decorator/auth.decorator';
 
 
 @Controller('booking')
 @UseGuards(JwtAuthGuard)
 export class BookingController {
   constructor(private readonly bookingService: BookingService) { }
-  @Roles(EnumRole.ADMIN, EnumRole.COMPANY)
+  @Public()
   @Post('/create')
   create(@Body() createBookingDto: CreateBookingDto, @AuthProfile('id') userId: string) {
     return this.bookingService.create(createBookingDto, userId);

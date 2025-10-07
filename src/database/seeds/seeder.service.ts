@@ -10,11 +10,16 @@ export class SeederService {
   constructor(private dataSource: DataSource) { }
   async seed() {
     return this.dataSource.transaction(async (manager) => {
-      const company = manager.create(Company, {
-        name: 'KhaoNiew Co.,Ltd',
-        contact: '1234567890',
-      });
-      await manager.save(company);
+      const [company, company2] = await Promise.all([
+        manager.save(manager.create(Company, {
+          name: 'KhaoNiew Co., Ltd',
+          contact: '1234567890',
+        })),
+        manager.save(manager.create(Company, {
+          name: 'Test Company',
+          contact: '0987654321',
+        })),
+      ]);
       const user = manager.create(User, {
         username: 'admin',
         phone: '02012345678',
