@@ -12,11 +12,10 @@ import { User } from '../../users/entities/user.entity';
 import { Concert } from '../../concerts/entities/concert.entity';
 import { Payment } from '../../payment/entities/payment.entity';
 import { ShardEntity } from 'src/common/entity/BaseEntity';
-import { dayjsUtil } from 'src/common/utils/dayjs.util';
 import { BookingDetail } from '../../booking-details/entities/bookingDetails.entity';
-import { Exclude } from 'class-transformer';
 @Entity('booking')
 export class Booking extends ShardEntity {
+
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -31,12 +30,12 @@ export class Booking extends ShardEntity {
 
   @CreateDateColumn()
   booking_date: Date;
-  
-  @Column({ type: 'int', nullable: true })
-  phone_number: number;
 
-  @Column({ type: 'varchar', nullable: true })
-  email: string;
+  // @Column({ type: 'int', nullable: true })
+  // phone_number: number;
+
+  // @Column({ type: 'varchar', nullable: true })
+  // email: string;
 
   @Column({ type: 'int', nullable: true })
   companyId: number;

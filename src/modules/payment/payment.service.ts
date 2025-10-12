@@ -32,11 +32,9 @@ export class PaymentService {
   }
 
   async delete(id: number) {
-    console.log('Starting deletion process for payment ID:', id);
     return this.transactionManagerService.runInTransaction(
       this.dataSource,
       async (manager) => {
-        // Find payment with related booking
         const payment = await manager.findOne(Payment, {
           where: { id },
           relations: ['booking'],
@@ -44,33 +42,29 @@ export class PaymentService {
         if (!payment) {
           throw new NotFoundException(`Payment with ID ${id} not found`);
         }
-
-        // Find bookings linked to this payment
         const bookings = await manager.find(Booking, {
           where: { payment: { id } },
           relations: ['details'],
         });
-
-        // Delete booking details for each booking
-      for (const booking of bookings) {
-  if (Array.isArray(booking.details) && booking.details.length > 0) {
-    for (const detail of booking.details) {
-      // Remove check_in linked to this detail
-      const checkIn = await manager.findOne('CheckIn', { where: { booking_details: { id: detail.id } } });
-      if (checkIn) {
-        await manager.remove('CheckIn', checkIn);
-      }
-    }
-    await manager.remove(BookingDetail, booking.details);
-  }
-  await manager.remove(Booking, booking);
-}
-
-        // Finally, delete the payment
+        for (const booking of bookings) {
+          if (Array.isArray(booking.details) && booking.details.length > 0) {
+            for (const detail of booking.details) {
+              const checkIn = await manager.findOne('CheckIn', {
+                where: { booking_details: { id: detail.id } },
+              });
+              if (checkIn) {
+                await manager.remove('CheckIn', checkIn);
+              }
+            }
+            await manager.remove(BookingDetail, booking.details);
+          }
+          await manager.remove(Booking, booking);
+        }
         await manager.remove(Payment, payment);
-
-        return { message: `Payment with ID ${id} and all related data has been deleted` };
-      }
+        return {
+          message: `Payment with ID ${id} and all related data has been deleted`,
+        };
+      },
     );
   }
 }

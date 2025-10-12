@@ -1,13 +1,12 @@
-import { IsNumber, IsDateString, ValidateNested, IsString, IsOptional } from 'class-validator';
-import { Type } from 'class-transformer';
-import { CreatePaymentDto } from 'src/modules/payment/dto/create-payment.dto';
+import { Transform } from 'class-transformer';
+import { IsNumber, IsString, IsOptional, IsArray } from 'class-validator';
 
 export class CreateBookingDto {
   @IsNumber()
   ticket_quantity: number;
   @IsNumber()
   concert: number;
-  
+
   @IsOptional()
   @IsNumber()
   phone_number: number;
@@ -16,4 +15,10 @@ export class CreateBookingDto {
   @IsString()
   email: number;
 
+  @IsOptional()
+  @IsArray()
+  @Transform(({ value }) =>
+    typeof value === 'string' ? JSON.parse(value) : value,
+  )
+  imageIds?: number[];
 }

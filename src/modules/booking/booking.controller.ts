@@ -4,7 +4,6 @@ import { CreateBookingDto } from './dto/create-booking.dto';
 import { UpdateBookingDto } from './dto/update-booking.dto';
 import { JwtAuthGuard } from 'src/guards/auth.guard';
 import { AuthProfile } from 'src/common/decorator/user.decorator';
-import { PaginateDto } from 'src/common/dto/paginate.dto';
 import { BookingPaginateDto } from './dto/booking-paginate.dto';
 import { Roles } from 'src/common/decorator/role.decorator';
 import { EnumRole } from '../users/entities/user.entity';

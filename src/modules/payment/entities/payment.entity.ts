@@ -3,11 +3,13 @@ import {
   PrimaryGeneratedColumn,
   Column,
   OneToOne,
-  JoinColumn,
   CreateDateColumn,
+  ManyToMany,
+  JoinTable,
 } from 'typeorm';
 import { Booking } from '../../booking/entities/booking.entity';
 import { ShardEntity } from 'src/common/entity/BaseEntity';
+import { Image } from 'src/modules/images/entities/image.entity';
 
 export enum PaymentStatus {
   PENDING = 'pending',
@@ -32,4 +34,8 @@ export class Payment extends ShardEntity {
 
   @Column({ type: 'enum', enum: PaymentStatus , default: PaymentStatus.PENDING })
   status: PaymentStatus;
+
+  @ManyToMany(() => Image, im => im.payments)
+  @JoinTable({ name: 'payment_images' })
+  images: Image[];
 }

@@ -119,6 +119,7 @@ export class ConcertsService {
 
   async findOne(id: number) {
     const concert = await this.concertRepo
+
       .createQueryBuilder('concert')
       .leftJoinAndSelect('concert.venue', 'venue')
       .leftJoinAndSelect('concert.entertainments', 'entertainments')
@@ -132,9 +133,7 @@ export class ConcertsService {
     if (!concert) throw new NotFoundException('Concert not found');
 
     const total_ticket =
-      concert.bookings
-        ?.filter((b) => b.payment?.status === PaymentStatus.SUCCESS)
-        .reduce((sum, b) => sum + b.ticket_quantity, 0) || 0;
+      concert.bookings.reduce((sum, b) => sum + b.ticket_quantity, 0) || 0;
 
     return mapConcert(concert, total_ticket);
   }
