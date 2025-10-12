@@ -15,8 +15,8 @@ export class CreateBookingDto {
   @IsString()
   email: number;
 
-  @IsOptional()
   @IsArray()
+  @IsOptional()
   @Transform(({ value }) =>
     typeof value === 'string' ? JSON.parse(value) : value,
   )

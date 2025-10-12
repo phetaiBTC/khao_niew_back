@@ -1,0 +1,87 @@
+<html lang='lo'>
+  <head>
+    <meta charset='UTF-8' />
+    <title>ການຈອງຂອງທ່ານ</title>
+  </head>
+  <body
+    style='font-family: Arial, sans-serif; background-color: #f7f7f7; margin: 0; padding: 0;'
+  >
+    <div
+      style='max-width: 600px; margin: 40px auto; background-color: #ffffff; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); overflow: hidden;'
+    >
+
+      <div
+        style='background-color: #ff6f61; color: white; padding: 20px; text-align: center;'
+      >
+        <h1 style='margin: 0; font-size: 24px;'>ຂອບໃຈທີ່ຈອງເຂົ້າຊົມ!</h1>
+      </div>
+
+      <div style='padding: 20px; color: #333;'>
+        <p style='font-size: 16px; margin-bottom: 10px;'>
+          ສະບາຍດີ
+          <strong>{{name}}</strong>, ທ່ານໄດ້ຈອງຕັ້ງເຂົ້າຊົມ
+          <b>{{concert}}</b>.
+        </p>
+
+        <table style='width: 100%; border-collapse: collapse; margin: 20px 0;'>
+          <tr>
+            <td style='padding: 10px; border: 1px solid #ddd;'>ເລກທີການຈອງ</td>
+            <td style='padding: 10px; border: 1px solid #ddd;'><strong
+              >{{bookingId}}</strong></td>
+          </tr>
+          <tr>
+            <td
+              style='padding: 10px; border: 1px solid #ddd;'
+            >ຈຳນວນຄົນເຂົ້າຊົມ</td>
+            <td style='padding: 10px; border: 1px solid #ddd;'><strong
+              >{{ticketQuantity}}</strong></td>
+          </tr>
+          <tr>
+            <td style='padding: 10px; border: 1px solid #ddd;'>ຈໍານວນເງິນ</td>
+            <td
+              style='padding: 10px; border: 1px solid #ddd; color: #e67e22;'
+            ><strong>{{totalAmount}} ກີບ</strong></td>
+          </tr>
+          <tr>
+            <td
+              style='padding: 10px; border: 1px solid #ddd;'
+            >ສະຖານະການຈ່າຍເງິນ</td>
+            <td
+              style='padding: 10px; border: 1px solid #ddd; color: green;'
+            ><strong>{{payment}}</strong></td>
+          </tr>
+        </table>
+
+        <div style='padding: 20px; color: #333; text-align: center;'>
+          <p style='font-size: 16px; margin-bottom: 10px;'>ນຳ QR code ສຳລັບເຂົ້າຊົມ:
+            </p>
+
+          {{#each detailsIds}}
+            <div style='margin: 10px; display: inline-block;'>
+              <img
+                src='https://api.qrserver.com/v1/create-qr-code/?data={{this}}&size=200x200'
+                alt='QR Code {{this}}'
+                style='display: block; margin: 0 auto;'
+              />
+            </div>
+          {{/each}}
+
+        </div>
+
+        <p style='font-size: 14px; color: #555;'>
+          ກະລຸນາເພື່ອເບິ່ງລາຍລະອຽດການຈອງຂອງທ່ານ
+          <a
+            href='https://www.example.com/customer/bookings'
+            target='_blank'
+          >ທີ່ນີ້</a>.
+        </p>
+      </div>
+
+      <div
+        style='background-color: #f1f1f1; text-align: center; padding: 15px; font-size: 12px; color: #777;'
+      >
+        &copy; 2025 ບໍລິສັດຂອງທ່ານ. ສິດທິທັງຫມົດ.
+      </div>
+    </div>
+  </body>
+</html>

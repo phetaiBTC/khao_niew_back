@@ -1,33 +1,38 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository, InjectDataSource } from '@nestjs/typeorm';
 import { Repository, DataSource } from 'typeorm';
-import { Payment } from './entities/payment.entity';
+import { Payment, PaymentStatus } from './entities/payment.entity';
 import { Booking } from '../booking/entities/booking.entity';
 import { BookingDetail } from '../booking-details/entities/bookingDetails.entity';
 import { TRANSACTION_MANAGER_SERVICE } from 'src/common/constants/inject-key';
 import type { ITransactionManager } from 'src/common/transaction/transaction.interface';
 import { UpdatePaymentDto } from './dto/update-payment.dto';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class PaymentService {
   constructor(
     @InjectRepository(Payment)
     private readonly paymentRepository: Repository<Payment>,
-    @InjectRepository(Booking)
-    private readonly bookingRepository: Repository<Booking>,
-    @InjectRepository(BookingDetail)
-    private readonly bookingDetailRepository: Repository<BookingDetail>,
+        private eventEmitter: EventEmitter2,
     @InjectDataSource() private readonly dataSource: DataSource,
     @Inject(TRANSACTION_MANAGER_SERVICE)
     private readonly transactionManagerService: ITransactionManager,
   ) {}
 
   async updateStatus(id: number, body: UpdatePaymentDto) {
-    const payment = await this.paymentRepository.findOne({ where: { id } });
+    const payment = await this.paymentRepository.findOne({ where: { id } ,relations: ['booking', 'booking.details', 'booking.user', 'booking.concert', 'booking.payment']});
     if (!payment) {
       throw new NotFoundException(`Payment with ID ${id} not found`);
     }
+
+    // if (payment.status === PaymentStatus.SUCCESS) {
+    //   return { message: `Payment status is already ${payment.status}` };
+    // }
+
     await this.paymentRepository.update(id, { status: body.status });
+
+    this.eventEmitter.emit('payment.successful', payment.booking);
     return { message: `Payment status updated to ${body.status}` };
   }
 

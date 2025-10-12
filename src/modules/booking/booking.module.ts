@@ -10,16 +10,35 @@ import { TransactionModule } from 'src/common/transaction/transaction.module';
 import { Concert } from '../concerts/entities/concert.entity';
 import { User } from '../users/entities/user.entity';
 import { BookingDetail } from '../booking-details/entities/bookingDetails.entity';
+
+import { Image } from '../images/entities/image.entity';
+import { BookingListener } from './listener/booking.listener';
+import { EventEmitterModule } from '@nestjs/event-emitter';
+import { MailModule } from '../mail/mail.module';
 @Module({
-  imports: [TypeOrmModule.forFeature([Booking , Payment, Concert,User, BookingDetail,User]),
-TransactionModule,],
-  controllers: [BookingController],
-  providers: [BookingService ,
-        {
-            provide: TRANSACTION_MANAGER_SERVICE,
-            useClass: TransactionManagerService,
-        },
+  imports: [
+    TypeOrmModule.forFeature([
+      Booking,
+      Payment,
+      Concert,
+      User,
+      BookingDetail,
+      User,
+      Image,
+    ]),
+    TransactionModule,
+    EventEmitterModule.forRoot(),
+    MailModule,
   ],
-  exports:[BookingService]
+  controllers: [BookingController],
+  providers: [
+    BookingService,
+    BookingListener,
+    {
+      provide: TRANSACTION_MANAGER_SERVICE,
+      useClass: TransactionManagerService,
+    },
+  ],
+  exports: [BookingService],
 })
 export class BookingModule {}

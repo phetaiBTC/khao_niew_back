@@ -20,6 +20,8 @@ import { PaymentModule } from './modules/payment/payment.module';
 import { TransactionModule } from './common/transaction/transaction.module';
 import { BookingDetailsModule } from './modules/booking-details/booking-details.module';
 import { ReportsModule } from './modules/reports/reports.module';
+import { MailModule } from './modules/mail/mail.module';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 
 @Module({
   imports: [
@@ -33,7 +35,7 @@ import { ReportsModule } from './modules/reports/reports.module';
     }),
     TransactionModule,
     TypeOrmConfig,
-
+    MailModule,
     UsersModule,
     EntertainmentsModule,
     CompaniesModule,
@@ -46,7 +48,8 @@ import { ReportsModule } from './modules/reports/reports.module';
     SeederModule,
     PaymentModule,
     BookingDetailsModule,
-    ReportsModule
+    ReportsModule,
+
   ],
   providers: [
     {

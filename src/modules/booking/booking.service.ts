@@ -15,10 +15,12 @@ import { BookingPaginateDto } from './dto/booking-paginate.dto';
 import { User } from '../users/entities/user.entity';
 import { EnumRole } from '../users/entities/user.entity';
 import { Image } from '../images/entities/image.entity';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 @Injectable()
 export class BookingService {
   constructor(
     @InjectDataSource() private readonly dataSource: DataSource,
+    private eventEmitter: EventEmitter2,
     @Inject(TRANSACTION_MANAGER_SERVICE)
     private readonly transactionManagerService: ITransactionManager,
     @InjectRepository(Booking)
@@ -32,62 +34,74 @@ export class BookingService {
     private readonly imageRepo: Repository<Image>,
   ) {}
 
-async create(createBookingDto: CreateBookingDto, userId: string) {
-  
-  const { concert: concertId, ticket_quantity, phone_number, email, imageIds } = createBookingDto;
+  async create(createBookingDto: CreateBookingDto, userId: number) {
+    const { concert: concertId, ticket_quantity, imageIds } = createBookingDto;
 
-  const concert = await this.concertRepository.findOne({ where: { id: concertId } });
-  if (!concert) throw new NotFoundException(`Concert with id ${concertId} not found`);
-
-  const { sum } = await this.bookingRepository
-    .createQueryBuilder('booking')
-    .select('SUM(booking.ticket_quantity)', 'sum')
-    .where('booking.concert = :concert', { concert: concertId })
-    .getRawOne();
-
-  const currentBooked = Number(sum) || 0;
-  const remainingTickets = concert.limit - currentBooked;
-
-  if (remainingTickets <= 0)
-    throw new NotFoundException(`Concert is fully booked (${concert.limit} tickets)`);
-
-  if (ticket_quantity > remainingTickets)
-    throw new NotFoundException(`Only ${remainingTickets} tickets remaining`);
-
-  return this.transactionManagerService.runInTransaction(this.dataSource, async (manager) => {
-    const payment = manager.create(Payment, { amount: ticket_quantity });
-
-    if (imageIds?.length) {
-      const images = await this.imageRepo.findBy({ id: In(imageIds) });
-      if (images.length === 0) throw new NotFoundException('Images not found');
-      payment.images = images;
-    }
-
-    const savedPayment = await manager.save(payment);
-
-    const totalAmount = concert.price * ticket_quantity;
-    const booking = manager.create(Booking, {
-      ticket_quantity,
-      unit_price: concert.price,
-      total_amount: totalAmount,
-      user: { id: Number(userId) },
-      concert: { id: concertId },
-      // phone_number : phone_number || null,
-      // email : email || null,
-      payment: savedPayment,
+    const concert = await this.concertRepository.findOne({
+      where: { id: concertId },
     });
+    if (!concert)
+      throw new NotFoundException(`Concert with id ${concertId} not found`);
 
-    const savedBooking = await manager.save(booking);
+    const { sum } = await this.bookingRepository
+      .createQueryBuilder('booking')
+      .select('SUM(booking.ticket_quantity)', 'sum')
+      .where('booking.concert = :concert', { concert: concertId })
+      .getRawOne();
 
-    const details = Array.from({ length: ticket_quantity }, () =>
-      manager.create(BookingDetail, { booking: savedBooking }),
+    const currentBooked = Number(sum) || 0;
+    const remainingTickets = concert.limit - currentBooked;
+
+    if (remainingTickets <= 0)
+      throw new NotFoundException(
+        `Concert is fully booked (${concert.limit} tickets)`,
+      );
+
+    if (ticket_quantity > remainingTickets)
+      throw new NotFoundException(`Only ${remainingTickets} tickets remaining`);
+
+    return this.transactionManagerService.runInTransaction(
+      this.dataSource,
+      async (manager) => {
+        const payment = manager.create(Payment, { amount: ticket_quantity });
+
+        if (imageIds?.length) {
+          const images = await this.imageRepo.findBy({ id: In(imageIds) });
+          if (images.length === 0)
+            throw new NotFoundException('Images not found');
+          payment.images = images;
+        }
+
+        const savedPayment = await manager.save(payment);
+        console.log('user', userId);
+        const totalAmount = concert.price * ticket_quantity;
+        const booking = manager.create(Booking, {
+          ticket_quantity,
+          unit_price: concert.price,
+          total_amount: totalAmount,
+          user: { id: userId },
+          concert: { id: concertId },
+          payment: savedPayment,
+        });
+
+        const savedBooking = await manager.save(booking);
+
+        const details = Array.from({ length: ticket_quantity }, () =>
+          manager.create(BookingDetail, { booking: savedBooking }),
+        );
+
+        const savedDetails = await manager.save(details);
+
+        const context = await manager.findOne(Booking, {
+          where: { id: savedBooking.id },
+          relations: ['user', 'concert'],
+        });
+        this.eventEmitter.emit('booking.created', context);
+        
+        return { booking: savedBooking, details: savedDetails };
+      },
     );
-
-    const savedDetails = await manager.save(details);
-
-    return { booking: savedBooking, details: savedDetails };
-  });
-}
+  }
   async findAll(query: BookingPaginateDto, userId?: number) {
     const { status, companyId } = query;
     const checkRole = await this.userRepository.findOneBy({ id: userId });
@@ -106,7 +120,7 @@ async create(createBookingDto: CreateBookingDto, userId: string) {
     if (companyId) {
       queryBuilder.andWhere('companies.id = :companyId', { companyId });
     }
-   if (checkRole?.role === EnumRole.COMPANY) {
+    if (checkRole?.role === EnumRole.COMPANY) {
       queryBuilder.andWhere('user.id = :userId', { userId });
     }
     return paginateUtil(queryBuilder, query);
@@ -115,7 +129,14 @@ async create(createBookingDto: CreateBookingDto, userId: string) {
   async findOne(id: number) {
     const booking = await this.bookingRepository.findOne({
       where: { id },
-      relations: ['user', 'concert', 'payment', 'payment.images', 'details', 'user.companies'],
+      relations: [
+        'user',
+        'concert',
+        'payment',
+        'payment.images',
+        'details',
+        'user.companies',
+      ],
     });
 
     if (!booking) {
@@ -253,57 +274,59 @@ async create(createBookingDto: CreateBookingDto, userId: string) {
   }
 
   async delete(id: number) {
-  return this.transactionManagerService.runInTransaction(
-    this.dataSource,
-    async (manager) => {
-      // Find the booking with all its relations
-      const booking = await manager.findOne(Booking, {
-        where: { id },
-        relations: ['details', 'payment'],
-      });
+    return this.transactionManagerService.runInTransaction(
+      this.dataSource,
+      async (manager) => {
+        // Find the booking with all its relations
+        const booking = await manager.findOne(Booking, {
+          where: { id },
+          relations: ['details', 'payment'],
+        });
 
-      if (!booking) {
-        throw new NotFoundException(`Booking with ID ${id} not found`);
-      }
+        if (!booking) {
+          throw new NotFoundException(`Booking with ID ${id} not found`);
+        }
 
-      // Remove check_in linked to each detail
-      if (booking.details && booking.details.length > 0) {
-        for (const detail of booking.details) {
-          // Make sure detail is loaded with id
-          if (detail.id) {
-            const checkIn = await manager.findOne('CheckIn', { where: { booking_details: { id: detail.id } } });
-            if (checkIn) {
-              await manager.remove('CheckIn', checkIn);
+        // Remove check_in linked to each detail
+        if (booking.details && booking.details.length > 0) {
+          for (const detail of booking.details) {
+            // Make sure detail is loaded with id
+            if (detail.id) {
+              const checkIn = await manager.findOne('CheckIn', {
+                where: { booking_details: { id: detail.id } },
+              });
+              if (checkIn) {
+                await manager.remove('CheckIn', checkIn);
+              }
             }
           }
+          // Remove all details in one call
+          await manager.remove(BookingDetail, booking.details);
         }
-        // Remove all details in one call
-        await manager.remove(BookingDetail, booking.details);
-      }
 
-      // Store payment reference
-      const payment = booking.payment;
+        // Store payment reference
+        const payment = booking.payment;
 
-      // Remove the payment reference using QueryBuilder
-      await manager
-        .createQueryBuilder()
-        .update(Booking)
-        .set({ payment: null })
-        .where('id = :id', { id: booking.id })
-        .execute();
+        // Remove the payment reference using QueryBuilder
+        await manager
+          .createQueryBuilder()
+          .update(Booking)
+          .set({ payment: null })
+          .where('id = :id', { id: booking.id })
+          .execute();
 
-      // Now delete the booking
-      await manager.remove(Booking, booking);
+        // Now delete the booking
+        await manager.remove(Booking, booking);
 
-      // Finally delete the payment if it exists
-      if (payment) {
-        await manager.remove(Payment, payment);
-      }
+        // Finally delete the payment if it exists
+        if (payment) {
+          await manager.remove(Payment, payment);
+        }
 
-      return {
-        message: `Booking with ID ${id} and all related data has been deleted`,
-      };
-    },
-  );
-}
+        return {
+          message: `Booking with ID ${id} and all related data has been deleted`,
+        };
+      },
+    );
+  }
 }
