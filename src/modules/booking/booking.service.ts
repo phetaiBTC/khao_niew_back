@@ -1,8 +1,14 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ConflictException,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateBookingDto } from './dto/create-booking.dto';
 import { UpdateBookingDto } from './dto/update-booking.dto';
 import { Booking } from './entities/booking.entity';
-import { Payment } from '../payment/entities/payment.entity';
+import { Payment, PaymentStatus } from '../payment/entities/payment.entity';
 import { Concert } from '../concerts/entities/concert.entity';
 import { Repository, DataSource, In } from 'typeorm';
 import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
@@ -18,6 +24,7 @@ import { Image } from '../images/entities/image.entity';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { NoFilesInterceptor } from '@nestjs/platform-express';
+import { UsersService } from '../users/users.service';
 @Injectable()
 export class BookingService {
   constructor(
@@ -34,77 +41,142 @@ export class BookingService {
 
     @InjectRepository(Image)
     private readonly imageRepo: Repository<Image>,
-  ) { }
 
-  async create(createBookingDto: CreateBookingDto, userId: number) {
-    const { concert: concertId, ticket_quantity, imageIds } = createBookingDto;
-    if (!userId) {
-      if (!createBookingDto.username || !createBookingDto.email) {
-        throw new NotFoundException(` username or email is Empty`)
-      }
+    private readonly userService: UsersService,
+  ) {}
+
+  async create(createBookingDto: CreateBookingDto, userId?: number) {
+    const {
+      concert: concertId,
+      ticket_quantity,
+      imageIds,
+      username,
+      email,
+    } = createBookingDto;
+
+    // ตรวจสอบข้อมูลนำเข้าก่อน
+    if (!imageIds?.length) {
+      throw new BadRequestException('want image at least 1 picture');
     }
-    const concert = await this.concertRepository.findOne({
-      where: { id: concertId },
-    });
-    if (!concert)
-      throw new NotFoundException(`Concert with id ${concertId} not found`);
 
-    const { sum } = await this.bookingRepository
-      .createQueryBuilder('booking')
-      .select('SUM(booking.ticket_quantity)', 'sum')
-      .where('booking.concert = :concert', { concert: concertId })
-      .getRawOne();
-
-    const currentBooked = Number(sum) || 0;
-    const remainingTickets = concert.limit - currentBooked;
-
-    if (remainingTickets <= 0)
-      throw new NotFoundException(
-        `Concert is fully booked (${concert.limit} tickets)`,
+    if (!userId && (!username || !email)) {
+      throw new BadRequestException(
+        'please provide username and email for public user',
       );
+    }
 
-    if (ticket_quantity > remainingTickets)
-      throw new NotFoundException(`Only ${remainingTickets} tickets remaining`);
+    // ตรวจสอบรูปภาพก่อน transaction (ประหยัดต้นทุนถ้า fail เร็ว)
+    const images = await this.imageRepo.findBy({ id: In(imageIds) });
+    if (images.length !== imageIds.length) {
+      throw new NotFoundException('not found image some id');
+    }
 
     return this.transactionManagerService.runInTransaction(
       this.dataSource,
       async (manager) => {
-        const payment = manager.create(Payment, { amount: ticket_quantity });
+        const concert = await manager.findOne(Concert, {
+          where: { id: concertId },
+        });
 
-        if (imageIds?.length) {
-          const images = await this.imageRepo.findBy({ id: In(imageIds) });
-          if (images.length === 0)
-            throw new NotFoundException('Images not found');
-          payment.images = images;
-        } else {
-          throw new NotFoundException('Images not found');
+        if (!concert) {
+          throw new NotFoundException(`not found concert id ${concertId}`);
         }
 
-        const savedPayment = await manager.save(payment);
+        const { sum } = await manager
+          .createQueryBuilder(Booking, 'booking')
+          .select('COALESCE(SUM(booking.ticket_quantity), 0)', 'sum')
+          .innerJoin('booking.payment', 'payment')
+          .where('booking.concert = :concertId', { concertId })
+          .andWhere('payment.status != :status', {
+            status: PaymentStatus.FAILED,
+          })
+          .getRawOne();
+
+        const bookedTickets = Number(sum) || 0;
+        const remainingTickets = concert.limit - bookedTickets;
+
+        if (remainingTickets <= 0) {
+          throw new ConflictException(
+            `concert is full (${concert.limit}/${concert.limit} tickets booked)`,
+          );
+        }
+
+        if (ticket_quantity > remainingTickets) {
+          throw new ConflictException(
+            `concert has ${remainingTickets} tickets remaining, but you are trying to book ${ticket_quantity} tickets`,
+          );
+        }
+
+        let user: User;
+
+        if (userId) {
+          const existingUser = await manager.findOne(User, {
+            where: { id: userId },
+            relations: ['companies'],
+          });
+          if (!existingUser) {
+            throw new NotFoundException(`not found user id ${userId}`);
+          }
+          user = existingUser;
+        } else {
+          const existingUser = await manager
+            .createQueryBuilder(User, 'user')
+            .leftJoinAndSelect('user.companies', 'company')
+            .where('user.email = :email', { email })
+            .getOne();
+
+          if (existingUser) {
+            const hasCustomerCompany =
+              existingUser.companies.name === 'customer';
+
+            if (hasCustomerCompany) {
+              user = existingUser;
+            } else {
+              const publicUser = await this.userService.createPublicUser(
+                username!,
+                email!,
+              );
+              user = publicUser.user;
+            }
+          } else {
+            const publicUser = await this.userService.createPublicUser(
+              username!,
+              email!,
+            );
+            user = publicUser.user;
+          }
+        }
+
+        const payment = manager.create(Payment, {
+          amount: ticket_quantity * concert.price,
+          images,
+          status: PaymentStatus.PENDING,
+        });
+        const savedPayment = await manager.save(Payment, payment);
 
         const totalAmount = concert.price * ticket_quantity;
         const booking = manager.create(Booking, {
           ticket_quantity,
           unit_price: concert.price,
           total_amount: totalAmount,
-          user: { id: userId },
-          concert: { id: concertId },
+          user,
+          concert,
           payment: savedPayment,
         });
-
-        const savedBooking = await manager.save(booking);
+        const savedBooking = await manager.save(Booking, booking);
 
         const details = Array.from({ length: ticket_quantity }, () =>
           manager.create(BookingDetail, { booking: savedBooking }),
         );
+        const savedDetails = await manager.save(BookingDetail, details);
 
-        const savedDetails = await manager.save(details);
-
-        const context = await manager.findOne(Booking, {
+        const context_booking = await manager.findOne(Booking, {
           where: { id: savedBooking.id },
-          relations: ['user', 'concert'],
+          relations: ['user', 'concert', 'payment', 'details'],
         });
-        this.eventEmitter.emit('booking.created', context);
+        this.eventEmitter.emit('booking.created', {
+          booking: context_booking,
+        });
 
         return { booking: savedBooking, details: savedDetails };
       },
@@ -166,8 +238,7 @@ export class BookingService {
         throw new NotFoundException(`Booking with ID ${id} not found`);
       }
 
-      // 2. Determine concert (current or updated)
-      const concertId = updateBookingDto.concert || booking.concert.id;
+      const concertId = booking.concert.id;
       const concert = await this.concertRepository.findOne({
         where: { id: concertId },
       });
@@ -187,6 +258,9 @@ export class BookingService {
           .where('booking.concert = :concert AND booking.id != :bookingId', {
             concert: concertId,
             bookingId: id,
+          })
+          .andWhere('payment.status != :status', {
+            status: PaymentStatus.FAILED,
           })
           .getRawOne();
 

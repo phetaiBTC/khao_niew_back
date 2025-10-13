@@ -15,6 +15,7 @@ import { Image } from '../images/entities/image.entity';
 import { BookingListener } from './listener/booking.listener';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { MailModule } from '../mail/mail.module';
+import { UsersModule } from '../users/users.module';
 @Module({
   imports: [
     TypeOrmModule.forFeature([
@@ -29,6 +30,7 @@ import { MailModule } from '../mail/mail.module';
     TransactionModule,
     EventEmitterModule.forRoot(),
     MailModule,
+    UsersModule,
   ],
   controllers: [BookingController],
   providers: [
