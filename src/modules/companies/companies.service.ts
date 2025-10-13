@@ -19,6 +19,12 @@ export class CompaniesService {
   create(createCompanyDto: CreateCompanyDto) {
     {
       return this.dataSource.transaction(async (manager) => {
+        const existingCompany = await manager.findOne(Company, {
+          where: { name: createCompanyDto.name },
+        });
+        if (existingCompany) {
+          throw new NotFoundException('Company already exists');
+        }
         const company = manager.create(Company, {
           name: createCompanyDto.name,
           contact: createCompanyDto.contact,
