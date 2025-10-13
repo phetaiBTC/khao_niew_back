@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Patch, Delete, Param, Body, Query } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Patch,
+  Delete,
+  Param,
+  Body,
+  Query,
+} from '@nestjs/common';
 import { ConcertsService } from './concerts.service';
 import { CreateConcertDto } from './dto/create-concert.dto';
 import { UpdateConcertDto } from './dto/update-concert.dto';
@@ -7,21 +16,22 @@ import { Concert } from './entities/concert.entity';
 import { Pagination } from 'src/common/interface/pagination.interface';
 import { Roles } from 'src/common/decorator/role.decorator';
 import { EnumRole } from '../users/entities/user.entity';
+import { Public } from 'src/common/decorator/auth.decorator';
 @Controller('concerts')
 export class ConcertsController {
-  constructor(private readonly concertService: ConcertsService) { }
+  constructor(private readonly concertService: ConcertsService) {}
 
   @Post()
   create(@Body() dto: CreateConcertDto) {
     return this.concertService.create(dto);
   }
-  @Roles(EnumRole.ADMIN, EnumRole.COMPANY)
+  @Public()
   @Get()
   findAll(@Query() query: PaginateDto) {
     return this.concertService.findAll(query);
   }
-  @Roles(EnumRole.ADMIN, EnumRole.COMPANY)
-
+  
+  @Public()
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.concertService.findOne(+id);

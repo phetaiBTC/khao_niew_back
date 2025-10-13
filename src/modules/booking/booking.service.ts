@@ -58,10 +58,10 @@ export class BookingService {
       throw new BadRequestException('want image at least 1 picture');
     }
 
-    if (!userId){
-      if (!username || !email) {
-        throw new BadRequestException('please provide username and email for public user');
-      }
+    if (!userId && (!username || !email)) {
+      throw new BadRequestException(
+        'please provide username and email for public user',
+      );
     }
 
     const images = await this.imageRepo.findBy({ id: In(imageIds) });
@@ -173,7 +173,6 @@ export class BookingService {
           relations: ['user', 'concert', 'payment', 'details'],
         });
         this.eventEmitter.emit('booking.created', context_booking);
-
 
         return { booking: savedBooking, details: savedDetails };
       },
