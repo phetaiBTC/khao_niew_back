@@ -16,6 +16,7 @@ import { User } from '../users/entities/user.entity';
 import { EnumRole } from '../users/entities/user.entity';
 import { Image } from '../images/entities/image.entity';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import { CreateUserDto } from '../users/dto/create-user.dto';
 @Injectable()
 export class BookingService {
   constructor(
