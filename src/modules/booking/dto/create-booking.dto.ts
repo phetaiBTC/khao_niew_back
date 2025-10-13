@@ -18,4 +18,8 @@ export class CreateBookingDto {
   @IsArray()
   @IsNotEmpty()
   imageIds?: number[];
+
+  @IsNumber()
+  @IsOptional()
+  userId: number;
 }

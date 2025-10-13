@@ -1,3 +1,6 @@
+import * as dotenv from 'dotenv';
+dotenv.config();
+
 export const baseEnv = {
   // Application
   PORT: process.env.PORT || 3000,
@@ -12,6 +15,7 @@ export const baseEnv = {
   // JWT
   JWT_SECRET: process.env.JWT_SECRET || 'phet',
   JWT_EXPIRES_IN: process.env.JWT_EXPIRES_IN || '3d',
+
 
   // Email
   EMAIL_USER: process.env.EMAIL_USER || 'uablauj76681809@gmail.com',

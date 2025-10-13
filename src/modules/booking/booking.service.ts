@@ -54,7 +54,6 @@ export class BookingService {
       email,
     } = createBookingDto;
 
-    // ตรวจสอบข้อมูลนำเข้าก่อน
     if (!imageIds?.length) {
       throw new BadRequestException('want image at least 1 picture');
     }
@@ -65,7 +64,6 @@ export class BookingService {
       );
     }
 
-    // ตรวจสอบรูปภาพก่อน transaction (ประหยัดต้นทุนถ้า fail เร็ว)
     const images = await this.imageRepo.findBy({ id: In(imageIds) });
     if (images.length !== imageIds.length) {
       throw new NotFoundException('not found image some id');
@@ -174,9 +172,8 @@ export class BookingService {
           where: { id: savedBooking.id },
           relations: ['user', 'concert', 'payment', 'details'],
         });
-        this.eventEmitter.emit('booking.created', {
-          booking: context_booking,
-        });
+        this.eventEmitter.emit('booking.created', context_booking);
+
 
         return { booking: savedBooking, details: savedDetails };
       },

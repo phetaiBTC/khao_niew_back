@@ -23,7 +23,7 @@ export class ReportsService {
     @InjectRepository(Concert)
     private readonly concertRepo: Repository<Concert>,
     @InjectRepository(Venue) private readonly venueRepo: Repository<Venue>,
-  ) { }
+  ) {}
 
   async getUsersByRole() {
     return this.userRepo
@@ -650,38 +650,53 @@ export class ReportsService {
     const query = this.companyRepo
       .createQueryBuilder('company')
       .select([])
-      .leftJoin('company.user', 'user')         // join User ของบริษัท
-      .leftJoin('user.bookings', 'booking')     // join Booking ของผู้ใช้
-      .leftJoin('booking.payment', 'payment')   // join Payment ของ booking
-      .leftJoin('booking.concert', 'concert')   // join Concert ของ booking
+      .leftJoin('company.user', 'user')
+      .leftJoin('user.bookings', 'booking')
+      .leftJoin('booking.payment', 'payment')
+      .leftJoin('booking.concert', 'concert')
       .addSelect('company.id', 'company_id')
       .addSelect('company.name', 'company_name')
       .addSelect('COUNT(DISTINCT user.id)', 'total_users')
-      .addSelect('COUNT(booking.id)', 'total_bookings')
-      .addSelect('COALESCE(SUM(booking.unit_price * booking.ticket_quantity), 0)', 'total_revenue')
+      .addSelect('COUNT(DISTINCT booking.id)', 'total_bookings')
+      .addSelect(
+        'COALESCE(SUM(booking.unit_price * booking.ticket_quantity), 0)',
+        'total_revenue',
+      )
       .addSelect('COALESCE(SUM(booking.ticket_quantity), 0)', 'total_people')
-      .andWhere('(payment.status = :status OR payment.id IS NULL)', { status: 'success' })
+      .addSelect(
+        `SUM(CASE WHEN payment.status = 'pending' THEN 1 ELSE 0 END)`,
+        'total_pending',
+      )
+      .addSelect(
+        `SUM(CASE WHEN payment.status = 'success' THEN 1 ELSE 0 END)`,
+        'total_success',
+      )
+      .addSelect(
+        `SUM(CASE WHEN payment.status = 'failed' THEN 1 ELSE 0 END)`,
+        'total_failed',
+      )
       .groupBy('company.id')
       .orderBy('total_revenue', 'DESC');
 
-    // Filter ตาม role
     if (user.role === EnumRole.ADMIN) {
+      console.log('Admin');
+      console.log(id, user);
       query.andWhere('company.id = :companyId', { companyId: id });
     } else if (user.role === EnumRole.COMPANY && user.company) {
       query.andWhere('company.id = :companyId', { companyId: user.company });
     }
 
     const result = await query.getRawMany();
-
+    console.log(result);
     return result.map((r) => ({
       company: { id: r.company_id, name: r.company_name },
       total_users: Number(r.total_users || 0),
       total_bookings: Number(r.total_bookings || 0),
       total_people: Number(r.total_people || 0),
       total_revenue: Number(r.total_revenue || 0),
+      total_pending: Number(r.total_pending || 0),
+      total_success: Number(r.total_success || 0),
+      total_failed: Number(r.total_failed || 0),
     }));
   }
-
-
-
 }

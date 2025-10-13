@@ -1,6 +1,9 @@
 import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
+import { baseEnv } from './besa.env';
+import * as dotenv from 'dotenv';
+dotenv.config(); 
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -17,6 +20,6 @@ async function bootstrap() {
       transformOptions: { enableImplicitConversion: true },
     }),
   );
-  await app.listen(process.env.PORT ?? 3000);
+  await app.listen(baseEnv.PORT);
 }
 bootstrap();

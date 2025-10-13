@@ -10,6 +10,7 @@ export class BookingListener {
 
   @OnEvent('booking.created')
   async handleBookingCreated(booking : Booking) {
+    // console.log(booking);
   const context = {
     name: booking.user.username || 'Unknown',
     concert: booking.concert.date || 'Unknown Concert',

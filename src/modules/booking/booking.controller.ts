@@ -26,9 +26,9 @@ export class BookingController {
   @Post('/create')
   create(
     @Body() createBookingDto: CreateBookingDto,
-    @AuthProfile('id') userId: number,
+   
   ) {
-    return this.bookingService.create(createBookingDto, +userId);
+    return this.bookingService.create(createBookingDto, +createBookingDto.userId);
   }
   @Roles(EnumRole.ADMIN, EnumRole.COMPANY)
   @Get('/all-bookings')

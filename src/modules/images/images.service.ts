@@ -49,6 +49,7 @@ export class ImageService {
     const images = await this.imageRepo.find({
       relations: ['venues', 'entertainments'],
     });
+    // console.log(images);
     return images.map((img) => mapImage(img));
   }
 
