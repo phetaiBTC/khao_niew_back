@@ -9,11 +9,11 @@ export class CreateBookingDto {
 
   @IsOptional()
   @IsEmail()
-  readonly email: string;
+  email: string;
 
   @IsOptional()
   @IsString()
-  readonly username: string;
+  username: string;
 
   @IsArray()
   @IsNotEmpty()
