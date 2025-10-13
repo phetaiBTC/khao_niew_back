@@ -17,18 +17,19 @@ import { AuthProfile } from 'src/common/decorator/user.decorator';
 import { BookingPaginateDto } from './dto/booking-paginate.dto';
 import { Roles } from 'src/common/decorator/role.decorator';
 import { EnumRole } from '../users/entities/user.entity';
+import { Public } from 'src/common/decorator/auth.decorator';
 
 @Controller('booking')
 @UseGuards(JwtAuthGuard)
 export class BookingController {
   constructor(private readonly bookingService: BookingService) {}
-  @Roles(EnumRole.ADMIN, EnumRole.COMPANY)
+  @Public()
   @Post('/create')
-  create(
-    @Body() createBookingDto: CreateBookingDto,
-   
-  ) {
-    return this.bookingService.create(createBookingDto, +createBookingDto.userId);
+  create(@Body() createBookingDto: CreateBookingDto) {
+    return this.bookingService.create(
+      createBookingDto,
+      +createBookingDto.userId,
+    );
   }
   @Roles(EnumRole.ADMIN, EnumRole.COMPANY)
   @Get('/all-bookings')
