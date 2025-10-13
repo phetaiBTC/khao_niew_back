@@ -17,6 +17,7 @@ import { EnumRole } from '../users/entities/user.entity';
 import { Image } from '../images/entities/image.entity';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { CreateUserDto } from '../users/dto/create-user.dto';
+import { NoFilesInterceptor } from '@nestjs/platform-express';
 @Injectable()
 export class BookingService {
   constructor(
@@ -37,7 +38,11 @@ export class BookingService {
 
   async create(createBookingDto: CreateBookingDto, userId: number) {
     const { concert: concertId, ticket_quantity, imageIds } = createBookingDto;
-
+    if (!userId) {
+      if (!createBookingDto.username || !createBookingDto.email) {
+        throw new NotFoundException(` username or email is Empty`)
+      }
+    }
     const concert = await this.concertRepository.findOne({
       where: { id: concertId },
     });
