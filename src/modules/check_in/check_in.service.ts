@@ -5,17 +5,16 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { CreateCheckInDto } from './dto/create-check_in.dto';
-import { UpdateCheckInDto } from './dto/update-check_in.dto';
-import { InjectRepository, InjectDataSource } from '@nestjs/typeorm';
+import { InjectDataSource } from '@nestjs/typeorm';
 import {
   BookingDetail,
   DetailsStatus,
 } from '../booking-details/entities/bookingDetails.entity';
-import { Repository, DataSource } from 'typeorm';
+import { DataSource } from 'typeorm';
 import { TRANSACTION_MANAGER_SERVICE } from 'src/common/constants/inject-key';
 import type { ITransactionManager } from 'src/common/transaction/transaction.interface';
 import { PaymentStatus } from '../payment/entities/payment.entity';
-import { Booking } from '../booking/entities/booking.entity';
+
 @Injectable()
 export class CheckInService {
   constructor(

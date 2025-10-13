@@ -23,7 +23,7 @@ export class ReportsService {
     @InjectRepository(Concert)
     private readonly concertRepo: Repository<Concert>,
     @InjectRepository(Venue) private readonly venueRepo: Repository<Venue>,
-  ) {}
+  ) { }
 
   async getUsersByRole() {
     return this.userRepo
@@ -647,47 +647,41 @@ export class ReportsService {
   }
 
   async getCompaniesProfileReport(id: number, user: PayloadDto) {
-    const query = this.bookingRepo
-      .createQueryBuilder('booking')
-      .leftJoin('booking.user', 'user')
-      .leftJoin('user.companies', 'companies')
-      .leftJoin('booking.payment', 'payment')
-      .leftJoin('booking.concert', 'concert')
-      .addSelect('companies.id', 'company_id')
-      .addSelect('companies.name', 'company_name')
+    const query = this.companyRepo
+      .createQueryBuilder('company')
+      .select([])
+      .leftJoin('company.user', 'user')         // join User ของบริษัท
+      .leftJoin('user.bookings', 'booking')     // join Booking ของผู้ใช้
+      .leftJoin('booking.payment', 'payment')   // join Payment ของ booking
+      .leftJoin('booking.concert', 'concert')   // join Concert ของ booking
+      .addSelect('company.id', 'company_id')
+      .addSelect('company.name', 'company_name')
       .addSelect('COUNT(DISTINCT user.id)', 'total_users')
       .addSelect('COUNT(booking.id)', 'total_bookings')
-      .addSelect(
-        'SUM(booking.unit_price * booking.ticket_quantity)',
-        'total_revenue',
-      )
-      .addSelect('SUM(booking.ticket_quantity)', 'total_people')
-      .andWhere('payment.status = :status', { status: 'success' })
-      .andWhere('companies.id IS NOT NULL')
-      .groupBy('companies.id')
+      .addSelect('COALESCE(SUM(booking.unit_price * booking.ticket_quantity), 0)', 'total_revenue')
+      .addSelect('COALESCE(SUM(booking.ticket_quantity), 0)', 'total_people')
+      .andWhere('(payment.status = :status OR payment.id IS NULL)', { status: 'success' })
+      .groupBy('company.id')
       .orderBy('total_revenue', 'DESC');
- 
-    const companyIdFilter = user.role === EnumRole.ADMIN
-      ? { companyId: id }
-      : user.role === EnumRole.COMPANY && user.company
-      ? { companyId: user.company }
-      : {};
 
-    query.andWhere('companies.id = :companyId', companyIdFilter);
+    // Filter ตาม role
+    if (user.role === EnumRole.ADMIN) {
+      query.andWhere('company.id = :companyId', { companyId: id });
+    } else if (user.role === EnumRole.COMPANY && user.company) {
+      query.andWhere('company.id = :companyId', { companyId: user.company });
+    }
 
     const result = await query.getRawMany();
 
-    const data = result.map((r) => ({
-      company: {
-        id: r.company_id,
-        name: r.company_name,
-      },
-      total_users: Number(r.total_users),
-      total_bookings: Number(r.total_bookings),
-      total_people: Number(r.total_people),
-      total_revenue: Number(r.total_revenue),
+    return result.map((r) => ({
+      company: { id: r.company_id, name: r.company_name },
+      total_users: Number(r.total_users || 0),
+      total_bookings: Number(r.total_bookings || 0),
+      total_people: Number(r.total_people || 0),
+      total_revenue: Number(r.total_revenue || 0),
     }));
-
-    return { ...data };
   }
+
+
+
 }

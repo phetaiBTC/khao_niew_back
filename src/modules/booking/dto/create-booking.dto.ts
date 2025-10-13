@@ -1,5 +1,5 @@
 import { Transform } from 'class-transformer';
-import { IsNumber, IsString, IsOptional, IsArray } from 'class-validator';
+import { IsNumber, IsString, IsOptional, IsArray, IsNotEmpty } from 'class-validator';
 
 export class CreateBookingDto {
   @IsNumber()
@@ -11,5 +11,6 @@ export class CreateBookingDto {
   @Transform(({ value }) =>
     typeof value === 'string' ? JSON.parse(value) : value,
   )
+  @IsNotEmpty()
   imageIds?: number[];
 }
