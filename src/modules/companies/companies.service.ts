@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateCompanyDto } from './dto/create-company.dto';
 import { UpdateCompanyDto } from './dto/update-company.dto';
 import { Repository } from 'typeorm';
@@ -10,6 +14,7 @@ import { PaginateDto } from 'src/common/dto/paginate.dto';
 import { paginateUtil } from 'src/common/utils/paginate.util';
 import { bcryptUtil } from 'src/common/utils/bcrypt.util';
 import { PayloadDto } from '../auth/dto/auth.dto';
+import { PaymentStatus } from '../payment/entities/payment.entity';
 @Injectable()
 export class CompaniesService {
   constructor(
@@ -90,53 +95,104 @@ export class CompaniesService {
   }
 
   async getCompaniesProfileReport(id: number, user: PayloadDto) {
-    const query = this.companyRepository
+    let targetCompanyId: number | null = null;
+
+    if (user.role === EnumRole.ADMIN) {
+      targetCompanyId = id;
+    } else if (user.role === EnumRole.COMPANY) {
+      if (!user.company) {
+        throw new ForbiddenException('Company ID ไม่พบในข้อมูลผู้ใช้');
+      }
+      targetCompanyId = user.company;
+    } else {
+      throw new ForbiddenException('คุณไม่มีสิทธิ์เข้าถึงรายงานนี้');
+    }
+
+    const companyExists = await this.companyRepository.exists({
+      where: { id: targetCompanyId },
+    });
+
+    if (!companyExists) {
+      throw new NotFoundException(`ไม่พบบริษัท ID ${targetCompanyId}`);
+    }
+
+    const result = await this.companyRepository
       .createQueryBuilder('company')
-      .select([])
+      .select([
+        'company.id AS company_id',
+        'company.name AS company_name',
+        'COUNT(DISTINCT user.id) AS total_users',
+        'COUNT(DISTINCT booking.id) AS total_bookings',
+        'COALESCE(SUM(booking.ticket_quantity), 0) AS total_people',
+        'COALESCE(SUM(booking.total_amount), 0) AS total_revenue',
+      ])
+      .addSelect(
+        `COALESCE(SUM(CASE WHEN payment.status = '${PaymentStatus.PENDING}' THEN 1 ELSE 0 END), 0)`,
+        'total_pending',
+      )
+      .addSelect(
+        `COALESCE(SUM(CASE WHEN payment.status = '${PaymentStatus.SUCCESS}' THEN 1 ELSE 0 END), 0)`,
+        'total_completed',
+      )
+      .addSelect(
+        `COALESCE(SUM(CASE WHEN payment.status = '${PaymentStatus.FAILED}' THEN 1 ELSE 0 END), 0)`,
+        'total_failed',
+      )
+
       .leftJoin('company.user', 'user')
       .leftJoin('user.bookings', 'booking')
       .leftJoin('booking.payment', 'payment')
       .leftJoin('booking.concert', 'concert')
-      .addSelect('company.id', 'company_id')
-      .addSelect('company.name', 'company_name')
-      .addSelect('COUNT(DISTINCT user.id)', 'total_users')
-      .addSelect('COUNT(DISTINCT booking.id)', 'total_bookings')
-      .addSelect(
-        'COALESCE(SUM(booking.unit_price * booking.ticket_quantity), 0)',
-        'total_revenue',
-      )
-      .addSelect('COALESCE(SUM(booking.ticket_quantity), 0)', 'total_people')
-      .addSelect(
-        `SUM(CASE WHEN payment.status = 'pending' THEN 1 ELSE 0 END)`,
-        'total_pending',
-      )
-      .addSelect(
-        `SUM(CASE WHEN payment.status = 'success' THEN 1 ELSE 0 END)`,
-        'total_success',
-      )
-      .addSelect(
-        `SUM(CASE WHEN payment.status = 'failed' THEN 1 ELSE 0 END)`,
-        'total_failed',
-      )
-      .groupBy('company.id')
-      .orderBy('total_revenue', 'DESC');
 
-    if (user.role === EnumRole.ADMIN) {
-      query.andWhere('company.id = :companyId', { companyId: id });
-    } else if (user.role === EnumRole.COMPANY && user.company) {
-      query.andWhere('company.id = :companyId', { companyId: user.company });
+      .where('company.id = :companyId', { companyId: targetCompanyId })
+
+      .groupBy('company.id')
+      .addGroupBy('company.name')
+      .getRawOne();
+
+    if (!result || !result.company_id) {
+      const company = await this.companyRepository.findOne({
+        where: { id: targetCompanyId },
+        select: ['id', 'name'],
+      });
+
+      return {
+        company: {
+          id: company!.id,
+          name: company!.name,
+        },
+        statistics: {
+          total_users: 0,
+          total_bookings: 0,
+          total_people: 0,
+          total_revenue: 0,
+        },
+        payment_status: {
+          pending: 0,
+          completed: 0,
+          failed: 0,
+          cancelled: 0,
+        },
+      };
     }
 
-    const result = await query.getRawMany();
-    return result.map((r) => ({
-      company: { id: r.company_id, name: r.company_name },
-      total_users: Number(r.total_users || 0),
-      total_bookings: Number(r.total_bookings || 0),
-      total_people: Number(r.total_people || 0),
-      total_revenue: Number(r.total_revenue || 0),
-      total_pending: Number(r.total_pending || 0),
-      total_success: Number(r.total_success || 0),
-      total_failed: Number(r.total_failed || 0),
-    }));
+    return {
+      company: {
+        id: Number(result.company_id),
+        name: result.company_name,
+      },
+      statistics: {
+        total_users: Number(result.total_users || 0),
+        total_bookings: Number(result.total_bookings || 0),
+        total_people: Number(result.total_people || 0),
+        total_revenue: Number(result.total_revenue || 0),
+      },
+      payment_status: {
+        pending: Number(result.total_pending || 0),
+        completed: Number(result.total_completed || 0),
+        failed: Number(result.total_failed || 0),
+        cancelled: Number(result.total_cancelled || 0),
+      },
+    };
   }
 }
