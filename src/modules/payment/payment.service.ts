@@ -26,10 +26,6 @@ export class PaymentService {
       throw new NotFoundException(`Payment with ID ${id} not found`);
     }
 
-    // if (payment.status === PaymentStatus.SUCCESS) {
-    //   return { message: `Payment status is already ${payment.status}` };
-    // }
-
     await this.paymentRepository.update(id, { status: body.status });
 
     this.eventEmitter.emit('payment.successful', payment.booking);

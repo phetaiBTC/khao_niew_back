@@ -17,6 +17,7 @@ import { Pagination } from 'src/common/interface/pagination.interface';
 import { Booking } from '../booking/entities/booking.entity';
 import { mapConcert } from './mapper/concerts.mapper';
 import { PaymentStatus } from '../payment/entities/payment.entity';
+import { calculateTotalTickets } from 'src/common/utils/calculateTotalTickets';
 @Injectable()
 export class ConcertsService {
   constructor(
@@ -102,6 +103,7 @@ export class ConcertsService {
     qb.leftJoinAndSelect('concert.entertainments', 'entertainments');
     qb.leftJoinAndSelect('entertainments.images', 'images');
     qb.leftJoinAndSelect('concert.bookings', 'bookings');
+    qb.leftJoinAndSelect('bookings.payment', 'payments');
 
     if (query.search) {
       qb.where('concert.date LIKE :search', { search: `%${query.search}%` });
@@ -110,8 +112,7 @@ export class ConcertsService {
     const result = await paginateUtil(qb, query);
 
     const formattedData = result.data.map((concert) => {
-      const total_ticket =
-        concert.bookings?.reduce((sum, b) => sum + b.ticket_quantity, 0) || 0;
+      const total_ticket = calculateTotalTickets(concert);
       return mapConcert(concert, total_ticket);
     });
     return { ...result, data: formattedData };
