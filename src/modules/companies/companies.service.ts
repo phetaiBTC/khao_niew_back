@@ -191,7 +191,6 @@ export class CompaniesService {
         pending: Number(result.total_pending || 0),
         completed: Number(result.total_completed || 0),
         failed: Number(result.total_failed || 0),
-        cancelled: Number(result.total_cancelled || 0),
       },
     };
   }
