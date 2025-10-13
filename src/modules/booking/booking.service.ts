@@ -32,7 +32,7 @@ export class BookingService {
 
     @InjectRepository(Image)
     private readonly imageRepo: Repository<Image>,
-  ) {}
+  ) { }
 
   async create(createBookingDto: CreateBookingDto, userId: number) {
     const { concert: concertId, ticket_quantity, imageIds } = createBookingDto;
@@ -70,10 +70,12 @@ export class BookingService {
           if (images.length === 0)
             throw new NotFoundException('Images not found');
           payment.images = images;
+        } else {
+          throw new NotFoundException('Images not found');
         }
 
         const savedPayment = await manager.save(payment);
-      
+
         const totalAmount = concert.price * ticket_quantity;
         const booking = manager.create(Booking, {
           ticket_quantity,
@@ -97,7 +99,7 @@ export class BookingService {
           relations: ['user', 'concert'],
         });
         this.eventEmitter.emit('booking.created', context);
-        
+
         return { booking: savedBooking, details: savedDetails };
       },
     );

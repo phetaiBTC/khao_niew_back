@@ -21,6 +21,7 @@ export class UsersService {
     @InjectRepository(Company)
     private readonly companyRepository: Repository<Company>
   ) { }
+
   async create(createUserDto: CreateUserDto, companyId: number) {
     const existingUser = await this.usersRepository.findOne({
       where: { email: createUserDto.email },
@@ -61,7 +62,7 @@ export class UsersService {
 
 
 
-  async findAll(query: PaginateDto,user:PayloadDto ) {
+  async findAll(query: PaginateDto, user: PayloadDto) {
     const qb = this.usersRepository.createQueryBuilder('user');
     qb.leftJoinAndSelect('user.companies', 'companies');
     if (query.search) {
@@ -69,10 +70,10 @@ export class UsersService {
         search: `%${query.search}%`,
       });
     }
-    if(user.role === EnumRole.COMPANY){
+    if (user.role === EnumRole.COMPANY) {
       qb.andWhere('user.companies.id = :companyId', { companyId: user.company });
     }
-  
+
 
     return paginateUtil(qb, query);
   }
@@ -107,5 +108,35 @@ export class UsersService {
       throw new BadRequestException('User not found')
     }
     return user
+  }
+
+  async createPublicUser(createUserDto: CreateUserDto) {
+    const existingUser = await this.usersRepository.findOne({
+      where: { email: createUserDto.email },
+    });
+    if (existingUser) {
+      throw new BadRequestException('Email already exists');
+    }
+    const publicCompany = await this.companyRepository.findOne({
+      where: { name: 'customer' },
+    });
+
+    if (!publicCompany) {
+      throw new NotFoundException('Public company not found');
+    }
+
+
+    const user = this.usersRepository.create({
+      ...createUserDto,
+      companies: { id: publicCompany.id },
+      password: await bcryptUtil.hash('12345'),
+    });
+
+    await this.usersRepository.save(user);
+
+    return {
+      message: 'User created successfully',
+      user,
+    };
   }
 }

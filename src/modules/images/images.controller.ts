@@ -16,11 +16,15 @@ import { ImageService } from './images.service';
 import { CreateImageDto } from './dto/create-image.dto';
 import { UpdateImageDto } from './dto/update-image.dto';
 import { customUploadInterceptor } from 'src/common/interceptors/upload-image.interceptor';
+import { Roles } from 'src/common/decorator/role.decorator';
+import { EnumRole } from '../users/entities/user.entity';
 
 @Controller('images')
 export class ImageController {
   constructor(private readonly imageService: ImageService) {}
 
+
+  @Roles(EnumRole.ADMIN, EnumRole.COMPANY)
   @Post()
   @UseInterceptors(customUploadInterceptor('images', 'file', true))
   async uploadImages(
@@ -32,22 +36,22 @@ export class ImageController {
     const urls = files.map((file) => `/uploads/images/${file.filename}`);
     return this.imageService.createMany(dto, urls);
   }
-
+  @Roles(EnumRole.ADMIN, EnumRole.COMPANY)
   @Get()
   findAll() {
     return this.imageService.findAll();
   }
-
+  @Roles(EnumRole.ADMIN, EnumRole.COMPANY)
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.imageService.findOne(id);
   }
-
+  @Roles(EnumRole.ADMIN, EnumRole.COMPANY)
   @Patch(':id')
   update(@Param('id', ParseIntPipe) id: number, @Body() dto: UpdateImageDto) {
     return this.imageService.update(id, dto, 'null');
   }
-
+  @Roles(EnumRole.ADMIN, EnumRole.COMPANY)
   @Delete(':id')
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.imageService.remove(id);
