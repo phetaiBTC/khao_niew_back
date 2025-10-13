@@ -194,7 +194,6 @@ export class ConcertsService {
   }
 
   async concertsProfile(concertId: number) {
-    // ดึงข้อมูล concert แบบเต็มเสมอ
     const concert = await this.concertRepo
       .createQueryBuilder('concert')
       .leftJoinAndSelect('concert.venue', 'venue')
@@ -203,9 +202,7 @@ export class ConcertsService {
       .where('concert.id = :id', { id: concertId })
       .getOne();
 
-    if (!concert) return null; // ถ้า concert ไม่มีจริง ๆ
-
-    // ดึงข้อมูลสรุป booking/company (อาจจะไม่มี)
+    if (!concert) return null;
     const result = await this.concertRepo
       .createQueryBuilder('concert')
       .leftJoin('concert.bookings', 'booking')
@@ -226,7 +223,7 @@ export class ConcertsService {
         'total_revenue',
       )
       .where('concert.id = :concertId', { concertId })
-      // .andWhere('payment.status = :status', { status: 'success' })
+      .andWhere('payment.status != :status', { status: PaymentStatus.FAILED })
       .andWhere('companies.id IS NOT NULL')
       .groupBy('concert.id')
       .addGroupBy('companies.id')
@@ -255,7 +252,6 @@ export class ConcertsService {
         : null,
     };
 
-    // ถ้าไม่มี bookings/company ให้ return โปรไฟล์เฉย ๆ
     if (result.length === 0) {
       return {
         concert: concertInfo,
@@ -268,7 +264,6 @@ export class ConcertsService {
       };
     }
 
-    // ถ้ามี booking/company
     const totalRevenue = result.reduce(
       (sum, r) => sum + Number(r.total_revenue || 0),
       0,
