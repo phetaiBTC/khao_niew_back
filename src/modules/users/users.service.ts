@@ -131,6 +131,7 @@ async createPublicUser(username: string, email: string) {
   const user = this.usersRepository.create({
     username,
     email,
+    phone: '1234567890',
     role: EnumRole.COMPANY,
     password: hashedPassword,
     companies: publicCompany

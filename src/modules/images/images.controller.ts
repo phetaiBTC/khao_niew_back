@@ -37,21 +37,25 @@ export class ImageController {
     const urls = files.map((file) => `/uploads/images/${file.filename}`);
     return this.imageService.createMany(dto, urls);
   }
+
   @Roles(EnumRole.ADMIN, EnumRole.COMPANY)
   @Get()
   findAll() {
     return this.imageService.findAll();
   }
+
   @Roles(EnumRole.ADMIN, EnumRole.COMPANY)
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.imageService.findOne(id);
   }
+
   @Roles(EnumRole.ADMIN, EnumRole.COMPANY)
   @Patch(':id')
   update(@Param('id', ParseIntPipe) id: number, @Body() dto: UpdateImageDto) {
     return this.imageService.update(id, dto, 'null');
   }
+  
   @Roles(EnumRole.ADMIN, EnumRole.COMPANY)
   @Delete(':id')
   remove(@Param('id', ParseIntPipe) id: number) {

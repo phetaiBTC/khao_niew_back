@@ -172,7 +172,12 @@ export class BookingService {
           where: { id: savedBooking.id },
           relations: ['user', 'concert', 'payment', 'details'],
         });
-        this.eventEmitter.emit('booking.created', context_booking);
+        
+        if (!context_booking) {
+          throw new NotFoundException(`not found booking id ${savedBooking.id}`);
+        }
+
+        this.eventEmitter.emit('booking.created', context_booking, context_booking.user);
 
         return { booking: savedBooking, details: savedDetails };
       },
