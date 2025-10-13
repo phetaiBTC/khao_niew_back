@@ -128,7 +128,6 @@ export class CompaniesService {
     }
 
     const result = await query.getRawMany();
-
     return result.map((r) => ({
       company: { id: r.company_id, name: r.company_name },
       total_users: Number(r.total_users || 0),
