@@ -23,6 +23,7 @@ import { Public } from 'src/common/decorator/auth.decorator';
 @UseGuards(JwtAuthGuard)
 export class BookingController {
   constructor(private readonly bookingService: BookingService) {}
+
   @Public()
   @Post('/create')
   create(@Body() createBookingDto: CreateBookingDto) {
@@ -31,6 +32,7 @@ export class BookingController {
       +createBookingDto.userId,
     );
   }
+  
   @Roles(EnumRole.ADMIN, EnumRole.COMPANY)
   @Get('/all-bookings')
   findAll(

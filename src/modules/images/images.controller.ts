@@ -18,13 +18,14 @@ import { UpdateImageDto } from './dto/update-image.dto';
 import { customUploadInterceptor } from 'src/common/interceptors/upload-image.interceptor';
 import { Roles } from 'src/common/decorator/role.decorator';
 import { EnumRole } from '../users/entities/user.entity';
+import { Public } from 'src/common/decorator/auth.decorator';
 
 @Controller('images')
 export class ImageController {
   constructor(private readonly imageService: ImageService) {}
 
 
-  @Roles(EnumRole.ADMIN, EnumRole.COMPANY)
+  @Public()
   @Post()
   @UseInterceptors(customUploadInterceptor('images', 'file', true))
   async uploadImages(
