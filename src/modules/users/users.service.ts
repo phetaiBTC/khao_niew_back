@@ -2,13 +2,15 @@ import { BadRequestException, Injectable, NotFoundException } from '@nestjs/comm
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from './entities/user.entity';
+import { EnumRole, User } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { bcryptUtil } from 'src/common/utils/bcrypt.util';
 import { PaginateDto } from 'src/common/dto/paginate.dto';
 import { plainToInstance } from 'class-transformer';
 import { paginateUtil } from 'src/common/utils/paginate.util';
 import { Company } from '../companies/entities/company.entity';
+import { PayloadDto } from '../auth/dto/auth.dto';
+import { Roles } from 'src/common/decorator/role.decorator';
 
 @Injectable()
 export class UsersService {
@@ -59,7 +61,7 @@ export class UsersService {
 
 
 
-  async findAll(query: PaginateDto) {
+  async findAll(query: PaginateDto,user:PayloadDto ) {
     const qb = this.usersRepository.createQueryBuilder('user');
     qb.leftJoinAndSelect('user.companies', 'companies');
     if (query.search) {
@@ -67,6 +69,10 @@ export class UsersService {
         search: `%${query.search}%`,
       });
     }
+    if(user.role === EnumRole.COMPANY){
+      qb.andWhere('user.companyId = :companyId', { companyId: user.company });
+    }
+    
 
     return paginateUtil(qb, query);
   }

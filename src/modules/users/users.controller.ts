@@ -27,8 +27,8 @@ export class UsersController {
 
   @Roles(EnumRole.ADMIN, EnumRole.COMPANY)
   @Get()
-  findAll(@Query() query: PaginateDto) {
-    return this.usersService.findAll(query);
+  findAll(@Query() query: PaginateDto, @AuthProfile() user: PayloadDto) {
+    return this.usersService.findAll(query, user);
   }
 
   @Roles(EnumRole.ADMIN, EnumRole.COMPANY)
