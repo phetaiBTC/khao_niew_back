@@ -70,9 +70,9 @@ export class UsersService {
       });
     }
     if(user.role === EnumRole.COMPANY){
-      qb.andWhere('user.companyId = :companyId', { companyId: user.company });
+      qb.andWhere('user.companies.id = :companyId', { companyId: user.company });
     }
-    
+  
 
     return paginateUtil(qb, query);
   }
