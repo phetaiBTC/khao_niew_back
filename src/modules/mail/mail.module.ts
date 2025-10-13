@@ -24,7 +24,9 @@ import { MailService } from './mail.service';
           auth: {
             user: config.getOrThrow('SMTP_USER'),
             pass: config.getOrThrow('SMTP_PASSWORD'),
+
           },
+          connectionTimeout: 20000,
         },
         defaults: {
           from: config.getOrThrow('SMTP_FROM'),

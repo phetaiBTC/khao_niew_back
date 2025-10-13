@@ -19,6 +19,12 @@ export class UsersController {
     return this.usersService.create(createUserDto, user.company);
   }
 
+  @Public()
+  @Post('register')
+  register(@Body() createUserDto: CreateUserDto) {
+    return this.usersService.create(createUserDto, 0);
+  }
+
   @Roles(EnumRole.ADMIN, EnumRole.COMPANY)
   @Get()
   findAll(@Query() query: PaginateDto) {

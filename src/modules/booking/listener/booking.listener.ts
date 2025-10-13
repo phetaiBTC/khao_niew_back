@@ -10,7 +10,6 @@ export class BookingListener {
 
   @OnEvent('booking.created')
   async handleBookingCreated(booking : Booking) {
-  // สร้าง context สำหรับ template
   const context = {
     name: booking.user.username || 'Unknown',
     concert: booking.concert.date || 'Unknown Concert',

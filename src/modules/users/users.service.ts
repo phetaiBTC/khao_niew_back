@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -8,33 +8,56 @@ import { bcryptUtil } from 'src/common/utils/bcrypt.util';
 import { PaginateDto } from 'src/common/dto/paginate.dto';
 import { plainToInstance } from 'class-transformer';
 import { paginateUtil } from 'src/common/utils/paginate.util';
+import { Company } from '../companies/entities/company.entity';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
-    private readonly usersRepository: Repository<User>
+    private readonly usersRepository: Repository<User>,
+
+    @InjectRepository(Company)
+    private readonly companyRepository: Repository<Company>
   ) { }
   async create(createUserDto: CreateUserDto, companyId: number) {
-    const EmailExists = await this.usersRepository.findOne({
-      where: {
-        email: createUserDto.email
-      }
-    })
-    if (EmailExists) {
-      throw new BadRequestException('Email already exists')
+    const existingUser = await this.usersRepository.findOne({
+      where: { email: createUserDto.email },
+    });
+    if (existingUser) {
+      throw new BadRequestException('Email already exists');
     }
+
+    let assignedCompanyId: number;
+
+    if (companyId == 0 || companyId == null) {
+      const publicCompany = await this.companyRepository.findOne({
+        where: { name: 'customer' },
+      });
+
+      if (!publicCompany) {
+        throw new NotFoundException('Public company not found');
+      }
+
+      assignedCompanyId = publicCompany.id;
+    } else {
+      assignedCompanyId = companyId ?? createUserDto.companyId;
+    }
+
     const user = this.usersRepository.create({
       ...createUserDto,
-      companies: { id: createUserDto.companyId ? createUserDto.companyId : companyId },
+      companies: { id: assignedCompanyId },
       password: await bcryptUtil.hash(createUserDto.password),
-    })
-    await this.usersRepository.save(user)
+    });
+
+    await this.usersRepository.save(user);
+
     return {
       message: 'User created successfully',
-      user
-    }
+      user,
+    };
   }
+
+
 
   async findAll(query: PaginateDto) {
     const qb = this.usersRepository.createQueryBuilder('user');

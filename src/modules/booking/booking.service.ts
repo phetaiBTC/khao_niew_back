@@ -73,7 +73,7 @@ export class BookingService {
         }
 
         const savedPayment = await manager.save(payment);
-        console.log('user', userId);
+      
         const totalAmount = concert.price * ticket_quantity;
         const booking = manager.create(Booking, {
           ticket_quantity,
