@@ -17,7 +17,7 @@ export class CompanySeederService {
       existingCompany ||
       (await manager.save(
         manager.create(Company, {
-          name: 'KhaoNiew Co., Ltd',
+          name: 'KhaoNiew Co Ltd',
           contact: '1234567890',
         }),
       ));

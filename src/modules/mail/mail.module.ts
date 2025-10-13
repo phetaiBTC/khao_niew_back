@@ -1,13 +1,12 @@
 import { MailerModule } from '@nestjs-modules/mailer';
-import { forwardRef, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-
-import { AuthModule } from '../auth/auth.module';
 
 import { join } from 'path';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import { MailController } from './mail.controller';
 import { MailService } from './mail.service';
+import { baseEnv } from 'src/besa.env';
 
 
 @Module({
@@ -18,18 +17,18 @@ import { MailService } from './mail.service';
       useFactory: async (config: ConfigService) => ({
         global: true,
         transport: {
-          host: config.getOrThrow('SMTP_HOST'),
-          port: config.getOrThrow('SMTP_PORT'),
-          secure: config.getOrThrow('SMTP_SECURE') === 'true',
+          host: baseEnv.SMTP_HOST,
+          port: baseEnv.SMTP_PORT as number,
+          secure: baseEnv.SMTP_SECURE as boolean,
           auth: {
-            user: config.getOrThrow('SMTP_USER'),
-            pass: config.getOrThrow('SMTP_PASSWORD'),
+            user: baseEnv.SMTP_USER,
+            pass: baseEnv.SMTP_PASSWORD,
 
           },
           connectionTimeout: 20000,
         },
         defaults: {
-          from: config.getOrThrow('SMTP_FROM'),
+          from: baseEnv.SMTP_FROM,
         },
         template: {
           dir: join(process.cwd(), 'src', 'templates'),

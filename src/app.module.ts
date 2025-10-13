@@ -21,7 +21,6 @@ import { TransactionModule } from './common/transaction/transaction.module';
 import { BookingDetailsModule } from './modules/booking-details/booking-details.module';
 import { ReportsModule } from './modules/reports/reports.module';
 import { MailModule } from './modules/mail/mail.module';
-import { EventEmitterModule } from '@nestjs/event-emitter';
 
 @Module({
   imports: [

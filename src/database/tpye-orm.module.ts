@@ -1,6 +1,8 @@
 import { Module } from "@nestjs/common";
 import { ConfigService, ConfigModule } from "@nestjs/config";
 import { TypeOrmModule } from "@nestjs/typeorm";
+import { baseEnv } from "src/besa.env";
+
 
 @Module({
     imports: [TypeOrmModule.forRootAsync({
@@ -9,11 +11,11 @@ import { TypeOrmModule } from "@nestjs/typeorm";
         useFactory: (configService: ConfigService) => {
             return {
                 type: 'mysql',
-                host: configService.getOrThrow('DB_HOST'),
-                port: configService.getOrThrow('DB_PORT'),
-                username: configService.getOrThrow('DB_USERNAME'),
-                password: configService.getOrThrow('DB_PASSWORD'),
-                database: configService.getOrThrow('DB_NAME'),
+                host: baseEnv.DB_HOST,
+                port: baseEnv.DB_PORT as number,
+                username: baseEnv.DB_USERNAME,
+                password: baseEnv.DB_PASSWORD,
+                database: baseEnv.DB_NAME,
                 autoLoadEntities: true,
                 synchronize: true
             }
