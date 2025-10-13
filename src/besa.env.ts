@@ -27,4 +27,8 @@ export const baseEnv = {
   SMTP_USER: process.env.SMTP_USER || 'uablauj76681809@gmail.com',
   SMTP_PASSWORD: process.env.SMTP_PASSWORD || 'uwsjsuhoxyrycmrp',
   SMTP_FROM: process.env.SMTP_FROM || 'uablauj76681809@gmail.com',
+
+  // SendGrid email
+  SENDGRID_API_KEY: process.env.SENDGRID_API_KEY ,
+  SENDGRID_FROM_EMAIL: process.env.SENDGRID_FROM_EMAIL || 'uablauj76681809@gmail.com',
 };
