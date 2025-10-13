@@ -16,7 +16,6 @@ export const baseEnv = {
   JWT_SECRET: process.env.JWT_SECRET || 'phet',
   JWT_EXPIRES_IN: process.env.JWT_EXPIRES_IN || '3d',
 
-
   // Email
   EMAIL_USER: process.env.EMAIL_USER || 'uablauj76681809@gmail.com',
   EMAIL_PASS: process.env.EMAIL_PASS || 'uwsjsuhoxyrycmrp',
@@ -29,6 +28,7 @@ export const baseEnv = {
   SMTP_FROM: process.env.SMTP_FROM || 'uablauj76681809@gmail.com',
 
   // SendGrid email
-  SENDGRID_API_KEY: process.env.SENDGRID_API_KEY ,
-  SENDGRID_FROM_EMAIL: process.env.SENDGRID_FROM_EMAIL || 'uablauj76681809@gmail.com',
+  SENDGRID_API_KEY: process.env.SENDGRID_API_KEY,
+  SENDGRID_FROM_EMAIL:
+    process.env.SENDGRID_FROM_EMAIL || 'uablauj76681809@gmail.com',
 };

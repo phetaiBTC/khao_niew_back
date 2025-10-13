@@ -30,5 +30,6 @@ export class MailController {
       subject: 'Sending with SendGrid is Fun',
       text: 'and easy to do anywhere, even with Node.js',
     });
+    return { message: 'Email sent (check your inbox)' };
   }
 }

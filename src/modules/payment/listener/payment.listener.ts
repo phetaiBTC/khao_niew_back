@@ -10,7 +10,7 @@ export class PaymentListener {
 
   @OnEvent('payment.successful')
   async handleBookingCreated(booking: Booking) {
-    console.log("start payment listener");
+    console.log('start payment listener');
     const context = {
       name: booking.user.username || 'Unknown',
       concert: booking.concert.date || 'Unknown Concert',
@@ -20,21 +20,21 @@ export class PaymentListener {
       payment: booking.payment.status,
       detailsIds: booking.details.map((detail) => detail.id),
     };
-    // await this.mailService.sendMail(
-    //   booking.user.email,
-    //   'ຢີນຢົັນການຂອງສຳເລັດ - Khao Niew',
-    //   'payment',
-    //   context,
-    // );
-
-    console.log('Booking ID: ', booking.id);
-
-    await this.mailService.sendMailSendGridTemplate(
+    await this.mailService.sendMail(
       booking.user.email,
       'ຢີນຢົັນການຂອງສຳເລັດ - Khao Niew',
-      'd-375c1c526f7947a58bf415ab362623e0', // template ID ของคุณ
+      'payment',
       context,
     );
-    console.log('Mail sent successfully');
+
+    // console.log('Booking ID: ', booking.id);
+
+    // await this.mailService.sendMailSendGridTemplate(
+    //   booking.user.email,
+    //   'ຢີນຢົັນການຂອງສຳເລັດ - Khao Niew',
+    //   'd-375c1c526f7947a58bf415ab362623e0', // template ID ของคุณ
+    //   context,
+    // );
+    // console.log('Mail sent successfully');
   }
 }

@@ -31,6 +31,7 @@ export class CompanySeederService {
         }),
       ));
 
+    console.log('company seeded successfully');
     return { company, company2 };
   }
 }

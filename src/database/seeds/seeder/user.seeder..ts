@@ -22,5 +22,6 @@ export class UserSeederService {
       });
       await manager.save(user);
     }
+    console.log('User seeded');
   }
 }
