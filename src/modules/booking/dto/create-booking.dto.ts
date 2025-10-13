@@ -7,11 +7,11 @@ export class CreateBookingDto {
   @IsNumber()
   concert: number;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsEmail()
   readonly email: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   readonly username: string;
 
