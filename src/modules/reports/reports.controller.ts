@@ -83,8 +83,4 @@ export class ReportsController {
     return this.reportsService.getbookingReportByDate(user, start, end);
   }
 
-  @Get('company-proflie')
-  getRevenueByCompany(@Query('id') id: number, @AuthProfile() user: PayloadDto) {
-    return this.reportsService.getCompaniesProfileReport(id, user);
-  }
 }

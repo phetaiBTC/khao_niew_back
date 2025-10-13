@@ -30,6 +30,16 @@ export class CompaniesController {
   findAll(@Query() query: PaginateDto) {
     return this.companiesService.findAll(query);
   }
+
+  @Roles(EnumRole.ADMIN, EnumRole.COMPANY)
+  @Get('company-proflie')
+  async getRevenueByCompany(
+    @Query('id') id: number,
+    @AuthProfile() user: PayloadDto,
+  ) {
+    return await this.companiesService.getCompaniesProfileReport(+id, user);
+  }
+
   @Roles(EnumRole.ADMIN, EnumRole.COMPANY)
   @Get(':id')
   findOne(@Param('id') id: string) {
@@ -44,13 +54,5 @@ export class CompaniesController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.companiesService.remove(+id);
-  }
-  @Roles(EnumRole.ADMIN, EnumRole.COMPANY)
-  @Get('company-proflie')
-  getRevenueByCompany(
-    @Query('id') id: number,
-    @AuthProfile() user: PayloadDto,
-  ) {
-    return this.companiesService.getCompaniesProfileReport(id, user);
   }
 }
