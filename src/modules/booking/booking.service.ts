@@ -419,8 +419,8 @@ export class BookingService {
     );
   }
 
-  async findbookingsByEmail(email: string, query: BookingPaginateDto) {
-    const { status } = query;
+  async findbookingsByEmail(query: BookingPaginateDto) {
+    const { status, email } = query;
     const bookingQuery = this.bookingRepository
       .createQueryBuilder('booking')
       .leftJoinAndSelect('booking.user', 'user')

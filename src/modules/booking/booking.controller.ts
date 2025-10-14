@@ -44,8 +44,8 @@ export class BookingController {
 
   @Public()
   @Get('/get-bookings-by-email')
-  findbookingsByEmail(@Query('email') email: string) {
-    return this.bookingService.findbookingsByEmail(email);
+  findbookingsByEmail( @Query() query: BookingPaginateDto) {
+    return this.bookingService.findbookingsByEmail(query);
   }
 
   @Get('/get-one/:id')
