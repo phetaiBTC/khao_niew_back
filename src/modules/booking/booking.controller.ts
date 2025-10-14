@@ -44,12 +44,12 @@ export class BookingController {
 
   @Public()
   @Get('/get-bookings-by-email')
-  findbookingsByEmail( @Query() query: BookingPaginateDto) {
+  findbookingsByEmail(@Query() query: BookingPaginateDto) {
     return this.bookingService.findbookingsByEmail(query);
   }
 
+  @Public()
   @Get('/get-one/:id')
-  @Roles(EnumRole.ADMIN, EnumRole.COMPANY)
   findOne(@Param('id') id: number) {
     return this.bookingService.findOne(+id);
   }
@@ -67,7 +67,7 @@ export class BookingController {
       throw error;
     }
   }
-  
+
   @Roles(EnumRole.ADMIN, EnumRole.COMPANY)
   @Delete('delete-booking/:id')
   delete(@Param('id') id: number) {
