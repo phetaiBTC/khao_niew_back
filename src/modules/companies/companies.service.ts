@@ -98,7 +98,7 @@ export class CompaniesService {
     let targetCompanyId: number | null = null;
 
     if (user.role === EnumRole.ADMIN) {
-      targetCompanyId = id;
+      targetCompanyId = id ?? user.id;
     } else if (user.role === EnumRole.COMPANY) {
       if (!user.company) {
         throw new ForbiddenException('Company ID ไม่พบในข้อมูลผู้ใช้');
