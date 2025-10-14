@@ -419,7 +419,8 @@ export class BookingService {
     );
   }
 
-  async findbookingsByEmail(email: string) {
+  async findbookingsByEmail(email: string, query: BookingPaginateDto) {
+    const { status } = query;
     const bookingQuery = this.bookingRepository
       .createQueryBuilder('booking')
       .leftJoinAndSelect('booking.user', 'user')
@@ -431,13 +432,9 @@ export class BookingService {
       .where('user.email = :email', { email })
       .andWhere('user.role = :role', { role: EnumRole.COMPANY })
       .andWhere('companies.name = :companyName', { companyName: 'customer' });
-
-    const bookings = await bookingQuery.getMany();
-
-    if (!bookings || bookings.length === 0) {
-      throw new NotFoundException(`Bookings with email ${email} not found`);
+    if (status) {
+      bookingQuery.andWhere('payment.status = :status', { status });
     }
-
-    return bookings;
+    return paginateUtil(bookingQuery, query);
   }
 }
