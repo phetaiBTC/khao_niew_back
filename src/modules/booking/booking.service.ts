@@ -50,7 +50,7 @@ export class BookingService {
       concert: concertId,
       ticket_quantity,
       imageIds,
-      username,
+      phone,
       email,
     } = createBookingDto;
 
@@ -58,7 +58,7 @@ export class BookingService {
       throw new BadRequestException('want image at least 1 picture');
     }
 
-    if (!userId && (!username || !email)) {
+    if (!userId && (!phone || !email)) {
       throw new BadRequestException(
         'please provide username and email for public user',
       );
@@ -131,14 +131,14 @@ export class BookingService {
               user = existingUser;
             } else {
               const publicUser = await this.userService.createPublicUser(
-                username!,
+                phone!,
                 email!,
               );
               user = publicUser.user;
             }
           } else {
             const publicUser = await this.userService.createPublicUser(
-              username!,
+              phone!,
               email!,
             );
             user = publicUser.user;

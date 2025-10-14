@@ -121,7 +121,7 @@ export class UsersService {
     return user;
   }
 
-  async createPublicUser(username: string, email: string) {
+  async createPublicUser(phone: string, email: string) {
     const existingUser = await this.usersRepository.findOne({
       where: { email },
     });
@@ -138,9 +138,9 @@ export class UsersService {
 
     const hashedPassword = await bcryptUtil.hash('12345');
     const user = this.usersRepository.create({
-      username,
+      username: 'customer',
       email,
-      phone: '1234567890',
+      phone: phone,
       role: EnumRole.COMPANY,
       password: hashedPassword,
       companies: publicCompany,

@@ -13,7 +13,7 @@ export class CreateBookingDto {
 
   @IsOptional()
   @IsString()
-  username: string;
+  phone: string;
 
   @IsArray()
   @IsNotEmpty()
