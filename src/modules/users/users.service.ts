@@ -104,7 +104,9 @@ export class UsersService {
 
   async changePassword(id: string, newPassword: string, user: PayloadDto) {
     const base_userid = Number(id ? id : user.id);
-
+    if (!base_userid) {
+      throw new BadRequestException('User not found');
+    } 
     const userToUpdate = await this.findOne(base_userid);
 
     userToUpdate.password = await bcryptUtil.hash(newPassword);
