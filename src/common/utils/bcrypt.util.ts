@@ -4,6 +4,7 @@ export const bcryptUtil = {
         return bcrypt.compare(password, hash);
     },
     async hash(password: string) {
+        console.log('New password:', password);
         return bcrypt.hash(password, 10);
     }
 }

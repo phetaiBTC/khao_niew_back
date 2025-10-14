@@ -102,8 +102,8 @@ export class UsersService {
     };
   }
 
-  async changePassword(id: number, newPassword: string, user: PayloadDto) {
-    const base_userid = id ? id : user.id;
+  async changePassword(id: string, newPassword: string, user: PayloadDto) {
+    const base_userid = Number(id ? id : user.id);
 
     const userToUpdate = await this.findOne(base_userid);
 

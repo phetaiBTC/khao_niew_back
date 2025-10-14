@@ -44,13 +44,13 @@ export class UsersController {
   }
 
   @Roles(EnumRole.ADMIN, EnumRole.COMPANY)
-  @Get('change-password')
+  @Patch('change-password')
   findOneByEmail(
-    @Query('id') id: number,
+    @Query('id') id: string,
     @AuthProfile() user: PayloadDto,
-    @Body() newPassword: string,
+    @Body('newpassword') newpassword: string,
   ) {
-    return this.usersService.changePassword(id, newPassword, user);
+    return this.usersService.changePassword(id, newpassword, user);
   }
 
   @Roles(EnumRole.ADMIN, EnumRole.COMPANY)
