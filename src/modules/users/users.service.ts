@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -19,8 +23,8 @@ export class UsersService {
     private readonly usersRepository: Repository<User>,
 
     @InjectRepository(Company)
-    private readonly companyRepository: Repository<Company>
-  ) { }
+    private readonly companyRepository: Repository<Company>,
+  ) {}
 
   async create(createUserDto: CreateUserDto, companyId: number) {
     const existingUser = await this.usersRepository.findOne({
@@ -60,8 +64,6 @@ export class UsersService {
     };
   }
 
-
-
   async findAll(query: PaginateDto, user: PayloadDto) {
     const qb = this.usersRepository.createQueryBuilder('user');
     qb.leftJoinAndSelect('user.companies', 'companies');
@@ -71,79 +73,84 @@ export class UsersService {
       });
     }
     if (user.role === EnumRole.COMPANY) {
-      qb.andWhere('user.companies.id = :companyId', { companyId: user.company });
+      qb.andWhere('user.companies.id = :companyId', {
+        companyId: user.company,
+      });
     }
-
 
     return paginateUtil(qb, query);
   }
 
-  async findOne(id: number) {
-    const user = await this.usersRepository.findOneBy({ id });
+  async findOne(id: number): Promise<User> {
+    const user = await this.usersRepository.findOne({
+      where: { id },
+      relations: ['companies'],
+    });
+
+    if (!user) {
+      throw new NotFoundException(`User with ID ${id} not found`);
+    }
+
+    return user;
+  }
+
+  async update(id: number, updateUserDto: UpdateUserDto) {
+    await this.findOne(id);
+    await this.usersRepository.update({ id }, updateUserDto);
+    return {
+      message: 'User updated successfully',
+    };
+  }
+
+  async remove(id: number) {
+    await this.findOne(id);
+    await this.usersRepository.delete({ id });
+    return {
+      message: 'User deleted successfully',
+    };
+  }
+
+  async findOneByEmail(email: string) {
+    const user = await this.usersRepository.findOne({
+      where: { email },
+      relations: ['companies'],
+    });
     if (!user) {
       throw new BadRequestException('User not found');
     }
     return user;
   }
 
-  async update(id: number, updateUserDto: UpdateUserDto) {
-    await this.findOne(id)
-    await this.usersRepository.update({ id }, updateUserDto)
+  async createPublicUser(username: string, email: string) {
+    const existingUser = await this.usersRepository.findOne({
+      where: { email },
+    });
+    if (existingUser) {
+      throw new BadRequestException('Email already exists');
+    }
+
+    const publicCompany = await this.companyRepository.findOne({
+      where: { name: 'customer' },
+    });
+    if (!publicCompany) {
+      throw new NotFoundException('Public company not found');
+    }
+
+    const hashedPassword = await bcryptUtil.hash('12345');
+    const user = this.usersRepository.create({
+      username,
+      email,
+      phone: '1234567890',
+      role: EnumRole.COMPANY,
+      password: hashedPassword,
+      companies: publicCompany,
+    });
+
+    await this.usersRepository.save(user);
+
     return {
-      message: 'User updated successfully'
-    }
+      message: 'User created successfully',
+      user,
+    };
   }
-
-  async remove(id: number) {
-    await this.findOne(id)
-    await this.usersRepository.delete({ id })
-    return {
-      message: 'User deleted successfully'
-    }
-  }
-
-  async findOneByEmail(email: string) {
-    const user = await this.usersRepository.findOne({ where: { email }, relations: ['companies'] })
-    if (!user) {
-      throw new BadRequestException('User not found')
-    }
-    return user
-  }
-
-async createPublicUser(username: string, email: string) {
-  
-  const existingUser = await this.usersRepository.findOne({ 
-    where: { email } 
-  });
-  if (existingUser) {
-    throw new BadRequestException('Email already exists');
-  }
-
-
-  const publicCompany = await this.companyRepository.findOne({
-    where: { name: 'customer' },
-  });
-  if (!publicCompany) {
-    throw new NotFoundException('Public company not found');
-  }
-
-  const hashedPassword = await bcryptUtil.hash('12345');
-  const user = this.usersRepository.create({
-    username,
-    email,
-    phone: '1234567890',
-    role: EnumRole.COMPANY,
-    password: hashedPassword,
-    companies: publicCompany
-  });
-
-  await this.usersRepository.save(user);
-
-  return {
-    message: 'User created successfully',
-    user,
-  };
-}
-
-
 }

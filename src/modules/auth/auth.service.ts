@@ -11,7 +11,6 @@ export class AuthService {
     ) { }
     async login(body: AuthDto) {
         const user = await this.usersService.findOneByEmail(body.email)
-        // return user
         
         const isValid = await bcryptUtil.compare(body.password, user.password)
       
