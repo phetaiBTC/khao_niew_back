@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
+} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -11,11 +20,14 @@ import { EnumRole } from './entities/user.entity';
 
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) { }
+  constructor(private readonly usersService: UsersService) {}
 
   @Roles(EnumRole.ADMIN, EnumRole.COMPANY)
   @Post()
-  create(@Body() createUserDto: CreateUserDto, @AuthProfile() user: PayloadDto) {
+  create(
+    @Body() createUserDto: CreateUserDto,
+    @AuthProfile() user: PayloadDto,
+  ) {
     return this.usersService.create(createUserDto, user.company);
   }
 
@@ -29,6 +41,16 @@ export class UsersController {
   @Get()
   findAll(@Query() query: PaginateDto, @AuthProfile() user: PayloadDto) {
     return this.usersService.findAll(query, user);
+  }
+
+  @Roles(EnumRole.ADMIN, EnumRole.COMPANY)
+  @Get('change-password')
+  findOneByEmail(
+    @Query('id') id: number,
+    @AuthProfile() user: PayloadDto,
+    @Body() newPassword: string,
+  ) {
+    return this.usersService.changePassword(id, newPassword, user);
   }
 
   @Roles(EnumRole.ADMIN, EnumRole.COMPANY)

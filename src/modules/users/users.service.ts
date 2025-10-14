@@ -102,6 +102,20 @@ export class UsersService {
     };
   }
 
+  async changePassword(id: number, newPassword: string, user: PayloadDto) {
+    const base_userid = id ? id : user.id;
+
+    const userToUpdate = await this.findOne(base_userid);
+
+    userToUpdate.password = await bcryptUtil.hash(newPassword);
+
+    await this.usersRepository.save(userToUpdate);
+
+    return {
+      message: 'User password updated successfully',
+    };
+  }
+
   async remove(id: number) {
     await this.findOne(id);
     await this.usersRepository.delete({ id });
