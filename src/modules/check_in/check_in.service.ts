@@ -42,7 +42,7 @@ export class CheckInService {
           await manager.update(BookingDetail, bookingDetail.id, {
             status: DetailsStatus.CHECKED_IN,
           });
-          
+
           return { message: 'Check-in successful' };
         } catch (error) {
           console.error('Error in check-in transaction:', error);
@@ -51,5 +51,4 @@ export class CheckInService {
       },
     );
   }
-
 }

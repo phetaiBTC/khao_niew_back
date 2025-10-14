@@ -172,12 +172,18 @@ export class BookingService {
           where: { id: savedBooking.id },
           relations: ['user', 'concert', 'payment', 'details'],
         });
-        
+
         if (!context_booking) {
-          throw new NotFoundException(`not found booking id ${savedBooking.id}`);
+          throw new NotFoundException(
+            `not found booking id ${savedBooking.id}`,
+          );
         }
 
-        this.eventEmitter.emit('booking.created', context_booking, context_booking.user);
+        this.eventEmitter.emit(
+          'booking.created',
+          context_booking,
+          context_booking.user,
+        );
 
         return { booking: savedBooking, details: savedDetails };
       },
@@ -411,5 +417,27 @@ export class BookingService {
         };
       },
     );
+  }
+
+  async findbookingsByEmail(email: string) {
+    const bookingQuery = this.bookingRepository
+      .createQueryBuilder('booking')
+      .leftJoinAndSelect('booking.user', 'user')
+      .leftJoinAndSelect('booking.concert', 'concert')
+      .leftJoinAndSelect('booking.payment', 'payment')
+      .leftJoinAndSelect('payment.images', 'images')
+      .leftJoinAndSelect('booking.details', 'details')
+      .leftJoinAndSelect('user.companies', 'companies')
+      .where('user.email = :email', { email })
+      .andWhere('user.role = :role', { role: EnumRole.COMPANY })
+      .andWhere('companies.name = :companyName', { companyName: 'customer' });
+
+    const bookings = await bookingQuery.getMany();
+
+    if (!bookings || bookings.length === 0) {
+      throw new NotFoundException(`Bookings with email ${email} not found`);
+    }
+
+    return bookings;
   }
 }

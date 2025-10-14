@@ -32,7 +32,7 @@ export class BookingController {
       +createBookingDto.userId,
     );
   }
-  
+
   @Roles(EnumRole.ADMIN, EnumRole.COMPANY)
   @Get('/all-bookings')
   findAll(
@@ -42,11 +42,18 @@ export class BookingController {
     return this.bookingService.findAll(query, userId);
   }
 
+  @Public()
+  @Get('/get-bookings-by-email')
+  findbookingsByEmail(@Query('email') email: string) {
+    return this.bookingService.findbookingsByEmail(email);
+  }
+
   @Get('/get-one/:id')
   @Roles(EnumRole.ADMIN, EnumRole.COMPANY)
   findOne(@Param('id') id: number) {
     return this.bookingService.findOne(+id);
   }
+
   @Roles(EnumRole.ADMIN, EnumRole.COMPANY)
   @Patch('update-booking/:id')
   async update(
@@ -60,6 +67,7 @@ export class BookingController {
       throw error;
     }
   }
+  
   @Roles(EnumRole.ADMIN, EnumRole.COMPANY)
   @Delete('delete-booking/:id')
   delete(@Param('id') id: number) {
