@@ -21,7 +21,7 @@ export const baseEnv = {
   EMAIL_PASS: process.env.EMAIL_PASS || 'uwsjsuhoxyrycmrp',
 
   SMTP_HOST: process.env.SMTP_HOST || 'smtp.gmail.com',
-  SMTP_PORT: process.env.SMTP_PORT || 587,
+  SMTP_PORT: process.env.SMTP_PORT || 2525,
   SMTP_SECURE: process.env.SMTP_SECURE === 'true',
   SMTP_USER: process.env.SMTP_USER || 'uablauj76681809@gmail.com',
   SMTP_PASSWORD: process.env.SMTP_PASSWORD || 'uwsjsuhoxyrycmrp',
