@@ -8,14 +8,14 @@ import { EnumRole } from '../users/entities/user.entity';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) { }
+  constructor(private readonly authService: AuthService) {}
   @Public()
   @Post('login')
   login(@Body() body: AuthDto) {
     return this.authService.login(body);
   }
 
-  @Roles(EnumRole.ADMIN || EnumRole.COMPANY)
+  @Roles(EnumRole.ADMIN, EnumRole.COMPANY)
   @Get('profile')
   getProfile(@AuthProfile() user: PayloadDto) {
     return this.authService.profile(user.id);
