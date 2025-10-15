@@ -33,8 +33,10 @@ export const baseEnv = {
     process.env.SENDGRID_FROM_EMAIL || 'uablauj76681809@gmail.com',
 
   // Resend
-  RESEND_API_KEY: process.env.RESEND_API_KEY,
-RESEND_FROM : process.env.RESEND_FROM || 'onboarding@resend.dev',
+  RESEND_API_KEY:
+    process.env.RESEND_API_KEY || 're_YCM8vJ58_HDXaBeSWvHjC2P7Zn6bjeD1C',
+  RESEND_FROM: process.env.RESEND_FROM || 'onboarding@resend.dev',
+  
   // Stripe
   STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
   STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,

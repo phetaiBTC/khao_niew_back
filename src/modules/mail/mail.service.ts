@@ -74,11 +74,6 @@ export class MailService {
     templateName: string,
     context: any,
   ) {
-    // const templatePath = path.join(
-    //   __dirname,
-    //   'templates',
-    //   `${templateName}.hbs`,
-    // );
     const templatePath = path.join(
       process.cwd(),
       'src',
