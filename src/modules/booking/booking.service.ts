@@ -224,6 +224,25 @@ export class BookingService {
 
     return paginateUtil(queryBuilder, query);
   }
+  async findOne(id: number) {
+    const booking = await this.bookingRepository.findOne({
+      where: { id },
+      relations: [
+        'user',
+        'concert',
+        'payment',
+        'payment.images',
+        'details',
+        'user.companies',
+      ],
+    });
+
+    if (!booking) {
+      throw new NotFoundException(`Booking with ID ${id} not found`);
+    }
+
+    return booking;
+  }
 
   async update(id: number, updateBookingDto: UpdateBookingDto) {
     try {
