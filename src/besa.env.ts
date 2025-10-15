@@ -41,6 +41,14 @@ export const baseEnv = {
   // Stripe
   STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
   STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
+
+  // WASABI
+  WASABI_ACCESS_KEY: process.env.WASABI_ACCESS_KEY || 'UX3H7A8UYQLPGNEJ3G0F',
+  WASABI_SECRET_KEY: process.env.WASABI_SECRET_KEY || '8eKgRVmyb3zWfle7vulLSiOBMLdaeMHznVntAK8V',
+  WASABI_BUCKET: process.env.WASABI_BUCKET || 'khaoniewback',
+  WASABI_REGION: process.env.WASABI_REGION || 'ap-southeast-1',
+  WASABI_ENDPOINT: process.env.WASABI_ENDPOINT || 'https://s3.ap-southeast-1.wasabisys.com',
+  
 };
 
 

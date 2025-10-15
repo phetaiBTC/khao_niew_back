@@ -7,10 +7,11 @@ import { Entertainment } from '../entertainments/entities/entertainment.entity';
 import { ImageService } from './images.service';
 import { ImageController } from './images.controller';
 import { Payment } from '../payment/entities/payment.entity';
+import { UploadService } from './upload.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Image, Venue, Entertainment,Payment])],
-  providers: [ImageService],
+  providers: [ImageService, UploadService],
   controllers: [ImageController],
 })
 export class ImagesModule {}
