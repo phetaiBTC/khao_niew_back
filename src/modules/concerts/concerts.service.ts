@@ -13,7 +13,6 @@ import { UpdateConcertDto } from './dto/update-concert.dto';
 import { timeToNumber } from 'src/common/utils/timeToNumber';
 import { PaginateDto } from 'src/common/dto/paginate.dto';
 import { paginateUtil } from 'src/common/utils/paginate.util';
-import { Pagination } from 'src/common/interface/pagination.interface';
 import { Booking } from '../booking/entities/booking.entity';
 import { mapConcert } from './mapper/concerts.mapper';
 import { PaymentStatus } from '../payment/entities/payment.entity';

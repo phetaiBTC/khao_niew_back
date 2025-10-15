@@ -42,7 +42,7 @@ export class ImageController {
     return this.imageService.createMany(dto, urls);
   }
 
-  @Post('/upload')
+  @Post('upload')
   @UseInterceptors(FileInterceptor('file'))
   async upload(@UploadedFile() file: Express.Multer.File) {
     return this.uploadService.uploadFile(file);
