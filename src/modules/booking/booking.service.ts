@@ -214,11 +214,21 @@ export class BookingService {
       queryBuilder.andWhere('user.id = :userId', { userId });
     }
 
-    queryBuilder.addOrderBy(`CASE 
-      WHEN payment.status = '${PaymentStatus.PENDING}' THEN 1 
-      WHEN payment.status = '${PaymentStatus.SUCCESS}' THEN 2
-      WHEN payment.status = '${PaymentStatus.FAILED}' THEN 3
-      ELSE 4 END`);
+    queryBuilder
+      .addOrderBy(
+        `CASE 
+    WHEN payment.status = :pending THEN 1
+    WHEN payment.status = :success THEN 2
+    WHEN payment.status = :failed THEN 3
+    ELSE 4
+  END`,
+        'ASC',
+      )
+      .setParameters({
+        pending: PaymentStatus.PENDING,
+        success: PaymentStatus.SUCCESS,
+        failed: PaymentStatus.FAILED,
+      });
 
     queryBuilder.addOrderBy('booking.createdAt', 'DESC');
 
