@@ -20,12 +20,29 @@ export class PaymentListener {
       payment: booking.payment.status,
       detailsIds: booking.details.map((detail) => detail.id),
     };
-    await this.mailService.sendMail(
+    // await this.mailService.sendMail(
+    //   booking.user.email,
+    //   'ຢີນຢົັນການຂອງສຳເລັດ - Khao Niew',
+    //   'payment',
+    //   context,
+    // );
+
+    // const context = {
+    //   name: 'Muaj Hmoos',
+    //   concert: 'Khao Niew Live 2025',
+    //   bookingId: 'B12345',
+    //   ticketQuantity: 2,
+    //   totalAmount: 300000,
+    //   payment: 'PAID',
+    //   detailsIds: ['QR001', 'QR002'],
+    // };
+    await this.mailService.sendMailResend(
       booking.user.email,
       'ຢີນຢົັນການຂອງສຳເລັດ - Khao Niew',
       'payment',
       context,
     );
+    return 'Mail sent';
 
     // console.log('Booking ID: ', booking.id);
 

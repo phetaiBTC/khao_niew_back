@@ -4,6 +4,7 @@ import { OnEvent } from '@nestjs/event-emitter';
 import { MailService } from 'src/modules/mail/mail.service';
 import { Booking } from '../entities/booking.entity';
 import { User } from 'src/modules/users/entities/user.entity';
+import { baseEnv } from 'src/besa.env';
 
 @Injectable()
 export class BookingListener {
@@ -18,8 +19,8 @@ export class BookingListener {
       ticketQuantity: booking.ticket_quantity,
       totalAmount: booking.total_amount,
     };
-    await this.mailService.sendMail(
-      'uablauj76681809@gmail.com',
+    await this.mailService.sendMailResend(
+      baseEnv.SMTP_FROM,
       'ມີການຈອງໃຫມ່ - Khao Niew',
       'booking',
       context,

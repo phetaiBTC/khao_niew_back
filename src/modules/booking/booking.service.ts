@@ -60,7 +60,7 @@ export class BookingService {
 
     if (!userId && (!phone || !email)) {
       throw new BadRequestException(
-        'please provide username and email for public user',
+        'please provide phone and email for public user',
       );
     }
 
