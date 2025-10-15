@@ -17,6 +17,7 @@ import { Pagination } from 'src/common/interface/pagination.interface';
 import { Roles } from 'src/common/decorator/role.decorator';
 import { EnumRole } from '../users/entities/user.entity';
 import { Public } from 'src/common/decorator/auth.decorator';
+import { IdParamDto } from '../../common/dto/id-param.dto';
 @Controller('concerts')
 export class ConcertsController {
   constructor(private readonly concertService: ConcertsService) {}
@@ -31,12 +32,10 @@ export class ConcertsController {
     return this.concertService.findAll(query);
   }
 
-  @Roles(EnumRole.ADMIN)
   @Patch('changestatus/:id')
-  changeStatus( @Param('id') id: number) {
-    return this.concertService.changeStatus(id);
+  changeStatus(@Param() params: IdParamDto) {
+    return this.concertService.changeStatus(params.id);
   }
-  
   @Public()
   @Get(':id')
   findOne(@Param('id') id: string) {
@@ -49,8 +48,8 @@ export class ConcertsController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.concertService.remove(+id);
+  remove(@Param('id') id: IdParamDto) {
+    return this.concertService.remove(+id.id);
   }
 
   @Get(':id/profile')

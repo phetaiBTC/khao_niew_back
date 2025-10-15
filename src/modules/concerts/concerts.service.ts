@@ -188,8 +188,20 @@ export class ConcertsService {
   }
 
   async remove(id: number) {
-    const concerts = await this.concertRepo.findBy({ id });
-    return this.concertRepo.remove(concerts);
+    const concert = await this.concertRepo.findOne({ where: { id } });
+    if (!concert) throw new NotFoundException('Concert not found');
+
+    try {
+      await this.concertRepo.remove(concert);
+      return { message: 'Concert deleted successfully' };
+    } catch (error) {
+      if (error.code === 'ER_ROW_IS_REFERENCED_2') {
+        throw new BadRequestException(
+          'Cannot delete concert because it has existing bookings.',
+        );
+      }
+      throw error;
+    }
   }
 
   async concertsProfile(concertId: number) {
@@ -288,9 +300,12 @@ export class ConcertsService {
 
   async changeStatus(id: number) {
     const concert = await this.findOne(id);
-    const status = concert.status === EnumConcertStatus.OPEN ? EnumConcertStatus.CLOSE : EnumConcertStatus.OPEN;
+    const status =
+      concert.status === EnumConcertStatus.OPEN
+        ? EnumConcertStatus.CLOSE
+        : EnumConcertStatus.OPEN;
     const result = await this.concertRepo.update(id, { status });
     if (result.affected === 0) throw new NotFoundException('Concert not found');
-    return { message : "Status changed successfully"};
+    return { message: 'Status changed successfully' };
   }
 }
