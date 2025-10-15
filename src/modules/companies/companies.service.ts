@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ForbiddenException,
   Injectable,
   NotFoundException,
@@ -96,14 +97,19 @@ export class CompaniesService {
   }
 
   async getCompaniesProfileReport(
-    id: number,
     user: PayloadDto,
     body: CompaniesProfilereportDto,
   ) {
-    let targetCompanyId: number | null = null;
+    const { id } = body;
 
+    let targetCompanyId: number | null = null;
     if (user.role === EnumRole.ADMIN) {
-      targetCompanyId = id ?? user.id;
+      if (id !== undefined && id !== null) {
+        if (isNaN(id)) throw new BadRequestException('id ต้องเป็นตัวเลข');
+        targetCompanyId = id;
+      } else {
+        targetCompanyId = user.id;
+      }
     } else if (user.role === EnumRole.COMPANY) {
       if (!user.company) {
         throw new ForbiddenException('Company ID ไม่พบในข้อมูลผู้ใช้');

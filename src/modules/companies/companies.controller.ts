@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   Query,
+  Logger,
 } from '@nestjs/common';
 import { CompaniesService } from './companies.service';
 import { CreateCompanyDto } from './dto/create-company.dto';
@@ -21,16 +22,14 @@ import { CompaniesProfilereportDto } from './dto/companies-profilereport.dto';
 @Controller('companies')
 export class CompaniesController {
   constructor(private readonly companiesService: CompaniesService) {}
+
+  
   @Roles(EnumRole.ADMIN, EnumRole.COMPANY)
   @Post()
   create(@Body() createCompanyDto: any) {
     return this.companiesService.create(createCompanyDto);
   }
-  @Roles(EnumRole.ADMIN, EnumRole.COMPANY)
-  @Get()
-  findAll(@Query() query: PaginateDto) {
-    return this.companiesService.findAll(query);
-  }
+
 
   @Roles(EnumRole.ADMIN, EnumRole.COMPANY)
   @Post('company-proflie')
@@ -38,12 +37,16 @@ export class CompaniesController {
     @AuthProfile() user: PayloadDto,
     @Body() body: CompaniesProfilereportDto,
   ) {
-    return await this.companiesService.getCompaniesProfileReport(
-      +body.id,
-      user,
-      body,
-    );
+    return await this.companiesService.getCompaniesProfileReport(user, body);
   }
+
+
+  @Roles(EnumRole.ADMIN, EnumRole.COMPANY)
+  @Get()
+  findAll(@Query() query: PaginateDto) {
+    return this.companiesService.findAll(query);
+  }
+
 
   @Roles(EnumRole.ADMIN, EnumRole.COMPANY)
   @Get(':id')
