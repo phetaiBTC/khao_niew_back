@@ -30,11 +30,41 @@ export class ImageService {
     private readonly uploadService: UploadService,
   ) {}
 
-  async createMany(files: Array<{ key: string; }>) {
+  async createMany_server(files: Array<{ key: string; }>) {
     const images = files.map((f) =>
       this.imageRepo.create({ key: f.key}),
     );
     return this.imageRepo.save(images);
+  }
+    async createMany(dto: CreateImageDto, urls: string[]) {
+    const images = urls.map((url) => this.imageRepo.create({ url }));
+
+    if (dto.venueIds?.length) {
+      const venues = await this.venueRepo.findBy({ id: In(dto.venueIds) });
+      images.forEach((img) => (img.venues = venues));
+    }
+
+    if (dto.entertainmentIds?.length) {
+      const entertainments = await this.entertainmentRepo.findBy({
+        id: In(dto.entertainmentIds),
+      });
+      images.forEach((img) => (img.entertainments = entertainments));
+    }
+
+    return this.imageRepo.save(images); // save หลาย record ได้
+  }
+  async remove(id: number) {
+    const image = await this.findOne(id);
+    if (!image) throw new Error('Image not found');
+    const filePath = join(process.cwd(), image.url.replace(/^\//, ''));
+
+    if (await fileExists(filePath)) {
+      await removeFile(filePath);
+    }
+
+    await this.imageRepo.remove(image);
+
+    return { message: 'Image removed successfully' };
   }
 
   async findAll(): Promise<Image[]> {
@@ -74,7 +104,7 @@ export class ImageService {
     return this.imageRepo.save(image);
   }
 
-  async remove(id: number) {
+  async remove_server(id: number) {
     const image = await this.findOne(id);
     if (!image) throw new Error('Image not found');
 

@@ -29,26 +29,26 @@ export class ImageController {
     private readonly uploadService: UploadService,
   ) {}
 
-  // @Public()
-  // @Post()
-  // @UseInterceptors(customUploadInterceptor('images', 'file', true))
-  // async uploadImages(
-  //   @UploadedFiles() files: Express.Multer.File[],
-  //   @Body() dto: CreateImageDto,
-  // ) {
-  //   if (!files || !files.length) throw new Error('No files uploaded');
-
-  //   const urls = files.map((file) => `/uploads/images/${file.filename}`);
-  //   return this.imageService.createMany( );
-  // }
-
   @Public()
   @Post()
-  @UseInterceptors(FilesInterceptor('files')) // key from form-data = 'files'
-  async uploadMultiple(@UploadedFiles() files: Express.Multer.File[]) {
-    const urls = await this.uploadService.uploadFiles(files);
-    return this.imageService.createMany(urls);
+  @UseInterceptors(customUploadInterceptor('images', 'file', true))
+  async uploadImages(
+    @UploadedFiles() files: Express.Multer.File[],
+    @Body() dto: CreateImageDto,
+  ) {
+    if (!files || !files.length) throw new Error('No files uploaded');
+
+    const urls = files.map((file) => `/uploads/images/${file.filename}`);
+    return this.imageService.createMany(dto, urls);
   }
+
+  // @Public()
+  // @Post()
+  // @UseInterceptors(FilesInterceptor('files')) // key from form-data = 'files'
+  // async uploadMultiple(@UploadedFiles() files: Express.Multer.File[]) {
+  //   const urls = await this.uploadService.uploadFiles(files);
+  //   return this.imageService.createMany(urls);
+  // }
 
   @Roles(EnumRole.ADMIN, EnumRole.COMPANY)
   @Get()
