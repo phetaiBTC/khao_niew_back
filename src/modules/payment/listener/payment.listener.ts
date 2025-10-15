@@ -36,12 +36,12 @@ export class PaymentListener {
     //   payment: 'PAID',
     //   detailsIds: ['QR001', 'QR002'],
     // };
-    await this.mailService.sendMailResend(
-      booking.user.email,
-      'ຢີນຢົັນການຂອງສຳເລັດ - Khao Niew',
-      'payment',
-      context,
-    );
+    // await this.mailService.sendMailResend(
+    //   booking.user.email,
+    //   'ຢີນຢົັນການຂອງສຳເລັດ - Khao Niew',
+    //   'payment',
+    //   context,
+    // );
     return 'Mail sent';
 
     // console.log('Booking ID: ', booking.id);
