@@ -33,7 +33,7 @@ export class CompaniesController {
   }
 
   @Roles(EnumRole.ADMIN, EnumRole.COMPANY)
-  @Get('company-proflie')
+  @Post('company-proflie')
   async getRevenueByCompany(
     @Query('id') id: number,
     @AuthProfile() user: PayloadDto,

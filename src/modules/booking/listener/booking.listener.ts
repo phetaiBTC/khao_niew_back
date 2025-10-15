@@ -20,7 +20,7 @@ export class BookingListener {
       totalAmount: booking.total_amount,
     };
     await this.mailService.sendMailResend(
-      baseEnv.SMTP_FROM,
+      baseEnv.RESEND_EMAIL,
       'ມີການຈອງໃຫມ່ - Khao Niew',
       'booking',
       context,
