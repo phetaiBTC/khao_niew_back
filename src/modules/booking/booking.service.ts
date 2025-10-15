@@ -69,7 +69,7 @@ export class BookingService {
       throw new NotFoundException('not found image some id');
     }
 
-    return this.transactionManagerService.runInTransaction(
+    const result = await this.transactionManagerService.runInTransaction(
       this.dataSource,
       async (manager) => {
         const concert = await manager.findOne(Concert, {
@@ -168,26 +168,25 @@ export class BookingService {
         );
         const savedDetails = await manager.save(BookingDetail, details);
 
-        const context_booking = await manager.findOne(Booking, {
-          where: { id: savedBooking.id },
-          relations: ['user', 'concert', 'payment', 'details'],
-        });
-
-        if (!context_booking) {
-          throw new NotFoundException(
-            `not found booking id ${savedBooking.id}`,
-          );
-        }
-
-        this.eventEmitter.emit(
-          'booking.created',
-          context_booking,
-          context_booking.user,
-        );
-
         return { booking: savedBooking, details: savedDetails };
       },
     );
+
+    const context_booking = await this.bookingRepository.findOne({
+      where: { id: result.booking.id },
+      relations: ['user', 'concert', 'payment', 'details'],
+    });
+
+    if (!context_booking) {
+      throw new NotFoundException(`not found booking id ${result.booking.id}`);
+    }
+
+    this.eventEmitter.emit(
+      'booking.created',
+      context_booking,
+      context_booking.user,
+    );
+    return result;
   }
   async findAll(query: BookingPaginateDto, userId?: number) {
     const { status, companyId } = query;

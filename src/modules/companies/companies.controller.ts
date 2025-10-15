@@ -16,6 +16,7 @@ import { AuthProfile } from 'src/common/decorator/user.decorator';
 import { PayloadDto } from '../auth/dto/auth.dto';
 import { Roles } from 'src/common/decorator/role.decorator';
 import { EnumRole } from '../users/entities/user.entity';
+import { CompaniesProfilereportDto } from './dto/companies-profilereport.dto';
 
 @Controller('companies')
 export class CompaniesController {
@@ -36,8 +37,13 @@ export class CompaniesController {
   async getRevenueByCompany(
     @Query('id') id: number,
     @AuthProfile() user: PayloadDto,
+    @Body() body: CompaniesProfilereportDto,
   ) {
-    return await this.companiesService.getCompaniesProfileReport(+id, user);
+    return await this.companiesService.getCompaniesProfileReport(
+      +id,
+      user,
+      body,
+    );
   }
 
   @Roles(EnumRole.ADMIN, EnumRole.COMPANY)

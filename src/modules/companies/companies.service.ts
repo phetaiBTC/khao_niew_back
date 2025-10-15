@@ -15,6 +15,7 @@ import { paginateUtil } from 'src/common/utils/paginate.util';
 import { bcryptUtil } from 'src/common/utils/bcrypt.util';
 import { PayloadDto } from '../auth/dto/auth.dto';
 import { PaymentStatus } from '../payment/entities/payment.entity';
+import { CompaniesProfilereportDto } from './dto/companies-profilereport.dto';
 @Injectable()
 export class CompaniesService {
   constructor(
@@ -94,7 +95,11 @@ export class CompaniesService {
     };
   }
 
-  async getCompaniesProfileReport(id: number, user: PayloadDto) {
+  async getCompaniesProfileReport(
+    id: number,
+    user: PayloadDto,
+    body: CompaniesProfilereportDto,
+  ) {
     let targetCompanyId: number | null = null;
 
     if (user.role === EnumRole.ADMIN) {
@@ -116,7 +121,7 @@ export class CompaniesService {
       throw new NotFoundException(`ไม่พบบริษัท ID ${targetCompanyId}`);
     }
 
-    const result = await this.companyRepository
+    const query = this.companyRepository
       .createQueryBuilder('company')
       .select([
         'company.id AS company_id',
@@ -138,17 +143,26 @@ export class CompaniesService {
         `COALESCE(SUM(CASE WHEN payment.status = '${PaymentStatus.FAILED}' THEN 1 ELSE 0 END), 0)`,
         'total_failed',
       )
-
       .leftJoin('company.user', 'user')
       .leftJoin('user.bookings', 'booking')
       .leftJoin('booking.payment', 'payment')
       .leftJoin('booking.concert', 'concert')
+      .where('company.id = :companyId', { companyId: targetCompanyId });
 
-      .where('company.id = :companyId', { companyId: targetCompanyId })
+    if (body.start_date) {
+      query.andWhere('booking.createdAt >= :startDate', {
+        startDate: body.start_date,
+      });
+    }
+    if (body.end_date) {
+      query.andWhere('booking.createdAt <= :endDate', {
+        endDate: body.end_date,
+      });
+    }
 
-      .groupBy('company.id')
-      .addGroupBy('company.name')
-      .getRawOne();
+    query.groupBy('company.id').addGroupBy('company.name');
+
+    const result = await query.getRawOne();
 
     if (!result || !result.company_id) {
       const company = await this.companyRepository.findOne({
