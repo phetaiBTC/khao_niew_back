@@ -37,6 +37,7 @@ export const baseEnv = {
   RESEND_FROM: process.env.RESEND_FROM || 'onboarding@resend.dev',
   RESEND_EMAIL: process.env.RESEND_EMAIL || 'akhaoniew@gmail.com',
 
+  
   // Stripe
   STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
   STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,

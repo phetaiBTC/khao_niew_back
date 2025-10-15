@@ -214,25 +214,24 @@ export class BookingService {
       queryBuilder.andWhere('user.id = :userId', { userId });
     }
 
-    queryBuilder
-      .addOrderBy(
-        `CASE 
-    WHEN payment.status = :pending THEN 1
-    WHEN payment.status = :success THEN 2
-    WHEN payment.status = :failed THEN 3
-    ELSE 4
-  END`,
-        'ASC',
-      )
-      .setParameters({
-        pending: PaymentStatus.PENDING,
-        success: PaymentStatus.SUCCESS,
-        failed: PaymentStatus.FAILED,
-      });
-
     queryBuilder.addOrderBy('booking.createdAt', 'DESC');
 
-    return paginateUtil(queryBuilder, query);
+    const result = await paginateUtil(queryBuilder, query);
+
+    // Sort by payment status
+    const statusOrder = {
+      [PaymentStatus.PENDING]: 1,
+      [PaymentStatus.SUCCESS]: 2,
+      [PaymentStatus.FAILED]: 3,
+    };
+
+    result.data.sort((a, b) => {
+      const orderA = statusOrder[a.payment.status] || 4;
+      const orderB = statusOrder[b.payment.status] || 4;
+      return orderA - orderB;
+    });
+
+    return result;
   }
   async findOne(id: number) {
     const booking = await this.bookingRepository.findOne({
