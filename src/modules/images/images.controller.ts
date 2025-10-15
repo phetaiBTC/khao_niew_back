@@ -19,7 +19,7 @@ import { customUploadInterceptor } from 'src/common/interceptors/upload-image.in
 import { Roles } from 'src/common/decorator/role.decorator';
 import { EnumRole } from '../users/entities/user.entity';
 import { Public } from 'src/common/decorator/auth.decorator';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { UploadService } from './upload.service';
 
 @Controller('images')
@@ -29,23 +29,25 @@ export class ImageController {
     private readonly uploadService: UploadService,
   ) {}
 
+  // @Public()
+  // @Post()
+  // @UseInterceptors(customUploadInterceptor('images', 'file', true))
+  // async uploadImages(
+  //   @UploadedFiles() files: Express.Multer.File[],
+  //   @Body() dto: CreateImageDto,
+  // ) {
+  //   if (!files || !files.length) throw new Error('No files uploaded');
+
+  //   const urls = files.map((file) => `/uploads/images/${file.filename}`);
+  //   return this.imageService.createMany( );
+  // }
+
   @Public()
   @Post()
-  @UseInterceptors(customUploadInterceptor('images', 'file', true))
-  async uploadImages(
-    @UploadedFiles() files: Express.Multer.File[],
-    @Body() dto: CreateImageDto,
-  ) {
-    if (!files || !files.length) throw new Error('No files uploaded');
-
-    const urls = files.map((file) => `/uploads/images/${file.filename}`);
-    return this.imageService.createMany(dto, urls);
-  }
-
-  @Post('upload')
-  @UseInterceptors(FileInterceptor('file'))
-  async upload(@UploadedFile() file: Express.Multer.File) {
-    return this.uploadService.uploadFile(file);
+  @UseInterceptors(FilesInterceptor('files')) // key from form-data = 'files'
+  async uploadMultiple(@UploadedFiles() files: Express.Multer.File[]) {
+    const urls = await this.uploadService.uploadFiles(files);
+    return this.imageService.createMany(urls);
   }
 
   @Roles(EnumRole.ADMIN, EnumRole.COMPANY)

@@ -13,6 +13,7 @@ import {
 } from 'src/common/interceptors/upload-image.interceptor';
 import { join } from 'path';
 import { mapImage } from './mapper/images.mapper';
+import { UploadService } from './upload.service';
 
 @Injectable()
 export class ImageService {
@@ -25,24 +26,15 @@ export class ImageService {
 
     @InjectRepository(Entertainment)
     private readonly entertainmentRepo: Repository<Entertainment>,
+
+    private readonly uploadService: UploadService,
   ) {}
 
-  async createMany(dto: CreateImageDto, urls: string[]) {
-    const images = urls.map((url) => this.imageRepo.create({ url }));
-
-    if (dto.venueIds?.length) {
-      const venues = await this.venueRepo.findBy({ id: In(dto.venueIds) });
-      images.forEach((img) => (img.venues = venues));
-    }
-
-    if (dto.entertainmentIds?.length) {
-      const entertainments = await this.entertainmentRepo.findBy({
-        id: In(dto.entertainmentIds),
-      });
-      images.forEach((img) => (img.entertainments = entertainments));
-    }
-
-    return this.imageRepo.save(images); // save หลาย record ได้
+  async createMany(files: Array<{ key: string; url: string }>) {
+    const images = files.map((f) =>
+      this.imageRepo.create({ key: f.key, url: f.url }),
+    );
+    return this.imageRepo.save(images);
   }
 
   async findAll(): Promise<Image[]> {
@@ -87,10 +79,8 @@ export class ImageService {
     if (!image) throw new Error('Image not found');
     const filePath = join(process.cwd(), image.url.replace(/^\//, ''));
 
-    if (await fileExists(filePath)) {
-      await removeFile(filePath);
-    }
-
+    const fileExists = await this.uploadService.deleteFile(image.key);
+    if (!fileExists) throw new NotFoundException('File does not exist'); 
     await this.imageRepo.remove(image);
 
     return { message: 'Image removed successfully' };

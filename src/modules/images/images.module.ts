@@ -13,5 +13,6 @@ import { UploadService } from './upload.service';
   imports: [TypeOrmModule.forFeature([Image, Venue, Entertainment,Payment])],
   providers: [ImageService, UploadService],
   controllers: [ImageController],
+  exports: [ImageService, UploadService],
 })
 export class ImagesModule {}
