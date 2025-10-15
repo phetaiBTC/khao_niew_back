@@ -19,11 +19,15 @@ import { customUploadInterceptor } from 'src/common/interceptors/upload-image.in
 import { Roles } from 'src/common/decorator/role.decorator';
 import { EnumRole } from '../users/entities/user.entity';
 import { Public } from 'src/common/decorator/auth.decorator';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { UploadService } from './upload.service';
 
 @Controller('images')
 export class ImageController {
-  constructor(private readonly imageService: ImageService) {}
-
+  constructor(
+    private readonly imageService: ImageService,
+    private readonly uploadService: UploadService,
+  ) {}
 
   @Public()
   @Post()
@@ -36,6 +40,12 @@ export class ImageController {
 
     const urls = files.map((file) => `/uploads/images/${file.filename}`);
     return this.imageService.createMany(dto, urls);
+  }
+
+  @Post()
+  @UseInterceptors(FileInterceptor('file'))
+  async upload(@UploadedFile() file: Express.Multer.File) {
+    return this.uploadService.uploadFile(file);
   }
 
   @Roles(EnumRole.ADMIN, EnumRole.COMPANY)
@@ -55,7 +65,7 @@ export class ImageController {
   update(@Param('id', ParseIntPipe) id: number, @Body() dto: UpdateImageDto) {
     return this.imageService.update(id, dto, 'null');
   }
-  
+
   @Roles(EnumRole.ADMIN, EnumRole.COMPANY)
   @Delete(':id')
   remove(@Param('id', ParseIntPipe) id: number) {

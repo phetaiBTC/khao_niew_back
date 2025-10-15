@@ -18,7 +18,7 @@ import { Booking } from '../booking/entities/booking.entity';
 import { mapConcert } from './mapper/concerts.mapper';
 import { PaymentStatus } from '../payment/entities/payment.entity';
 import { calculateTotalTickets } from 'src/common/utils/calculateTotalTickets';
-import { Weekday } from 'src/common/enum/Weekday';
+import  Weekday  from 'src/common/enum/Weekday';
 @Injectable()
 export class ConcertsService {
   constructor(

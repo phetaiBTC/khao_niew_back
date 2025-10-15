@@ -9,7 +9,7 @@ import {
 } from 'class-validator';
 import { Transform } from 'class-transformer';
 import { EnumConcertStatus } from '../entities/concert.entity';
-import { Weekday } from 'src/common/enum/Weekday';
+import  Weekday  from 'src/common/enum/Weekday';
 
 export class CreateConcertDto {
   @IsString()
