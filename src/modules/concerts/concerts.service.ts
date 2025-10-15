@@ -18,6 +18,7 @@ import { Booking } from '../booking/entities/booking.entity';
 import { mapConcert } from './mapper/concerts.mapper';
 import { PaymentStatus } from '../payment/entities/payment.entity';
 import { calculateTotalTickets } from 'src/common/utils/calculateTotalTickets';
+import { Weekday } from 'src/common/enum/Weekday';
 @Injectable()
 export class ConcertsService {
   constructor(
@@ -32,16 +33,18 @@ export class ConcertsService {
     const venue = await this.venueRepo.findOne({ where: { id: dto.venueId } });
     if (!venue) throw new NotFoundException('Venue not found');
 
+    // ตรวจสอบ entertainment
+    let entertainments: Entertainment[] = [];
     if (dto.entertainmentIds?.length) {
-      const entertainments = await this.entertainmentRepo.findBy({
+      entertainments = await this.entertainmentRepo.findBy({
         id: In(dto.entertainmentIds),
       });
       if (entertainments.length !== dto.entertainmentIds.length)
-        throw new NotFoundException('Entertainment not found');
+        throw new NotFoundException('Some entertainments not found');
     }
+
     const start = timeToNumber(dto.startTime);
     const end = timeToNumber(dto.endTime);
-
     if (start >= end) {
       throw new BadRequestException(
         'Start time should be earlier than end time',
@@ -51,9 +54,91 @@ export class ConcertsService {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
+    // 🔹 ถ้ามี startDate & endDate → loop หลายวัน
+    if (dto.startDate && dto.endDate) {
+      const startDate = new Date(dto.startDate);
+      const endDate = new Date(dto.endDate);
+      const concertsToSave: Concert[] = [];
+
+      if (startDate > endDate)
+        throw new BadRequestException('startDate must be before endDate');
+
+      const dayMap: Record<string, number> = {
+        Sunday: 0,
+        Monday: 1,
+        Tuesday: 2,
+        Wednesday: 3,
+        Thursday: 4,
+        Friday: 5,
+        Saturday: 6,
+      };
+
+      const excludedDays =
+        dto.excludeDays?.map((day) =>
+          typeof day === 'string' ? Weekday[day as keyof typeof Weekday] : day,
+        ) || [];
+
+      for (
+        let d = new Date(startDate);
+        d <= endDate;
+        d.setDate(d.getDate() + 1)
+      ) {
+        const day = d.getDay();
+        const dateStr = d.toISOString().split('T')[0];
+
+        // ❌ ข้ามวันที่อยู่ใน excludeDays
+        if (excludedDays.includes(day)) continue;
+
+        // ❌ ห้ามสร้างย้อนหลัง
+        const concertDate = new Date(dateStr);
+        concertDate.setHours(0, 0, 0, 0);
+        console.log({ dateStr, day, isPast: concertDate < today });
+        if (concertDate < today) continue;
+
+        // ❌ ตรวจว่ามี concert ซ้ำในเวลานี้ไหม
+        const exists = await this.concertRepo
+          .createQueryBuilder('concert')
+          .where('concert.date = :date', { date: dateStr })
+          .andWhere('concert.venueId = :venueId', { venueId: dto.venueId })
+          .andWhere(
+            'concert.startTime < :endTime AND concert.endTime > :startTime',
+            {
+              startTime: dto.startTime,
+              endTime: dto.endTime,
+            },
+          )
+          .getOne();
+
+        if (exists) {
+          console.log('⛔ Skipped duplicate concert at', dateStr);
+          continue;
+        }
+
+        const concert = this.concertRepo.create({
+          startTime: dto.startTime,
+          endTime: dto.endTime,
+          price: dto.price,
+          limit: dto.limit,
+          date: dateStr,
+          status: dto.status ?? EnumConcertStatus.OPEN,
+          venue,
+          entertainments,
+        });
+
+        concertsToSave.push(concert);
+      }
+      // console.log(concertsToSave);
+      if (!concertsToSave.length)
+        throw new BadRequestException('No valid concerts to create');
+
+      return this.concertRepo.save(concertsToSave);
+    }
+
+    // 🔹 กรณีสร้างวันเดียว (เหมือนเดิม)
+    if (!dto.date) throw new BadRequestException('Date is required');
+
     const concertDate = new Date(dto.date);
     concertDate.setHours(0, 0, 0, 0);
-
     if (concertDate < today) {
       throw new BadRequestException('Date must be today or in the future');
     }
@@ -83,16 +168,10 @@ export class ConcertsService {
       price: dto.price,
       limit: dto.limit,
       date: dto.date,
-      status: dto.status,
+      status: dto.status ?? EnumConcertStatus.OPEN,
       venue,
+      entertainments,
     });
-
-    if (dto.entertainmentIds?.length) {
-      const entertainments = await this.entertainmentRepo.findBy({
-        id: In(dto.entertainmentIds),
-      });
-      concert.entertainments = entertainments;
-    }
 
     return this.concertRepo.save(concert);
   }
