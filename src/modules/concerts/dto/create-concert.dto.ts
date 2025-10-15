@@ -9,7 +9,6 @@ import {
 } from 'class-validator';
 import { Transform } from 'class-transformer';
 import { EnumConcertStatus } from '../entities/concert.entity';
-import  Weekday  from '../../../common/enum/Weekday';
 
 export class CreateConcertDto {
   @IsString()
@@ -39,8 +38,7 @@ export class CreateConcertDto {
 
   @IsOptional()
   @IsArray()
-  @IsEnum(Weekday, { each: true })
-  excludeDays?: Weekday[];
+  excludeDays?: (string | number)[]; // ["Saturday", "Sunday"] หรือ [0,6]
 
   @IsOptional()
   @IsEnum(EnumConcertStatus)

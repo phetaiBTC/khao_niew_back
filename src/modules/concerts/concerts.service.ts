@@ -18,7 +18,6 @@ import { Booking } from '../booking/entities/booking.entity';
 import { mapConcert } from './mapper/concerts.mapper';
 import { PaymentStatus } from '../payment/entities/payment.entity';
 import { calculateTotalTickets } from 'src/common/utils/calculateTotalTickets';
-import  Weekday  from '../../common/enum/Weekday';
 @Injectable()
 export class ConcertsService {
   constructor(
@@ -60,6 +59,7 @@ export class ConcertsService {
       const endDate = new Date(dto.endDate);
       const concertsToSave: Concert[] = [];
 
+
       if (startDate > endDate)
         throw new BadRequestException('startDate must be before endDate');
 
@@ -74,9 +74,8 @@ export class ConcertsService {
       };
 
       const excludedDays =
-        dto.excludeDays?.map((day) =>
-          typeof day === 'string' ? Weekday[day as keyof typeof Weekday] : day,
-        ) || [];
+        dto.excludeDays?.map((d) => (typeof d === 'string' ? dayMap[d] : d)) ||
+        [];
 
       for (
         let d = new Date(startDate);
@@ -92,7 +91,6 @@ export class ConcertsService {
         // ❌ ห้ามสร้างย้อนหลัง
         const concertDate = new Date(dateStr);
         concertDate.setHours(0, 0, 0, 0);
-        // console.log({ dateStr, day, isPast: concertDate < today });
         if (concertDate < today) continue;
 
         // ❌ ตรวจว่ามี concert ซ้ำในเวลานี้ไหม
@@ -109,10 +107,7 @@ export class ConcertsService {
           )
           .getOne();
 
-        if (exists) {
-          // console.log('⛔ Skipped duplicate concert at', dateStr);
-          continue;
-        }
+        if (exists) continue; // ถ้ามีอยู่แล้วให้ข้ามวันนั้น
 
         const concert = this.concertRepo.create({
           startTime: dto.startTime,
