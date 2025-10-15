@@ -35,12 +35,11 @@ export class CompaniesController {
   @Roles(EnumRole.ADMIN, EnumRole.COMPANY)
   @Post('company-proflie')
   async getRevenueByCompany(
-    @Query('id') id: number,
     @AuthProfile() user: PayloadDto,
     @Body() body: CompaniesProfilereportDto,
   ) {
     return await this.companiesService.getCompaniesProfileReport(
-      +id,
+      +body.id,
       user,
       body,
     );

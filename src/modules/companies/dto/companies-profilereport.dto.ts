@@ -1,6 +1,9 @@
-import { IsString, IsNotEmpty, IsOptional, Matches } from 'class-validator';
+import { IsString, IsNotEmpty, IsOptional, Matches, IsNumber } from 'class-validator';
 
 export class CompaniesProfilereportDto {
+  @IsNumber()
+  @IsOptional()
+  id: number;
   @IsString()
   @IsNotEmpty()
   @Matches(/^\d{4}-\d{2}-\d{2}$/, {
