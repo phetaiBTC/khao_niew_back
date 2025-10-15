@@ -30,6 +30,12 @@ export class ConcertsController {
   findAll(@Query() query: PaginateDto) {
     return this.concertService.findAll(query);
   }
+
+  @Roles(EnumRole.ADMIN)
+  @Patch('changestatus/:id')
+  changeStatus( @Param('id') id: number) {
+    return this.concertService.changeStatus(id);
+  }
   
   @Public()
   @Get(':id')

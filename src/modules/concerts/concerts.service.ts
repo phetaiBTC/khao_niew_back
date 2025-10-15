@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, In } from 'typeorm';
-import { Concert } from './entities/concert.entity';
+import { Concert, EnumConcertStatus } from './entities/concert.entity';
 import { Venue } from '../venue/entities/venue.entity';
 import { Entertainment } from '../entertainments/entities/entertainment.entity';
 import { CreateConcertDto } from './dto/create-concert.dto';
@@ -284,5 +284,13 @@ export class ConcertsService {
         total_revenue: totalRevenue,
       },
     };
+  }
+
+  async changeStatus(id: number) {
+    const concert = await this.findOne(id);
+    const status = concert.status === EnumConcertStatus.OPEN ? EnumConcertStatus.CLOSE : EnumConcertStatus.OPEN;
+    const result = await this.concertRepo.update(id, { status });
+    if (result.affected === 0) throw new NotFoundException('Concert not found');
+    return { message : "Status changed successfully"};
   }
 }
