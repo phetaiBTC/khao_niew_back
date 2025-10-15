@@ -92,7 +92,7 @@ export class ConcertsService {
         // ❌ ห้ามสร้างย้อนหลัง
         const concertDate = new Date(dateStr);
         concertDate.setHours(0, 0, 0, 0);
-        console.log({ dateStr, day, isPast: concertDate < today });
+        // console.log({ dateStr, day, isPast: concertDate < today });
         if (concertDate < today) continue;
 
         // ❌ ตรวจว่ามี concert ซ้ำในเวลานี้ไหม
@@ -110,7 +110,7 @@ export class ConcertsService {
           .getOne();
 
         if (exists) {
-          console.log('⛔ Skipped duplicate concert at', dateStr);
+          // console.log('⛔ Skipped duplicate concert at', dateStr);
           continue;
         }
 
