@@ -23,7 +23,7 @@ export class UploadService {
   }
 
   async uploadFiles(files: Express.Multer.File[]) {
-    const uploaded: Array<{ key: string; url: string; }> = [];
+    const uploaded: Array<{ key: string; }> = [];
 
     for (const file of files) {
       const key = `uploads/${uuidv4()}${path.extname(file.originalname)}`;
@@ -38,14 +38,8 @@ export class UploadService {
         }),
       );
 
-      // generate presigned URL
-      const url = await getSignedUrl(
-        this.s3,
-        new GetObjectCommand({ Bucket: this.bucket, Key: key }),
-        { expiresIn: 3600 }, // 1 ชั่วโมง
-      );
 
-      uploaded.push({ key, url });
+      uploaded.push({ key });
     }
 
     return uploaded;

@@ -30,9 +30,9 @@ export class ImageService {
     private readonly uploadService: UploadService,
   ) {}
 
-  async createMany(files: Array<{ key: string; url: string }>) {
+  async createMany(files: Array<{ key: string; }>) {
     const images = files.map((f) =>
-      this.imageRepo.create({ key: f.key, url: f.url }),
+      this.imageRepo.create({ key: f.key}),
     );
     return this.imageRepo.save(images);
   }
@@ -77,7 +77,6 @@ export class ImageService {
   async remove(id: number) {
     const image = await this.findOne(id);
     if (!image) throw new Error('Image not found');
-    const filePath = join(process.cwd(), image.url.replace(/^\//, ''));
 
     const fileExists = await this.uploadService.deleteFile(image.key);
     if (!fileExists) throw new NotFoundException('File does not exist'); 
