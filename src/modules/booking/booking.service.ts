@@ -191,6 +191,7 @@ export class BookingService {
   async findAll(query: BookingPaginateDto, userId?: number) {
     const { status, companyId } = query;
     const checkRole = await this.userRepository.findOneBy({ id: userId });
+
     const queryBuilder = this.bookingRepository
       .createQueryBuilder('booking')
       .leftJoinAndSelect('booking.user', 'user')
@@ -200,36 +201,28 @@ export class BookingService {
       .leftJoinAndSelect('payment.images', 'images')
       .leftJoinAndSelect('booking.details', 'details');
 
+    // filter by status
     if (status) {
       queryBuilder.andWhere('payment.status = :status', { status });
     }
+
     if (companyId) {
       queryBuilder.andWhere('companies.id = :companyId', { companyId });
     }
+
     if (checkRole?.role === EnumRole.COMPANY) {
       queryBuilder.andWhere('user.id = :userId', { userId });
     }
+
+    queryBuilder.addOrderBy(`CASE 
+      WHEN payment.status = '${PaymentStatus.PENDING}' THEN 1 
+      WHEN payment.status = '${PaymentStatus.SUCCESS}' THEN 2
+      WHEN payment.status = '${PaymentStatus.FAILED}' THEN 3
+      ELSE 4 END`);
+
+    queryBuilder.addOrderBy('booking.createdAt', 'DESC');
+
     return paginateUtil(queryBuilder, query);
-  }
-
-  async findOne(id: number) {
-    const booking = await this.bookingRepository.findOne({
-      where: { id },
-      relations: [
-        'user',
-        'concert',
-        'payment',
-        'payment.images',
-        'details',
-        'user.companies',
-      ],
-    });
-
-    if (!booking) {
-      throw new NotFoundException(`Booking with ID ${id} not found`);
-    }
-
-    return booking;
   }
 
   async update(id: number, updateBookingDto: UpdateBookingDto) {
