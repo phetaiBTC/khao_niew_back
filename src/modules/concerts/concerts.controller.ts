@@ -33,8 +33,8 @@ export class ConcertsController {
   }
 
   @Patch('changestatus/:id')
-  changeStatus(@Param() params: IdParamDto) {
-    return this.concertService.changeStatus(params.id);
+  changeStatus(@Param() id: number ) {
+    return this.concertService.changeStatus(id);
   }
   @Public()
   @Get(':id')
@@ -48,8 +48,8 @@ export class ConcertsController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: IdParamDto) {
-    return this.concertService.remove(+id.id);
+  remove(@Param('id') id: number) {
+    return this.concertService.remove(id);
   }
 
   @Get(':id/profile')

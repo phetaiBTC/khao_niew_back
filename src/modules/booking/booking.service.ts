@@ -9,7 +9,7 @@ import { CreateBookingDto } from './dto/create-booking.dto';
 import { UpdateBookingDto } from './dto/update-booking.dto';
 import { Booking } from './entities/booking.entity';
 import { Payment, PaymentStatus } from '../payment/entities/payment.entity';
-import { Concert } from '../concerts/entities/concert.entity';
+import { Concert, EnumConcertStatus } from '../concerts/entities/concert.entity';
 import { Repository, DataSource, In } from 'typeorm';
 import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 import { TRANSACTION_MANAGER_SERVICE } from 'src/common/constants/inject-key';
@@ -78,6 +78,9 @@ export class BookingService {
 
         if (!concert) {
           throw new NotFoundException(`not found concert id ${concertId}`);
+        }
+        if (concert.status !== EnumConcertStatus.OPEN) {
+          throw new BadRequestException('concert is closed');
         }
 
         const { sum } = await manager

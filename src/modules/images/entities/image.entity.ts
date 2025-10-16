@@ -9,8 +9,11 @@ export class Image extends ShardEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column('text')
   url: string;
+
+  @Column()
+  key: string;
 
   @ManyToMany(() => Venue, (venue) => venue.images)
   venues: Venue[];

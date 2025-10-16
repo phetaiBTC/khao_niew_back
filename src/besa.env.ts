@@ -41,6 +41,21 @@ export const baseEnv = {
   // Stripe
   STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
   STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
+
+  // WASABI
+  WASABI_ACCESS_KEY: process.env.WASABI_ACCESS_KEY || 'UX3H7A8UYQLPGNEJ3G0F',
+  WASABI_SECRET_KEY: process.env.WASABI_SECRET_KEY || '8eKgRVmyb3zWfle7vulLSiOBMLdaeMHznVntAK8V',
+  WASABI_BUCKET: process.env.WASABI_BUCKET || 'khaoniewback',
+  WASABI_REGION: process.env.WASABI_REGION || 'ap-southeast-1',
+  WASABI_ENDPOINT: process.env.WASABI_ENDPOINT || 'https://s3.ap-southeast-1.wasabisys.com',
+  
+
+  // R2
+  R2_BUCKET_NAME: process.env.R2_BUCKET_NAME || 'my-app-assets',
+  R2_ACCESS_KEY_ID: process.env.R2_ACCESS_KEY_ID || '169b54a91abfda3c61e4c075120b509e',
+  R2_SECRET_ACCESS_KEY: process.env.R2_SECRET_ACCESS_KEY || '8023b0046fa990615a16c3963fd5f426f589e22bd0c053cfc95d321aef006b9f',
+  R2_ENDPOINT: process.env.R2_ENDPOINT || 'https://842807d1bb138a453468260785a1d032.r2.cloudflarestorage.com',
+  R2_PUBLIC_URL: process.env.R2_PUBLIC_URL || 'https://pub-4ae80b3183844cb28f38c9abe246797b.r2.dev',
 };
 
 

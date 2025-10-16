@@ -1,4 +1,12 @@
-import { IsString, IsOptional, IsArray, IsNumber, IsEnum } from 'class-validator';
+import {
+  IsString,
+  IsOptional,
+  IsArray,
+  IsNumber,
+  IsEnum,
+  ValidateIf,
+  ArrayNotEmpty,
+} from 'class-validator';
 import { Transform } from 'class-transformer';
 import { EnumConcertStatus } from '../entities/concert.entity';
 
@@ -15,8 +23,22 @@ export class CreateConcertDto {
   @IsNumber()
   limit: number;
 
+  // 🔹 ใช้ได้ทั้งแบบเดี่ยวหรือแบบช่วง
+  @IsOptional()
   @IsString()
-  date: string; // format: YYYY-MM-DD
+  date?: string; // ใช้กรณีสร้างวันเดียว
+
+  @IsOptional()
+  @IsString()
+  startDate?: string;
+
+  @IsOptional()
+  @IsString()
+  endDate?: string;
+
+  @IsOptional()
+  @IsArray()
+  excludeDays?: (string | number)[]; // ["Saturday", "Sunday"] หรือ [0,6]
 
   @IsOptional()
   @IsEnum(EnumConcertStatus)
@@ -24,7 +46,9 @@ export class CreateConcertDto {
 
   @IsOptional()
   @IsArray()
-  @Transform(({ value }) => (typeof value === 'string' ? JSON.parse(value) : value))
+  @Transform(({ value }) =>
+    typeof value === 'string' ? JSON.parse(value) : value,
+  )
   entertainmentIds?: number[];
 
   @IsNumber()

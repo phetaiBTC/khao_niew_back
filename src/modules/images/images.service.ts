@@ -13,6 +13,7 @@ import {
 } from 'src/common/interceptors/upload-image.interceptor';
 import { join } from 'path';
 import { mapImage } from './mapper/images.mapper';
+import { UploadService } from './upload.service';
 
 @Injectable()
 export class ImageService {
@@ -25,8 +26,18 @@ export class ImageService {
 
     @InjectRepository(Entertainment)
     private readonly entertainmentRepo: Repository<Entertainment>,
+
+    private readonly uploadService: UploadService,
   ) {}
 
+  async createMany_server(
+    files: Array<{ key: string; url: string; name: string }>,
+  ) {
+    const images = files.map((f) =>
+      this.imageRepo.create({ key: f.key, url: f.url }),
+    );
+    return this.imageRepo.save(images);
+  }
   async createMany(dto: CreateImageDto, urls: string[]) {
     const images = urls.map((url) => this.imageRepo.create({ url }));
 
@@ -43,6 +54,29 @@ export class ImageService {
     }
 
     return this.imageRepo.save(images); // save หลาย record ได้
+  }
+  async remove(id: number) {
+    const image = await this.findOne(id);
+    if (!image) throw new Error('Image not found');
+    const filePath = join(process.cwd(), image.url.replace(/^\//, ''));
+
+    if (await fileExists(filePath)) {
+      await removeFile(filePath);
+    }
+
+    await this.imageRepo.remove(image);
+
+    return { message: 'Image removed successfully' };
+  }
+  async remove_server(id: number) {
+    const image = await this.findOne(id);
+    if (!image) throw new Error('Image not found');
+
+    const fileExists = await this.uploadService.deleteFile_v2(image.key);
+    if (!fileExists) throw new NotFoundException('File does not exist');
+    await this.imageRepo.remove(image);
+
+    return { message: 'Image removed successfully' };
   }
 
   async findAll(): Promise<Image[]> {
@@ -82,17 +116,14 @@ export class ImageService {
     return this.imageRepo.save(image);
   }
 
-  async remove(id: number) {
-    const image = await this.findOne(id);
-    if (!image) throw new Error('Image not found');
-    const filePath = join(process.cwd(), image.url.replace(/^\//, ''));
+  // async remove_server(id: number) {
+  //   const image = await this.findOne(id);
+  //   if (!image) throw new Error('Image not found');
 
-    if (await fileExists(filePath)) {
-      await removeFile(filePath);
-    }
+  //   const fileExists = await this.uploadService.deleteFile(image.key);
+  //   if (!fileExists) throw new NotFoundException('File does not exist');
+  //   await this.imageRepo.remove(image);
 
-    await this.imageRepo.remove(image);
-
-    return { message: 'Image removed successfully' };
-  }
+  //   return { message: 'Image removed successfully' };
+  // }
 }
