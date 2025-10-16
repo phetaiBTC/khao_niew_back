@@ -182,7 +182,7 @@ export class ConcertsService {
       qb.where('concert.date LIKE :search', { search: `%${query.search}%` });
     }
 
-    const result = await paginateUtil(qb, query);
+    const result = await paginateUtil(qb, query,'date');
 
     const formattedData = result.data.map((concert) => {
       const total_ticket = calculateTotalTickets(concert);

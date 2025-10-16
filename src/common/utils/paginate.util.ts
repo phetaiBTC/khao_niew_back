@@ -5,10 +5,15 @@ import { Pagination } from '../interface/pagination.interface';
 export async function paginateUtil<T extends ObjectLiteral>(
   qb: SelectQueryBuilder<T>,
   options: PaginateDto,
+  defaultOrderField: string = 'createdAt',
 ): Promise<Pagination<T>> {
   const page = options.page && options.page > 0 ? options.page : 1;
-  const per_page = options.per_page && options.per_page > 0 ? options.per_page : 10;
-  qb.orderBy(`${qb.alias}.createdAt`, options.order_by ? options.order_by : OrderBy.DESC);
+  const per_page =
+    options.per_page && options.per_page > 0 ? options.per_page : 10;
+  qb.orderBy(
+    `${qb.alias}.${defaultOrderField}`,
+    options.order_by ? options.order_by : OrderBy.DESC,
+  );
 
   if (options.type === PaginateDtoType.ALL) {
     const data = await qb.getMany();
