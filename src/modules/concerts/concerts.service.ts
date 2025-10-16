@@ -31,7 +31,6 @@ export class ConcertsService {
     const venue = await this.venueRepo.findOne({ where: { id: dto.venueId } });
     if (!venue) throw new NotFoundException('Venue not found');
 
-    // ตรวจสอบ entertainment
     let entertainments: Entertainment[] = [];
     if (dto.entertainmentIds?.length) {
       entertainments = await this.entertainmentRepo.findBy({

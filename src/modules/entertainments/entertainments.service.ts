@@ -79,8 +79,14 @@ export class EntertainmentsService {
     if (dto.description) ent.description = dto.description;
 
     if (dto.imageIds) {
-      const images = await this.imageRepo.findBy({ id: In(dto.imageIds) });
-      ent.images = images;
+      const newImages = await this.imageRepo.findBy({ id: In(dto.imageIds) });
+
+      const allImages = [...(ent.images || []), ...newImages];
+      const uniqueImages = Array.from(
+        new Map(allImages.map((img) => [img.id, img])).values(),
+      );
+
+      ent.images = uniqueImages;
     }
 
     if (dto.concertIds) {
