@@ -28,13 +28,20 @@ export class UsersController {
     @Body() createUserDto: CreateUserDto,
     @AuthProfile() user: PayloadDto,
   ) {
-    return this.usersService.create(createUserDto, user);
+    return this.usersService.create(
+      createUserDto,
+      user,
+      createUserDto.companyId,
+    );
   }
 
   @Public()
   @Post('register')
-  register(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto, 0);
+  register(
+    @Body() createUserDto: CreateUserDto,
+    @AuthProfile() user: PayloadDto,
+  ) {
+    return this.usersService.create(createUserDto, user, 0);
   }
 
   @Roles(EnumRole.ADMIN, EnumRole.COMPANY)
