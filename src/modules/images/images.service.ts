@@ -30,13 +30,15 @@ export class ImageService {
     private readonly uploadService: UploadService,
   ) {}
 
-  async createMany_server(files: Array<{ key: string; }>) {
+  async createMany_server(
+    files: Array<{ key: string; url: string; name: string }>,
+  ) {
     const images = files.map((f) =>
-      this.imageRepo.create({ key: f.key}),
+      this.imageRepo.create({ key: f.key, url: f.url }),
     );
     return this.imageRepo.save(images);
   }
-    async createMany(dto: CreateImageDto, urls: string[]) {
+  async createMany(dto: CreateImageDto, urls: string[]) {
     const images = urls.map((url) => this.imageRepo.create({ url }));
 
     if (dto.venueIds?.length) {
@@ -62,6 +64,16 @@ export class ImageService {
       await removeFile(filePath);
     }
 
+    await this.imageRepo.remove(image);
+
+    return { message: 'Image removed successfully' };
+  }
+  async remove_server(id: number) {
+    const image = await this.findOne(id);
+    if (!image) throw new Error('Image not found');
+
+    const fileExists = await this.uploadService.deleteFile_v2(image.key);
+    if (!fileExists) throw new NotFoundException('File does not exist');
     await this.imageRepo.remove(image);
 
     return { message: 'Image removed successfully' };
@@ -104,14 +116,14 @@ export class ImageService {
     return this.imageRepo.save(image);
   }
 
-  async remove_server(id: number) {
-    const image = await this.findOne(id);
-    if (!image) throw new Error('Image not found');
+  // async remove_server(id: number) {
+  //   const image = await this.findOne(id);
+  //   if (!image) throw new Error('Image not found');
 
-    const fileExists = await this.uploadService.deleteFile(image.key);
-    if (!fileExists) throw new NotFoundException('File does not exist'); 
-    await this.imageRepo.remove(image);
+  //   const fileExists = await this.uploadService.deleteFile(image.key);
+  //   if (!fileExists) throw new NotFoundException('File does not exist');
+  //   await this.imageRepo.remove(image);
 
-    return { message: 'Image removed successfully' };
-  }
+  //   return { message: 'Image removed successfully' };
+  // }
 }

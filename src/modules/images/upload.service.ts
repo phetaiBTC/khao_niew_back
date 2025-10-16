@@ -1,29 +1,33 @@
 import { Injectable } from '@nestjs/common';
-import { S3Client, PutObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3';
+import {
+  S3Client,
+  PutObjectCommand,
+  DeleteObjectCommand,
+  GetObjectCommand,
+} from '@aws-sdk/client-s3';
 import { v4 as uuidv4 } from 'uuid';
 import * as path from 'path';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
-import { GetObjectCommand } from '@aws-sdk/client-s3';
 import { baseEnv } from 'src/besa.env';
 
 @Injectable()
 export class UploadService {
   private s3: S3Client;
-  private bucket = process.env.WASABI_BUCKET!;
+  private bucket = baseEnv.R2_BUCKET_NAME; 
 
   constructor() {
     this.s3 = new S3Client({
-      region: baseEnv.WASABI_REGION!,
-      endpoint: baseEnv.WASABI_ENDPOINT!,
+      region: 'auto',
+      endpoint: baseEnv.R2_ENDPOINT,
       credentials: {
-        accessKeyId: baseEnv.WASABI_ACCESS_KEY! ,
-        secretAccessKey: baseEnv.WASABI_SECRET_KEY!,
+        accessKeyId: baseEnv.R2_ACCESS_KEY_ID,
+        secretAccessKey: baseEnv.R2_SECRET_ACCESS_KEY,
       },
     });
   }
 
   async uploadFiles(files: Express.Multer.File[]) {
-    const uploaded: Array<{ key: string; }> = [];
+    const uploaded: Array<{ key: string }> = [];
 
     for (const file of files) {
       const key = `uploads/${uuidv4()}${path.extname(file.originalname)}`;
@@ -38,14 +42,13 @@ export class UploadService {
         }),
       );
 
-
       uploaded.push({ key });
     }
 
     return uploaded;
   }
 
-    async deleteFile(key: string) {
+  async deleteFile(key: string) {
     await this.s3.send(
       new DeleteObjectCommand({
         Bucket: this.bucket,
@@ -53,5 +56,41 @@ export class UploadService {
       }),
     );
     return { message: 'Deleted successfully' };
+  }
+
+  async deleteFile_v2(key: string) {
+    await this.s3.send(
+      new DeleteObjectCommand({
+        Bucket: this.bucket,
+        Key: key,
+      }),
+    );
+
+    return { message: '🗑️ File deleted successfully' };
+  }
+
+  async uploadFiles_v2(files: Express.Multer.File[]) {
+    const uploaded = Array<{ name: string; key: string; url: string}>();
+
+    for (const file of files) {
+      const key = `uploads/${uuidv4()}${path.extname(file.originalname)}`;
+
+      await this.s3.send(
+        new PutObjectCommand({
+          Bucket: this.bucket,
+          Key: key,
+          Body: file.buffer,
+          ContentType: file.mimetype,
+        }),
+      );
+
+      uploaded.push({
+        name: file.originalname,
+        key,
+        url: `${baseEnv.R2_PUBLIC_URL}/${key}`,
+      });
+    }
+
+    return { uploaded};
   }
 }
