@@ -27,8 +27,10 @@ export class UsersService {
     private readonly companyRepository: Repository<Company>,
   ) {}
 
-  async create(createUserDto: CreateUserDto, user: PayloadDto) {
-    const companyId = user.company;
+  async create(createUserDto: CreateUserDto, user: PayloadDto | number) {
+    const isRegister = !user || user === 0; // ตรวจสอบว่าเป็น register
+    const companyId = isRegister ? 0 : (user as PayloadDto).company;
+    
     const existingUser = await this.usersRepository.findOne({
       where: { email: createUserDto.email },
     });
@@ -60,8 +62,8 @@ export class UsersService {
     }
 
     let userData = createUserDto;
-    
-    if (user.role !== EnumRole.ADMIN) {
+
+    if ((user as PayloadDto).role !== EnumRole.ADMIN) {
       const { role, ...rest } = createUserDto;
       userData = rest;
     }
