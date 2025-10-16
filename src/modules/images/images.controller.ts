@@ -66,19 +66,19 @@ export class ImageController {
 
   @Roles(EnumRole.ADMIN, EnumRole.COMPANY)
   @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: number) {
+  findOne(@Param('id') id: number) {
     return this.imageService.findOne(id);
   }
 
   @Roles(EnumRole.ADMIN, EnumRole.COMPANY)
   @Patch(':id')
-  update(@Param('id', ParseIntPipe) id: number, @Body() dto: UpdateImageDto) {
+  update(@Param('id') id: number, @Body() dto: UpdateImageDto) {
     return this.imageService.update(id, dto, 'null');
   }
 
   @Roles(EnumRole.ADMIN, EnumRole.COMPANY)
   @Delete(':id')
-  remove(@Param('id', ParseIntPipe) id: number) {
+  remove(@Param('id') id: number) {
     return this.imageService.remove_server(id);
   }
 }
