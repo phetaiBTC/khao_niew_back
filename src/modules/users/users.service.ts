@@ -15,6 +15,7 @@ import { paginateUtil } from 'src/common/utils/paginate.util';
 import { Company } from '../companies/entities/company.entity';
 import { PayloadDto } from '../auth/dto/auth.dto';
 import { Roles } from 'src/common/decorator/role.decorator';
+import { create } from 'domain';
 
 @Injectable()
 export class UsersService {
@@ -26,7 +27,8 @@ export class UsersService {
     private readonly companyRepository: Repository<Company>,
   ) {}
 
-  async create(createUserDto: CreateUserDto, companyId: number) {
+  async create(createUserDto: CreateUserDto, user: PayloadDto) {
+    const companyId = user.company;
     const existingUser = await this.usersRepository.findOne({
       where: { email: createUserDto.email },
     });
@@ -50,14 +52,27 @@ export class UsersService {
       assignedCompanyId = companyId ?? createUserDto.companyId;
     }
 
-    const user = this.usersRepository.create({
-      ...createUserDto,
-      companies: { id: assignedCompanyId },
-      password: await bcryptUtil.hash(createUserDto.password),
+    const existingCompany = await this.companyRepository.findOne({
+      where: { id: assignedCompanyId },
+    });
+    if (!existingCompany) {
+      throw new NotFoundException('Company not found');
+    }
+
+    let userData = createUserDto;
+    
+    if (user.role !== EnumRole.ADMIN) {
+      const { role, ...rest } = createUserDto;
+      userData = rest;
+    }
+
+    const create_user = this.usersRepository.create({
+      ...userData,
+      companies: existingCompany,
+      password: await bcryptUtil.hash(userData.password),
     });
 
-    await this.usersRepository.save(user);
-
+    await this.usersRepository.save(create_user);
     return {
       message: 'User created successfully',
       user,
@@ -106,7 +121,7 @@ export class UsersService {
     const base_userid = Number(id ? id : user.id);
     if (!base_userid) {
       throw new BadRequestException('User not found');
-    } 
+    }
     const userToUpdate = await this.findOne(base_userid);
 
     userToUpdate.password = await bcryptUtil.hash(newPassword);

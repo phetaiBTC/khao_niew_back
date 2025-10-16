@@ -28,7 +28,7 @@ export class UsersController {
     @Body() createUserDto: CreateUserDto,
     @AuthProfile() user: PayloadDto,
   ) {
-    return this.usersService.create(createUserDto, user.company);
+    return this.usersService.create(createUserDto, user);
   }
 
   @Public()
