@@ -1,5 +1,9 @@
 // src/modules/images/image.service.ts
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, In } from 'typeorm';
 import { Image } from './entities/image.entity';
@@ -33,9 +37,18 @@ export class ImageService {
   async createMany_server(
     files: Array<{ key: string; url: string; name: string }>,
   ) {
+    for (const file of files) {
+      if (!file.key || !file.url) {
+        throw new BadRequestException(
+          `Invalid file data: ${JSON.stringify(file)}`,
+        );
+      }
+    }
+
     const images = files.map((f) =>
       this.imageRepo.create({ key: f.key, url: f.url }),
     );
+
     return this.imageRepo.save(images);
   }
   async createMany(dto: CreateImageDto, urls: string[]) {
@@ -68,14 +81,19 @@ export class ImageService {
 
     return { message: 'Image removed successfully' };
   }
+
   async remove_server(id: number) {
     const image = await this.findOne(id);
-    if (!image) throw new Error('Image not found');
+    if (!image) throw new NotFoundException('Image not found');
 
-    const fileExists = await this.uploadService.deleteFile_v2(image.key);
-    if (!fileExists) throw new NotFoundException('File does not exist');
+    if (!image.key) {
+      throw new BadRequestException('Image key is missing or invalid');
+    }
+
+    const result = await this.uploadService.deleteFile_v2(image.key);
+    if (!result.success) throw new NotFoundException(result.message);
+
     await this.imageRepo.remove(image);
-
     return { message: 'Image removed successfully' };
   }
 
@@ -83,7 +101,6 @@ export class ImageService {
     const images = await this.imageRepo.find({
       relations: ['venues', 'entertainments'],
     });
-    // console.log(images);
     return images.map((img) => mapImage(img));
   }
 
