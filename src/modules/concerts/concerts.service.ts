@@ -17,6 +17,8 @@ import { Booking } from '../booking/entities/booking.entity';
 import { mapConcert } from './mapper/concerts.mapper';
 import { PaymentStatus } from '../payment/entities/payment.entity';
 import { calculateTotalTickets } from 'src/common/utils/calculateTotalTickets';
+import dayjs from 'dayjs';
+import { dayjsUtil } from 'src/common/utils/dayjs.util';
 @Injectable()
 export class ConcertsService {
   constructor(
@@ -56,7 +58,6 @@ export class ConcertsService {
       const startDate = new Date(dto.startDate);
       const endDate = new Date(dto.endDate);
       const concertsToSave: Concert[] = [];
-
 
       if (startDate > endDate)
         throw new BadRequestException('startDate must be before endDate');
@@ -170,6 +171,15 @@ export class ConcertsService {
   }
 
   async findAll(query: PaginateDto) {
+    const today = dayjsUtil(new Date());
+    await this.concertRepo
+      .createQueryBuilder()
+      .update()
+      .set({ status: EnumConcertStatus.CLOSE })
+      .where('date < :today', { today })
+      .andWhere('status != :status', { status: EnumConcertStatus.CLOSE })
+      .execute();
+
     const qb = this.concertRepo.createQueryBuilder('concert');
     qb.leftJoinAndSelect('concert.venue', 'venue');
     qb.leftJoinAndSelect('concert.entertainments', 'entertainments');
@@ -181,7 +191,20 @@ export class ConcertsService {
       qb.where('concert.date LIKE :search', { search: `%${query.search}%` });
     }
 
-    const result = await paginateUtil(qb, query,'date');
+    const result = await paginateUtil(qb, query, 'date');
+
+    for (const concert of result.data) {
+      const total_ticket = calculateTotalTickets(concert);
+      if (
+        concert.limit <= total_ticket &&
+        concert.status !== EnumConcertStatus.SOLD_OUT
+      ) {
+        await this.concertRepo.update(concert.id, {
+          status: EnumConcertStatus.SOLD_OUT,
+        });
+        concert.status = EnumConcertStatus.SOLD_OUT;
+      }
+    }
 
     const formattedData = result.data.map((concert) => {
       const total_ticket = calculateTotalTickets(concert);

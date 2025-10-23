@@ -15,15 +15,12 @@ import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 import { TRANSACTION_MANAGER_SERVICE } from 'src/common/constants/inject-key';
 import type { ITransactionManager } from 'src/common/transaction/transaction.interface';
 import { BookingDetail } from '../booking-details/entities/bookingDetails.entity';
-import { PaginateDto } from 'src/common/dto/paginate.dto';
 import { paginateUtil } from 'src/common/utils/paginate.util';
 import { BookingPaginateDto } from './dto/booking-paginate.dto';
 import { User } from '../users/entities/user.entity';
 import { EnumRole } from '../users/entities/user.entity';
 import { Image } from '../images/entities/image.entity';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { CreateUserDto } from '../users/dto/create-user.dto';
-import { NoFilesInterceptor } from '@nestjs/platform-express';
 import { UsersService } from '../users/users.service';
 @Injectable()
 export class BookingService {
