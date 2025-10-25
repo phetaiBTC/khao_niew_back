@@ -3,11 +3,11 @@ import { AppModule } from './app.module';
 import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
 import { baseEnv } from './besa.env';
 import * as dotenv from 'dotenv';
-dotenv.config(); 
+dotenv.config();
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.enableCors()
+  app.enableCors();
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
   app.useGlobalPipes(
     new ValidationPipe({
@@ -20,6 +20,7 @@ async function bootstrap() {
       transformOptions: { enableImplicitConversion: true },
     }),
   );
-  await app.listen(baseEnv.PORT);
+  app.setGlobalPrefix('api');
+  await app.listen(baseEnv.PORT, '0.0.0.0');
 }
 bootstrap();
