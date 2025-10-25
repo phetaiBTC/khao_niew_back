@@ -19,8 +19,8 @@ export class BookingListener {
       ticketQuantity: booking.ticket_quantity,
       totalAmount: booking.total_amount,
     };
-    await this.mailService.sendMailResend(
-      baseEnv.RESEND_EMAIL,
+    await this.mailService.sendMail(
+      baseEnv.SMTP_USER,
       'ມີການຈອງໃຫມ່ - Khao Niew',
       'booking',
       context,
