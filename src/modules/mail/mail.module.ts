@@ -25,7 +25,7 @@ import { baseEnv } from 'src/besa.env';
             pass: baseEnv.SMTP_PASSWORD,
 
           },
-          connectionTimeout: 20000,
+          connectionTimeout: 25000,
         },
         defaults: {
           from: baseEnv.SMTP_FROM,
