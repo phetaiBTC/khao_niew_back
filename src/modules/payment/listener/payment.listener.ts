@@ -20,12 +20,12 @@ export class PaymentListener {
       payment: booking.payment.status,
       detailsIds: booking.details.map((detail) => detail.id),
     };
-    await this.mailService.sendMail(
-      booking.user.email,
-      'ຢີນຢົັນການຂອງສຳເລັດ - Khao Niew',
-      'payment',
-      context,
-    );
+    // await this.mailService.sendMail(
+    //   booking.user.email,
+    //   'ຢີນຢົັນການຂອງສຳເລັດ - Khao Niew',
+    //   'payment',
+    //   context,
+    // );
 
     // const context = {
     //   name: 'Muaj Hmoos',
